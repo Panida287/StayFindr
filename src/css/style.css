@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    @apply text-gray-dark bg-gray-light;
+}
+
+h1 {
+    @apply text-[47px] font-bold font-sans;
+}
+
+h2 {
+    @apply text-[40px] font-bold font-sans;
+}
+
+h3 {
+    @apply text-[33px] font-bold font-sans;
+}
+
+h4 {
+    @apply text-[27px] font-bold font-sans;
+}
+
+h5 {
+    @apply text-[24px] font-bold font-sans;
+}
+
+h6 {
+    @apply text-[20px] font-bold font-sans;
+}
+
+p {
+    @apply text-alt;
+}
