@@ -1,7 +1,12 @@
+import useBreakpoint from "../hooks/useBreakpoint.ts";
+
 export default function Header() {
+    const isMobile = useBreakpoint(480);
+
     return (
         <>
-            Hello this is Header
+            {!isMobile && <header>Desktop header</header>}
+            {isMobile && <header>Mobile header</header>}
         </>
-    )
+    );
 }

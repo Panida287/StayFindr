@@ -1,7 +1,12 @@
-export default function Footer() {
+import useBreakpoint from "../hooks/useBreakpoint.ts";
+
+export default function Header() {
+    const isMobile = useBreakpoint(480);
+
     return (
         <>
-        Hello this is footer
+            {!isMobile && <footer>Desktop footer</footer>}
+            {isMobile && <nav>Mobile navigation</nav>}
         </>
-    )
+    );
 }
