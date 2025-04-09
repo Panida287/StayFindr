@@ -31,5 +31,5 @@ h6 {
 }
 
 p {
-    @apply text-alt;
+    @apply font-alt;
 }
