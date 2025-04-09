@@ -5,7 +5,7 @@ function App() {
     }
     return (
         <>
-            <button className="text-primary">Hello world</button>
+            <button className="text-primary">Homepage</button>
         </>
     );
 }
