@@ -1,20 +1,12 @@
 import { useEffect } from 'react';
-import { useVenueStore } from '../store/VenueStore';
+import { useVenueStore } from '../store/VenueStore.ts';
 
-type FetchParams = {
-	_owner?: boolean;
-	_bookings?: boolean;
-};
-
-export function useFetchVenues(params?: FetchParams) {
-	const { venues, fetchVenues, isLoading, error } = useVenueStore();
-
-	const safeParams = params ?? {};
-	const stringifiedParams = JSON.stringify(safeParams);
+export const useFetchVenues = () => {
+	const { venues, isLoading, error, meta, currentPage, fetchVenues, setPage } = useVenueStore();
 
 	useEffect(() => {
-		fetchVenues(safeParams);
-	}, [stringifiedParams, fetchVenues]);
+		fetchVenues();
+	}, []);
 
-	return { venues, isLoading, error };
-}
+	return { venues, isLoading, error, meta, currentPage, setPage };
+};

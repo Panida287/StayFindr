@@ -6,49 +6,51 @@ type VenueStore = {
 	venues: Venue[];
 	isLoading: boolean;
 	error: string | null;
-	fetchVenues: (params?: { _owner?: boolean; _bookings?: boolean }) => Promise<void>;
+	meta: VenueListResponse['meta'] | null;
+	currentPage: number;
+	fetchVenues: (page?: number) => Promise<void>;
+	setPage: (page: number) => void;
 };
 
-export const useVenueStore = create<VenueStore>((set) => ({
+export const useVenueStore = create<VenueStore>((set, get) => ({
 	venues: [],
 	isLoading: false,
 	error: null,
+	meta: null,
+	currentPage: 1,
 
-	fetchVenues: async (params = {}) => {
+	fetchVenues: async (page = 1) => {
 		set({ isLoading: true, error: null });
 
 		try {
 			const response = await axios.get<VenueListResponse>(
 				'https://v2.api.noroff.dev/holidaze/venues',
 				{
-					params,
+					params: {
+						limit: 12,
+						page,
+						sort: 'created',
+						sortOrder: 'desc',
+					},
 				}
 			);
 
-			const sortedVenues = response.data.data.sort((a, b) =>
-				new Date(b.created).getTime() - new Date(a.created).getTime()
-			);
-
-			console.log('Number of venues fetched:', sortedVenues.length);
-			console.log('📦 API meta:', response.data.meta);
-
 			set({
-				venues: sortedVenues,
+				venues: response.data.data,
+				meta: response.data.meta,
+				currentPage: page,
 				isLoading: false,
 			});
-
 		} catch (error: unknown) {
-			if (axios.isAxiosError(error)) {
-				set({
-					error: error.response?.data?.message || error.message || 'Something went wrong',
-					isLoading: false,
-				});
-			} else {
-				set({
-					error: 'An unexpected error occurred',
-					isLoading: false,
-				});
-			}
+			console.error('API error:', error);
+			set({
+				error: 'Failed to fetch venues',
+				isLoading: false,
+			});
 		}
+	},
+
+	setPage: (page) => {
+		get().fetchVenues(page);
 	},
 }));
