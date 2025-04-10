@@ -2,8 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
+#root {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    @apply text-gray-dark bg-gray-light;
+    @apply text-gray-dark bg-gray-light font-alt;;
 }
 
 h1 {
@@ -30,6 +38,6 @@ h6 {
     @apply text-[20px] font-bold font-sans;
 }
 
-p {
-    @apply font-alt;
+.btn-base {
+    @apply px-4 py-2 rounded-full text-white font-bold transition-all;
 }
