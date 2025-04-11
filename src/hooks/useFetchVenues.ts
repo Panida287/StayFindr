@@ -8,14 +8,16 @@ export const useFetchVenues = () => {
 		error,
 		meta,
 		currentPage,
+		currentQuery,
 		fetchVenues,
 		setPage,
 		setSort,
+		setQuery,
 	} = useVenueStore();
 
 	useEffect(() => {
 		fetchVenues();
-	}, [fetchVenues]);
+	}, []);
 
 	return {
 		venues,
@@ -25,5 +27,8 @@ export const useFetchVenues = () => {
 		currentPage,
 		setPage,
 		setSort,
+		query: currentQuery,
+		setQuery,
+		fetchVenues,
 	};
 };

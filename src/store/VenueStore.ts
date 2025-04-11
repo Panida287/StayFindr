@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { Venue, VenueListResponse } from '../types/venues';
+import { ENDPOINTS } from '../constants.ts';
 
 type FetchVenueParams = {
 	page?: number;
 	limit?: number;
 	sort?: string;
 	sortOrder?: 'asc' | 'desc';
+	query?: string;
 };
 
 type VenueStore = {
@@ -17,9 +19,11 @@ type VenueStore = {
 	currentPage: number;
 	currentSort: string;
 	currentSortOrder: 'asc' | 'desc';
+	currentQuery: string;
 	fetchVenues: (params?: FetchVenueParams) => Promise<void>;
 	setPage: (page: number) => void;
 	setSort: (sort: string, sortOrder?: 'asc' | 'desc') => void;
+	setQuery: (query: string) => void;
 };
 
 export const useVenueStore = create<VenueStore>((set, get) => ({
@@ -30,6 +34,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	currentPage: 1,
 	currentSort: 'created',
 	currentSortOrder: 'desc',
+	currentQuery: '',
 
 	fetchVenues: async (params: FetchVenueParams = {}) => {
 		set({ isLoading: true, error: null });
@@ -39,30 +44,34 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			sortOrder = get().currentSortOrder,
 			page = get().currentPage,
 			limit = 12,
+			query = get().currentQuery,
 		} = params;
 
+		const isSearching = query.trim() !== '';
+		const endpoint = isSearching ? `${ENDPOINTS.venues}/search` : ENDPOINTS.venues;
+
+		const requestParams = isSearching
+			? { q: query }
+			: { limit, sort, sortOrder, page };
+
 		try {
-			const response = await axios.get<VenueListResponse>(
-				'https://v2.api.noroff.dev/holidaze/venues',
-				{
-					params: {
-						limit,
-						sort,
-						sortOrder,
-						page,
-					},
-				}
-			);
+			const response = await axios.get(endpoint, { params: requestParams });
+
+			const isWrapped = 'data' in response.data;
+			const data = isWrapped ? response.data.data : response.data;
+			const meta = isWrapped ? response.data.meta ?? null : null;
+			const venues = Array.isArray(data) ? data : [];
 
 			set({
-				venues: response.data.data,
-				meta: response.data.meta,
+				venues,
+				meta,
 				currentPage: page,
 				currentSort: sort,
 				currentSortOrder: sortOrder,
+				currentQuery: query,
 				isLoading: false,
 			});
-		} catch (error: unknown) {
+		} catch (error) {
 			console.error('API error:', error);
 			set({
 				error: 'Failed to fetch venues',
@@ -71,14 +80,19 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 		}
 	},
 
+
 	setPage: (page: number) => {
-		const { currentSort, currentSortOrder } = get();
-		get().fetchVenues({ sort: currentSort, sortOrder: currentSortOrder, page });
+		const { currentSort, currentSortOrder, currentQuery } = get();
+		get().fetchVenues({ sort: currentSort, sortOrder: currentSortOrder, page, query: currentQuery });
 	},
 
 	setSort: (sort: string, sortOrder: 'asc' | 'desc' = 'desc') => {
-		const currentPage = get().currentPage || 1;
-		get().fetchVenues({ sort, sortOrder, page: currentPage });
+		const { currentPage, currentQuery } = get();
+		get().fetchVenues({ sort, sortOrder, page: currentPage, query: currentQuery });
+	},
+
+	setQuery: (query: string) => {
+		set({ currentQuery: query });
 	},
 
 }));
