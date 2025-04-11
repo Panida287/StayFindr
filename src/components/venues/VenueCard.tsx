@@ -1,6 +1,6 @@
 import {Venue} from '../../types/venues.ts';
 import { Heart, Star } from 'lucide-react';
-import { truncateText } from '../../utillities/truncateText.ts';
+import { truncateText } from '../../utilities/truncateText.ts';
 
 type Props = {
 	venue: Venue;

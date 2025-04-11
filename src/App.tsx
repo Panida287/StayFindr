@@ -98,9 +98,25 @@ function App() {
 					        className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50">
 						&lt;
 					</button>
-					{Array.from({length: meta.pageCount}, (_, i) => i + 1)
-						.filter((n) => Math.abs(n - page) <= 1)
-						.map((p) => (
+					{(() => {
+						const totalPages = meta.pageCount;
+						const range: number[] = [];
+
+						if (totalPages <= 3) {
+							for (let i = 1; i <= totalPages; i++) {
+								range.push(i);
+							}
+						} else {
+							if (page === 1) {
+								range.push(1, 2, 3);
+							} else if (page === totalPages) {
+								range.push(totalPages - 2, totalPages - 1, totalPages);
+							} else {
+								range.push(page - 1, page, page + 1);
+							}
+						}
+
+						return range.map((p) => (
 							<button
 								key={p}
 								onClick={() => setPageFn(p)}
@@ -108,7 +124,9 @@ function App() {
 							>
 								{p}
 							</button>
-						))}
+						));
+					})()}
+
 					<button onClick={() => page < meta.pageCount && setPageFn(page + 1)}
 					        disabled={page === meta.pageCount}
 					        className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50">
