@@ -1,6 +1,7 @@
 import { useFetchVenues } from './hooks/useFetchVenues';
 import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown.tsx';
+import { CityFilterDropdown } from './components/venues/CityFilterDropdown.tsx';
 import { useState } from 'react';
 
 type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
@@ -32,7 +33,9 @@ function App() {
 
 	return (
 		<div className="p-4 space-y-6">
+
 			<SortDropdown onChange={handleSortChange} currentSort={currentSort} />
+			<CityFilterDropdown />
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 				{venues.map((venue) => (
 					<VenueCard key={venue.id} venue={venue} />

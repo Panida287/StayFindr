@@ -1,5 +1,6 @@
 import {Venue} from '../../types/venues.ts';
 import { Heart, Star } from 'lucide-react';
+import { truncateText } from '../../utillities/truncateText.ts';
 
 type Props = {
 	venue: Venue;
@@ -20,9 +21,9 @@ export function VenueCard({ venue }: Props) {
 				<Heart className="w-5 h-5 text-pink-500" />
 			</button>
 			<div className="p-4 space-y-1">
-				<h2 className="text-lg font-semibold">{name}</h2>
+				<h2 className="text-lg font-semibold">{truncateText(name, 20)}</h2>
 				<p className="text-sm text-gray-500">
-					{location?.city}, {location?.country}
+					{truncateText(location?.city, 20)}, {truncateText(location?.country, 20)}
 				</p>
 				<div className="flex items-center justify-between mt-2">
 					<div className="flex items-center text-sm text-yellow-500 font-medium">
