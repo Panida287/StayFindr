@@ -1,14 +1,38 @@
 import { useFetchVenues } from './hooks/useFetchVenues';
 import { VenueCard } from './components/venues/VenueCard';
+import { SortDropdown } from './components/venues/SortDropdown.tsx';
+import { useState } from 'react';
+
+type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
 
 function App() {
-	const { venues, isLoading, error, meta, currentPage, setPage } = useFetchVenues();
+	const { venues, isLoading, error, meta, currentPage, setPage, setSort } = useFetchVenues();
+	const [currentSort, setCurrentSort] = useState<SortValue>('newest');
+
+	const handleSortChange = (value: SortValue) => {
+		setCurrentSort(value);
+
+		switch (value) {
+			case 'priceAsc':
+				setSort('price', 'asc');
+				break;
+			case 'priceDesc':
+				setSort('price', 'desc');
+				break;
+			case 'rating':
+				setSort('rating', 'desc');
+				break;
+			default:
+				setSort('created', 'desc');
+		}
+	};
 
 	if (isLoading) return <p>Loading venues...</p>;
 	if (error) return <p>Error: {error}</p>;
 
 	return (
 		<div className="p-4 space-y-6">
+			<SortDropdown onChange={handleSortChange} currentSort={currentSort} />
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 				{venues.map((venue) => (
 					<VenueCard key={venue.id} venue={venue} />
@@ -37,7 +61,7 @@ function App() {
 					</button>
 
 					{/* Page Numbers - show 3 pages around current */}
-					{Array.from({ length: meta.pageCount }, (_, i) => i + 1)
+					{Array.from({length: meta.pageCount}, (_, i) => i + 1)
 						.filter((n) => Math.abs(n - currentPage) <= 1)
 						.map((page) => (
 							<button
