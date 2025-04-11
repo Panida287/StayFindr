@@ -1,9 +1,7 @@
+import { useState } from 'react';
 import { useFetchVenues } from './hooks/useFetchVenues';
-import { useSearchVenues } from './hooks/useSearchVenues';
 import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown';
-import { useState } from 'react';
-import { SearchInput } from './components/venues/SearchInput';
 
 type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
 
@@ -11,35 +9,19 @@ function App() {
 	const [currentSort, setCurrentSort] = useState<SortValue>('newest');
 
 	const {
-		venues: defaultVenues,
-		isLoading: defaultLoading,
-		error: defaultError,
-		meta: defaultMeta,
+		venues,
+		isLoading,
+		error,
+		meta,
 		currentPage,
 		setPage,
 		setSort,
-	} = useFetchVenues();
-
-	const {
-		venues: searchVenues,
-		isLoading: searchLoading,
-		error: searchError,
-		meta: searchMeta,
-		currentPage: searchPage,
-		setPage: setSearchPage,
 		query,
 		setQuery,
-		triggerSearch,
-	} = useSearchVenues();
+		fetchVenues,
+	} = useFetchVenues();
 
 	const isSearching = query.trim() !== '';
-
-	const venues = isSearching ? searchVenues : defaultVenues;
-	const isLoading = isSearching ? searchLoading : defaultLoading;
-	const error = isSearching ? searchError : defaultError;
-	const meta = isSearching ? searchMeta : defaultMeta;
-	const page = isSearching ? searchPage : currentPage;
-	const setPageFn = isSearching ? setSearchPage : setPage;
 
 	const handleSortChange = (value: SortValue) => {
 		setCurrentSort(value);
@@ -61,19 +43,40 @@ function App() {
 		}
 	};
 
+	const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			fetchVenues({ query, page: 1 });
+		}
+	};
+
+	const handleClearSearch = () => {
+		setQuery('');
+		fetchVenues({ query: '', page: 1 });
+	};
+
 	if (isLoading) return <p>Loading venues...</p>;
 	if (error) return <p>Error: {error}</p>;
 
 	return (
 		<div className="p-4 space-y-6">
-			<SearchInput
-				query={query}
-				setQuery={setQuery}
-				triggerSearch={triggerSearch}
-				clearSearch={() => {
-					setQuery('');
-				}}
-			/>
+			<div className="flex gap-2">
+				<input
+					type="text"
+					placeholder="Search venues..."
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
+					onKeyDown={handleSearch}
+					className="flex-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-pink-500"
+				/>
+				{isSearching && (
+					<button
+						onClick={handleClearSearch}
+						className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300"
+					>
+						Clear
+					</button>
+				)}
+			</div>
 
 			{!isSearching && (
 				<SortDropdown onChange={handleSortChange} currentSort={currentSort} />
@@ -83,19 +86,26 @@ function App() {
 				{venues.length > 0 ? (
 					venues.map((venue) => <VenueCard key={venue.id} venue={venue} />)
 				) : (
-					<p className="text-center text-gray-500 col-span-full">No venues match your search.</p>
+					<p className="text-center text-gray-500 col-span-full">
+						No venues match your search.
+					</p>
 				)}
 			</div>
 
-			{/* Pagination */}
 			{meta && meta.pageCount > 1 && (
-				<div className="flex justify-center items-center gap-1 mt-6">
-					<button onClick={() => setPageFn(1)} disabled={page === 1}
-					        className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50">
+				<div className="flex justify-center items-center gap-1 mt-6 flex-wrap">
+					<button
+						onClick={() => setPage(1)}
+						disabled={currentPage === 1}
+						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+					>
 						First page
 					</button>
-					<button onClick={() => page > 1 && setPageFn(page - 1)} disabled={page === 1}
-					        className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50">
+					<button
+						onClick={() => currentPage > 1 && setPage(currentPage - 1)}
+						disabled={currentPage === 1}
+						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+					>
 						&lt;
 					</button>
 					{(() => {
@@ -103,37 +113,41 @@ function App() {
 						const range: number[] = [];
 
 						if (totalPages <= 3) {
-							for (let i = 1; i <= totalPages; i++) {
-								range.push(i);
-							}
+							for (let i = 1; i <= totalPages; i++) range.push(i);
+						} else if (currentPage === 1) {
+							range.push(1, 2, 3);
+						} else if (currentPage === totalPages) {
+							range.push(totalPages - 2, totalPages - 1, totalPages);
 						} else {
-							if (page === 1) {
-								range.push(1, 2, 3);
-							} else if (page === totalPages) {
-								range.push(totalPages - 2, totalPages - 1, totalPages);
-							} else {
-								range.push(page - 1, page, page + 1);
-							}
+							range.push(currentPage - 1, currentPage, currentPage + 1);
 						}
 
 						return range.map((p) => (
 							<button
 								key={p}
-								onClick={() => setPageFn(p)}
-								className={`px-3 py-1 rounded text-sm ${p === page ? 'bg-pink-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+								onClick={() => setPage(p)}
+								className={`px-3 py-1 rounded text-sm ${
+									p === currentPage
+										? 'bg-pink-600 text-white'
+										: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+								}`}
 							>
 								{p}
 							</button>
 						));
 					})()}
-
-					<button onClick={() => page < meta.pageCount && setPageFn(page + 1)}
-					        disabled={page === meta.pageCount}
-					        className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50">
+					<button
+						onClick={() => currentPage < meta.pageCount && setPage(currentPage + 1)}
+						disabled={currentPage === meta.pageCount}
+						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+					>
 						&gt;
 					</button>
-					<button onClick={() => setPageFn(meta.pageCount)} disabled={page === meta.pageCount}
-					        className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50">
+					<button
+						onClick={() => setPage(meta.pageCount)}
+						disabled={currentPage === meta.pageCount}
+						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+					>
 						Last page
 					</button>
 				</div>
