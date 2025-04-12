@@ -1,5 +1,5 @@
 import { Venue } from '../../types/venues.ts';
-import { Star } from 'lucide-react';
+import { Star, Users } from 'lucide-react';
 import { truncateText } from '../../utilities/truncateText.ts';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export function VenueCard({venue}: Props) {
-	const {name, location, price, rating, media} = venue;
+	const {name, location, price, rating, media, maxGuests} = venue;
 	const images = media?.length ? media : [{url: 'https://placehold.co/400x300', alt: 'Placeholder'}];
 
 	return (
@@ -32,6 +32,10 @@ export function VenueCard({venue}: Props) {
 					<p className="text-right text-pink-600 font-semibold text-sm">
 						${price} <span className="text-gray-500 text-xs">/night</span>
 					</p>
+				</div>
+				<div className="flex items-center gap-2 text-gray-600 text-sm">
+					<Users className="w-4 h-4" />
+					<span>Max guests: {maxGuests}</span>
 				</div>
 			</div>
 		</Link>
