@@ -24,6 +24,10 @@ type VenueStore = {
 	setPage: (page: number) => void;
 	setSort: (sort: string, sortOrder?: 'asc' | 'desc') => void;
 	setQuery: (query: string) => void;
+	singleVenue: Venue | null;
+	isSingleVenueLoading: boolean;
+	singleVenueError: string | null;
+	fetchSingleVenue: (venueId: string) => Promise<void>;
 };
 
 export const useVenueStore = create<VenueStore>((set, get) => ({
@@ -35,9 +39,12 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	currentSort: 'created',
 	currentSortOrder: 'desc',
 	currentQuery: '',
+	singleVenue: null,
+	isSingleVenueLoading: false,
+	singleVenueError: null,
 
 	fetchVenues: async (params: FetchVenueParams = {}) => {
-		set({ isLoading: true, error: null });
+		set({isLoading: true, error: null});
 
 		const {
 			sort = get().currentSort,
@@ -48,23 +55,18 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 		} = params;
 
 		const isSearching = query && query.trim() !== '';
-		const endpoint = isSearching ? `${ENDPOINTS.venues}/search` : ENDPOINTS.venues;
+		const endpoint = isSearching ? `${ENDPOINTS.venues}/search?_bookings=true` : `${ENDPOINTS.venues}?_bookings=true`;
 
 		const requestParams: Record<string, string | number> = isSearching
-			? { q: query }
-			: { limit, sort, sortOrder, page };
+			? {q: query}
+			: {limit, sort, sortOrder, page};
 
 		try {
-			console.log('Fetching from:', endpoint);
-			console.log('With params:', requestParams);
-
 			const response = await axios.get<VenueListResponse>(endpoint, {
 				params: requestParams,
 			});
 
-			console.log('API response:', response.data);
-
-			const { data: rawData } = response;
+			const {data: rawData} = response;
 			const venues = Array.isArray(rawData?.data || rawData) ? (rawData.data || rawData) : [];
 			const meta = rawData?.meta ?? null;
 
@@ -88,17 +90,42 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	},
 
 	setPage: (page: number) => {
-		const { currentSort, currentSortOrder, currentQuery } = get();
-		get().fetchVenues({ sort: currentSort, sortOrder: currentSortOrder, page, query: currentQuery });
+		const {currentSort, currentSortOrder, currentQuery} = get();
+		get().fetchVenues({sort: currentSort, sortOrder: currentSortOrder, page, query: currentQuery});
 	},
 
 	setSort: (sort: string, sortOrder: 'asc' | 'desc' = 'desc') => {
-		const { currentPage, currentQuery } = get();
-		get().fetchVenues({ sort, sortOrder, page: currentPage, query: currentQuery });
+		const {currentPage, currentQuery} = get();
+		get().fetchVenues({sort, sortOrder, page: currentPage, query: currentQuery});
 	},
 
 	setQuery: (query: string) => {
-		set({ currentQuery: query });
+		set({currentQuery: query});
 	},
 
+	fetchSingleVenue: async (venueId: string) => {
+		set({isSingleVenueLoading: true, singleVenueError: null});
+
+		try {
+			const params = new URLSearchParams({
+				_owner: 'true',
+				_bookings: 'true',
+			});
+			const response = await axios.get<{ data: Venue }>(
+				`${ENDPOINTS.venues}/${venueId}?${params.toString()}`
+			);
+
+			console.log('Single venue response:', response.data);
+			set({
+				singleVenue: response.data.data,
+				isSingleVenueLoading: false,
+			});
+		} catch (error) {
+			console.error('Failed to fetch single venue', error);
+			set({
+				singleVenueError: 'Failed to load venue',
+				isSingleVenueLoading: false,
+			});
+		}
+	},
 }));

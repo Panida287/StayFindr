@@ -3,7 +3,9 @@ import { Venue } from '../../types/venues.ts';
 import { Heart, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { truncateText } from '../../utilities/truncateText.ts';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import type { Swiper as SwiperType } from 'swiper';
 import { Pagination } from 'swiper/modules';
+import { Link } from 'react-router-dom';
 
 type Props = {
 	venue: Venue;
@@ -13,10 +15,11 @@ export function VenueCard({ venue }: Props) {
 	const { name, location, price, rating, media } = venue;
 	const images = media?.length ? media : [{ url: 'https://placehold.co/400x300', alt: 'Placeholder' }];
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const swiperRef = useRef<any>(null);
+	const swiperRef = useRef<SwiperType | null>(null);
 
 	return (
-		<div className="rounded-xl overflow-hidden shadow-md relative bg-white">
+		<Link to={`/venue/${venue.id}`}
+			className="rounded-xl overflow-hidden shadow-md relative bg-white">
 			<div className="relative w-full h-48 group">
 				<Swiper
 					modules={[Pagination]}
@@ -79,6 +82,6 @@ export function VenueCard({ venue }: Props) {
 					</p>
 				</div>
 			</div>
-		</div>
+		</Link>
 	);
 }
