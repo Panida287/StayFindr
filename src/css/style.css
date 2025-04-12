@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body,
+#root {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    @apply text-gray-dark bg-gray-light font-alt;;
+}
+
+h1 {
+    @apply text-[47px] font-bold font-sans;
+}
+
+h2 {
+    @apply text-[40px] font-bold font-sans;
+}
+
+h3 {
+    @apply text-[33px] font-bold font-sans;
+}
+
+h4 {
+    @apply text-[27px] font-bold font-sans;
+}
+
+h5 {
+    @apply text-[24px] font-bold font-sans;
+}
+
+h6 {
+    @apply text-[20px] font-bold font-sans;
+}
+
+.btn-base {
+    @apply px-4 py-2 rounded-full text-white font-bold transition-all;
+}
