@@ -65,7 +65,3 @@ export type VenueListResponse = {
 	};
 };
 
-export type SingleVenueResponse = {
-	data: Venue;
-	meta: Record<string, unknown>;
-};
