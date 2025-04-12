@@ -17,7 +17,7 @@ export const useFetchVenues = () => {
 
 	useEffect(() => {
 		fetchVenues();
-	}, []);
+	}, [fetchVenues]);
 
 	return {
 		venues,

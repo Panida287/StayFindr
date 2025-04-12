@@ -47,20 +47,26 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			query = get().currentQuery,
 		} = params;
 
-		const isSearching = query.trim() !== '';
+		const isSearching = query && query.trim() !== '';
 		const endpoint = isSearching ? `${ENDPOINTS.venues}/search` : ENDPOINTS.venues;
 
-		const requestParams = isSearching
+		const requestParams: Record<string, string | number> = isSearching
 			? { q: query }
 			: { limit, sort, sortOrder, page };
 
 		try {
-			const response = await axios.get(endpoint, { params: requestParams });
+			console.log('Fetching from:', endpoint);
+			console.log('With params:', requestParams);
 
-			const isWrapped = 'data' in response.data;
-			const data = isWrapped ? response.data.data : response.data;
-			const meta = isWrapped ? response.data.meta ?? null : null;
-			const venues = Array.isArray(data) ? data : [];
+			const response = await axios.get<VenueListResponse>(endpoint, {
+				params: requestParams,
+			});
+
+			console.log('API response:', response.data);
+
+			const { data: rawData } = response;
+			const venues = Array.isArray(rawData?.data || rawData) ? (rawData.data || rawData) : [];
+			const meta = rawData?.meta ?? null;
 
 			set({
 				venues,
@@ -71,7 +77,8 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 				currentQuery: query,
 				isLoading: false,
 			});
-		} catch (error) {
+
+		} catch (error: unknown) {
 			console.error('API error:', error);
 			set({
 				error: 'Failed to fetch venues',
@@ -79,7 +86,6 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			});
 		}
 	},
-
 
 	setPage: (page: number) => {
 		const { currentSort, currentSortOrder, currentQuery } = get();
