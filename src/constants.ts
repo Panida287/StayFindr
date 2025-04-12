@@ -5,3 +5,12 @@ export const ENDPOINTS = {
 	bookings: `${API_BASE_URL}/bookings`,
 	profiles: `${API_BASE_URL}/profiles`,
 };
+
+export const FALLBACK = {
+	// Noroff Oslo address
+	lat: 59.9300048872585,
+	lng: 10.755947969218308,
+	name: 'John Smith',
+	email: 'johnsmith@gmail.com',
+	bio: 'I love warm hugs',
+}
