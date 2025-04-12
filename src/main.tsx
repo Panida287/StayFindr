@@ -6,6 +6,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'leaflet/dist/leaflet.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import App from './App.tsx';
 import AdminPage from './pages/Admin';
 import AddNewVenuePage from './pages/Admin/AddNewVenuePage';
