@@ -5,25 +5,27 @@ import { truncateText } from '../../utilities/truncateText.ts';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import type { Swiper as SwiperType } from 'swiper';
 import { Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 import { Link } from 'react-router-dom';
 
 type Props = {
 	venue: Venue;
 };
 
-export function VenueCard({ venue }: Props) {
-	const { name, location, price, rating, media } = venue;
-	const images = media?.length ? media : [{ url: 'https://placehold.co/400x300', alt: 'Placeholder' }];
+export function VenueCard({venue}: Props) {
+	const {name, location, price, rating, media} = venue;
+	const images = media?.length ? media : [{url: 'https://placehold.co/400x300', alt: 'Placeholder'}];
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const swiperRef = useRef<SwiperType | null>(null);
 
 	return (
 		<Link to={`/venue/${venue.id}`}
-			className="rounded-xl overflow-hidden shadow-md relative bg-white">
+		      className="rounded-xl overflow-hidden shadow-md relative bg-white">
 			<div className="relative w-full h-48 group">
 				<Swiper
 					modules={[Pagination]}
-					pagination={{ clickable: true }}
+					pagination={{clickable: true}}
 					onSwiper={(swiper) => (swiperRef.current = swiper)}
 					onSlideChange={(swiper) => setCurrentIndex(swiper.activeIndex)}
 					className="w-full h-48"
@@ -43,7 +45,10 @@ export function VenueCard({ venue }: Props) {
 				{currentIndex > 0 && (
 					<button
 						type="button"
-						onClick={() => swiperRef.current?.slidePrev()}
+						onClick={(e) => {
+							e.preventDefault();
+							swiperRef.current?.slidePrev();
+						}}
 						className="hidden group-hover:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-1 rounded-full shadow"
 					>
 						<ChevronLeft className="w-4 h-4 text-gray-700" />
@@ -54,7 +59,10 @@ export function VenueCard({ venue }: Props) {
 				{currentIndex < images.length - 1 && (
 					<button
 						type="button"
-						onClick={() => swiperRef.current?.slideNext()}
+						onClick={(e) => {
+							e.preventDefault();
+							swiperRef.current?.slideNext();
+						}}
 						className="hidden group-hover:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white p-1 rounded-full shadow"
 					>
 						<ChevronRight className="w-4 h-4 text-gray-700" />
