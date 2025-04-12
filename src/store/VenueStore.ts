@@ -115,7 +115,9 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 				`${ENDPOINTS.venues}/${venueId}?${params.toString()}`
 			);
 
-			console.log('Single venue response:', response.data);
+			if (process.env.NODE_ENV !== 'production') {
+				console.log('Single venue response:', response.data);
+			}
 			set({
 				singleVenue: response.data.data,
 				isSingleVenueLoading: false,
