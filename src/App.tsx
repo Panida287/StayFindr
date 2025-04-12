@@ -27,6 +27,8 @@ function App() {
 		setCurrentSort(value);
 
 		if (!isSearching) {
+			setPage(1);
+
 			switch (value) {
 				case 'priceAsc':
 					setSort('price', 'asc');
@@ -42,6 +44,7 @@ function App() {
 			}
 		}
 	};
+
 
 	const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {

@@ -1,6 +1,28 @@
-// venues.ts
-
 export type Venue = {
+	bookings: {
+		id: string;
+		dateFrom: string;
+		dateTo: string;
+		guests: number;
+		customer: {
+			name: string;
+			email: string;
+			bio: string;
+			avatar: {
+				url: string;
+				alt: string;
+			};
+		};
+	}[];
+	owner: {
+		name: string,
+		email: string,
+		bio: string,
+		avatar: {
+			url: string,
+			alt: string,
+		}
+	}
 	id: string;
 	name: string;
 	description: string;
