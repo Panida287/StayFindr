@@ -16,3 +16,5 @@ export const FALLBACK = {
 	email: 'johnsmith@gmail.com',
 	bio: 'I love warm hugs',
 }
+
+export const API_KEY = "83d13e66-565f-4321-9216-c12e9fa8f030"

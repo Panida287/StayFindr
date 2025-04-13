@@ -13,7 +13,7 @@ export function useHandleBooking(venueId: string | undefined) {
 		async (startDate: Date | null, endDate: Date | null, guests: number) => {
 			if (!venueId || !startDate || !endDate || !guests) return;
 
-			const userToken = localStorage.getItem('token');
+			const userToken = localStorage.getItem('SFToken');
 			if (!userToken) {
 				console.error('No auth token found');
 				return;

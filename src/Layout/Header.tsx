@@ -156,9 +156,6 @@ export default function Header() {
 					</NavLink>
 				</nav>
 			)}
-			<button onClick={logout} className="text-sm text-pink-600 hover:underline">
-				Logout
-			</button>
 		</header>
 	);
 }
