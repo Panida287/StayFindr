@@ -95,9 +95,9 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	},
 
 	setSort: (sort: string, sortOrder: 'asc' | 'desc' = 'desc') => {
-		const {currentPage, currentQuery} = get();
-		get().fetchVenues({sort, sortOrder, page: currentPage, query: currentQuery});
+		set({ currentSort: sort, currentSortOrder: sortOrder });
 	},
+
 
 	setQuery: (query: string) => {
 		set({currentQuery: query});

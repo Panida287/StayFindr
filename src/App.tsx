@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useFetchVenues } from './hooks/useFetchVenues';
 import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown';
@@ -8,7 +7,6 @@ type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
 
 function App() {
 	useFetchProfile();
-	const [currentSort, setCurrentSort] = useState<SortValue>('newest');
 
 	const {
 		venues,
@@ -18,6 +16,8 @@ function App() {
 		currentPage,
 		setPage,
 		setSort,
+		currentSort,
+		currentSortOrder,
 		query,
 		setQuery,
 		fetchVenues,
@@ -25,27 +25,39 @@ function App() {
 
 	const isSearching = query.trim() !== '';
 
-	const handleSortChange = (value: SortValue) => {
-		setCurrentSort(value);
-
-		if (!isSearching) {
-			setPage(1);
-
-			switch (value) {
-				case 'priceAsc':
-					setSort('price', 'asc');
-					break;
-				case 'priceDesc':
-					setSort('price', 'desc');
-					break;
-				case 'rating':
-					setSort('rating', 'desc');
-					break;
-				default:
-					setSort('created', 'desc');
-			}
-		}
+	// Helper to convert store values into dropdown values
+	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
+		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
+		if (sort === 'rating') return 'rating';
+		return 'newest';
 	};
+
+	const currentSortValue = getSortValue(currentSort, currentSortOrder);
+
+	const handleSortChange = (value: SortValue) => {
+		let sortField = 'created';
+		let sortOrder: 'asc' | 'desc' = 'desc';
+
+		switch (value) {
+			case 'priceAsc':
+				sortField = 'price';
+				sortOrder = 'asc';
+				break;
+			case 'priceDesc':
+				sortField = 'price';
+				sortOrder = 'desc';
+				break;
+			case 'rating':
+				sortField = 'rating';
+				sortOrder = 'desc';
+				break;
+		}
+
+		setSort(sortField, sortOrder);
+
+		fetchVenues({ sort: sortField, sortOrder, page: 1, query });
+	};
+
 
 
 	const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -84,7 +96,7 @@ function App() {
 			</div>
 
 			{!isSearching && (
-				<SortDropdown onChange={handleSortChange} currentSort={currentSort} />
+				<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
 			)}
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
