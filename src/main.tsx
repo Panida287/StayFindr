@@ -49,11 +49,11 @@ const router = createBrowserRouter([
 						path: 'my-bookings',
 						element: <MyBookingsPage />,
 					},
-					{
-						path: 'edit-profile',
-						element: <EditProfilePage />,
-					}
 				]
+			},
+			{
+				path: 'edit-profile',
+				element: <EditProfilePage />,
 			},
 			{
 				path: 'admin/:adminId',
