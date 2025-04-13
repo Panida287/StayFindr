@@ -1,9 +1,11 @@
-export const API_BASE_URL = "https://v2.api.noroff.dev/holidaze";
+export const API_BASE_URL = "https://v2.api.noroff.dev";
 
 export const ENDPOINTS = {
-	venues: `${API_BASE_URL}/venues`,
-	bookings: `${API_BASE_URL}/bookings`,
-	profiles: `${API_BASE_URL}/profiles`,
+	venues: `${API_BASE_URL}/holidaze/venues`,
+	bookings: `${API_BASE_URL}/holidaze/bookings`,
+	profiles: `${API_BASE_URL}/holidaze/profiles`,
+	login: `${API_BASE_URL}/auth/login`,
+	register: `${API_BASE_URL}/auth/register`,
 };
 
 export const FALLBACK = {
@@ -14,3 +16,5 @@ export const FALLBACK = {
 	email: 'johnsmith@gmail.com',
 	bio: 'I love warm hugs',
 }
+
+export const API_KEY = "83d13e66-565f-4321-9216-c12e9fa8f030"
