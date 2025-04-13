@@ -36,6 +36,11 @@ export default function VenueDetailPage() {
 	const safeLat = venue?.location?.lat ?? FALLBACK.lat;
 	const safeLng = venue?.location?.lng ?? FALLBACK.lng;
 
+	const bookedDateRanges = venue.bookings.map((booking) => ({
+		start: new Date(booking.dateFrom),
+		end: new Date(booking.dateTo),
+	}));
+
 	return (
 		<div className="p-6 max-w-5xl mx-auto">
 			<h1 className="text-2xl font-bold mb-4">{name}</h1>
@@ -75,6 +80,7 @@ export default function VenueDetailPage() {
 							setStartDate(start);
 							setEndDate(end);
 						}}
+						bookedRanges={bookedDateRanges}
 					/>
 
 					{startDate && endDate && (

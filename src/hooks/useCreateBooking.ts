@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { ENDPOINTS } from '../constants.ts';
+import { ENDPOINTS, API_KEY } from '../constants.ts';
 
 type BookingPayload = {
 	dateFrom: string;
@@ -26,6 +26,7 @@ export function useCreateBooking() {
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
+						'X-Noroff-API-Key': API_KEY,
 					},
 				}
 			);
@@ -50,4 +51,3 @@ export function useCreateBooking() {
 
 	return { createBooking, isLoading, error, success };
 }
-

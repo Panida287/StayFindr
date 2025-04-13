@@ -8,20 +8,19 @@ import 'swiper/css/navigation';
 import 'leaflet/dist/leaflet.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import App from './App.tsx';
-import AdminPage from './pages/Admin';
-import AddNewVenuePage from './pages/Admin/AddNewVenuePage';
-import EditVenuePage from './pages/Admin/EditVenuePage';
-import UserPage from './pages/UserPage';
-import MyBookingPage from './pages/UserPage/MyBookingsPage';
+import AdminAccountPage from './pages/Accounts/AdminAccountPage';
+import AddNewVenuePage from './pages/Accounts/AdminAccountPage/AddNewVenuePage';
+import EditVenuePage from './pages/Accounts/AdminAccountPage/EditVenuePage';
 import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 import BookingSuccessPage from './pages/BookingSuccessPage';
 import VenueDetailPage from './pages/VenueDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
+import UserAccountPage from './pages/Accounts/UserAccountPage';
 import Layout from './Layout';
 import { Toaster } from 'react-hot-toast';
-import ManageVenuePage from './pages/Admin/ManageVenuePage';
-import ManageBookingsPage from './pages/Admin/ManageBookingsPage';
+import ManageVenuePage from './pages/Accounts/AdminAccountPage/ManageVenuePage';
+import ManageBookingsPage from './pages/Accounts/AdminAccountPage/ManageBookingsPage';
 
 const router = createBrowserRouter([
 	{
@@ -42,20 +41,14 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'user/:userId',
-				element: <UserPage />,
-				children: [
-					{
-						path: 'bookings',
-						element: <MyBookingPage />,
-					}
-				]
+				element: <UserAccountPage />,
 			},
 			{
 				path: 'admin/:adminId',
-				element: <AdminPage />,
+				element: <AdminAccountPage />,
 				children: [
 					{
-						path: 'manage-venue',
+						path: 'manage-venues',
 						element: <ManageVenuePage />
 					},
 					{
