@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useProfileStore } from '../store/ProfileStore.ts';
+
 export const useFetchProfile = () => {
 	const { profile, isLoading, error, fetchProfile } = useProfileStore();
 
@@ -11,5 +12,5 @@ export const useFetchProfile = () => {
 		}
 	}, [fetchProfile, profile]);
 
-	return { profile, isLoading, error };
+	return { profile, isLoading, error, fetchProfile };
 };

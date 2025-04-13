@@ -11,7 +11,6 @@ import App from './App.tsx';
 import AdminAccountPage from './pages/Accounts/AdminAccountPage';
 import AddNewVenuePage from './pages/Accounts/AdminAccountPage/AddNewVenuePage';
 import EditVenuePage from './pages/Accounts/AdminAccountPage/EditVenuePage';
-import MyBookingsPage from './pages/Accounts/UserAccountPage/MyBookingsPage';
 import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 import BookingSuccessPage from './pages/BookingSuccessPage';
@@ -19,7 +18,6 @@ import VenueDetailPage from './pages/VenueDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
 import UserAccountPage from './pages/Accounts/UserAccountPage';
 import Layout from './Layout';
-import EditProfilePage from './pages/Accounts/UserAccountPage/EditProfilePage';
 import { Toaster } from 'react-hot-toast';
 import ManageVenuePage from './pages/Accounts/AdminAccountPage/ManageVenuePage';
 import ManageBookingsPage from './pages/Accounts/AdminAccountPage/ManageBookingsPage';
@@ -44,16 +42,6 @@ const router = createBrowserRouter([
 			{
 				path: 'user/:userId',
 				element: <UserAccountPage />,
-				children: [
-					{
-						path: 'my-bookings',
-						element: <MyBookingsPage />,
-					},
-				]
-			},
-			{
-				path: 'edit-profile',
-				element: <EditProfilePage />,
 			},
 			{
 				path: 'admin/:adminId',
@@ -62,10 +50,6 @@ const router = createBrowserRouter([
 					{
 						path: 'manage-venues',
 						element: <ManageVenuePage />
-					},
-					{
-						path: 'my-bookings',
-						element: <MyBookingsPage />
 					},
 					{
 						path: 'manage-bookings',
