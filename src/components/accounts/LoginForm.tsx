@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Eye, EyeOff } from 'lucide-react';
-import axios, { AxiosError } from 'axios';
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Eye, EyeOff } from "lucide-react";
+import axios, { AxiosError } from "axios";
 import { ENDPOINTS } from '../../constants.ts';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 
 type LoginFormValues = {
 	email: string;
@@ -11,29 +11,32 @@ type LoginFormValues = {
 };
 
 type LoginResponse = {
-	name: string;
-	accessToken: string;
+	data: {
+		name: string;
+		accessToken: string;
+	}
 };
 
 export default function LoginForm() {
 	const [showPassword, setShowPassword] = useState(false);
-	const [apiError, setApiError] = useState('');
+	const [apiError, setApiError] = useState("");
 	const navigate = useNavigate();
 	const {
 		register,
 		handleSubmit,
-		formState: {errors},
+		formState: { errors },
 	} = useForm<LoginFormValues>();
 
 	const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
-		setApiError('');
+		setApiError("");
 		try {
 			const response = await axios.post<LoginResponse>(ENDPOINTS.login, data);
+			console.log("Login success:", response.data);
 
-			localStorage.setItem('SFUsername', response.data.name);
-			localStorage.setItem('SFToken', response.data.accessToken);
+			localStorage.setItem("SFUsername", response.data.data.name);
+			localStorage.setItem("SFToken", response.data.data.accessToken);
 
-			navigate('/');
+			navigate("/");
 
 		} catch (error) {
 			const err = error as AxiosError<{ errors?: { message?: string } }>;
@@ -41,7 +44,7 @@ export default function LoginForm() {
 			const message = Array.isArray(err.response?.data?.errors)
 				? err.response?.data?.errors[0]?.message
 				: err.response?.data?.errors?.message;
-			setApiError(message || '');
+			setApiError(message || "");
 		}
 	};
 
@@ -57,11 +60,11 @@ export default function LoginForm() {
 						<input
 							type="email"
 							placeholder="example@stud.noroff.no"
-							{...register('email', {
-								required: 'Email is required',
+							{...register("email", {
+								required: "Email is required",
 								pattern: {
 									value: /^[^\s@]+@stud\.noroff\.no$/,
-									message: 'Only @stud.noroff.no emails allowed',
+									message: "Only @stud.noroff.no emails allowed",
 								},
 							})}
 							className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300"
@@ -73,13 +76,13 @@ export default function LoginForm() {
 						<label className="block mb-1 text-gray-700">Password</label>
 						<div className="relative">
 							<input
-								type={showPassword ? 'text' : 'password'}
+								type={showPassword ? "text" : "password"}
 								placeholder="Enter your password"
-								{...register('password', {
-									required: 'Password is required',
+								{...register("password", {
+									required: "Password is required",
 									minLength: {
 										value: 8,
-										message: 'Password must be at least 8 characters',
+										message: "Password must be at least 8 characters",
 									},
 								})}
 								className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300"
@@ -125,8 +128,7 @@ export default function LoginForm() {
 					</p>
 					<div className="relative mt-4 mb-2">
 						<hr className="border-gray-300" />
-						<span
-							className="absolute left-1/2 transform -translate-x-1/2 -top-2 bg-white px-2 text-sm text-gray-400">
+						<span className="absolute left-1/2 transform -translate-x-1/2 -top-2 bg-white px-2 text-sm text-gray-400">
               Or continue with
             </span>
 					</div>
