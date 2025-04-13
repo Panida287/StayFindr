@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useFetchVenues } from './hooks/useFetchVenues';
 import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown';
+import { useFetchProfile } from './hooks/useFetchProfile.ts';
 
 type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
 
 function App() {
+	useFetchProfile();
 	const [currentSort, setCurrentSort] = useState<SortValue>('newest');
 
 	const {

@@ -8,6 +8,7 @@ export default {
     extend: {
       animation: {
         slideDown: "slideDown 0.5s ease-out",
+        slideDownFast: "slideDown 0.1s ease-out",
       },
       keyframes: {
         slideDown: {
