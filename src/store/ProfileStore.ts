@@ -35,6 +35,7 @@ export const useProfileStore = create<ProfileStore>((set) => ({
 					},
 				}
 			);
+			console.log(response);
 			set({ profile: response.data.data, isLoading: false });
 		} catch (error) {
 			const axiosError = error as AxiosError<{ message: string }>;

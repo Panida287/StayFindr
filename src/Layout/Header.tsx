@@ -1,9 +1,9 @@
-import { useState, useRef, useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
-import { Menu, X, ChevronDown } from "lucide-react";
-import useBreakpoint from "../hooks/useBreakpoint";
-import { logout } from "../utilities/logout";
-import { useFetchProfile } from "../hooks/useFetchProfile";
+import { useState, useRef, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import useBreakpoint from '../hooks/useBreakpoint';
+import { logout } from '../utilities/logout';
+import { useFetchProfile } from '../hooks/useFetchProfile';
 
 export default function Header() {
 	const isMobile = useBreakpoint(480);
@@ -11,12 +11,11 @@ export default function Header() {
 	const [showDropdown, setShowDropdown] = useState(false);
 	const menuRef = useRef<HTMLDivElement | null>(null);
 	const dropdownRef = useRef<HTMLDivElement | null>(null);
-	const navigate = useNavigate();
 
-	const { profile } = useFetchProfile();
+	const {profile} = useFetchProfile();
 	const isLoggedIn = !!profile;
-	const isAdmin = profile?.VenueManager;
-	const avatarUrl = profile?.avatar?.url || "/assets/avatar-placeholder.png";
+	const isAdmin = profile?.venueManager;
+	const avatarUrl = profile?.avatar?.url || '/assets/avatar-placeholder.png';
 
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
@@ -28,8 +27,8 @@ export default function Header() {
 			}
 		};
 
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
 	const accountPath = isAdmin ? `/admin/${profile?.name}` : `/user/${profile?.name}`;
@@ -72,10 +71,26 @@ export default function Header() {
 						{/* Mobile Nav */}
 						<ul className="space-y-4 text-lg font-alt">
 							<li>
-								<NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
+								<NavLink to="/" onClick={() => setOpen(false)}
+								         className={({isActive}) =>
+									         isActive
+										         ? 'text-gray-400'
+										         : ''
+								         }
+								>
+									Home
+								</NavLink>
 							</li>
 							<li>
-								<NavLink to="/contact" onClick={() => setOpen(false)}>Contact</NavLink>
+								<NavLink to="/contact" onClick={() => setOpen(false)}
+								         className={({isActive}) =>
+									         isActive
+										         ? 'text-gray-400'
+										         : ''
+								         }
+								>
+									Contact
+								</NavLink>
 							</li>
 							<li>
 								<a href="#" onClick={() => setOpen(false)}>Inbox</a>
@@ -86,17 +101,32 @@ export default function Header() {
 							{isLoggedIn ? (
 								<>
 									<li>
-										<NavLink to={accountPath} onClick={() => setOpen(false)}>My Account</NavLink>
+										<NavLink
+											to={accountPath}
+											onClick={() => setOpen(false)}
+											className={({isActive}) =>
+												isActive
+													? 'text-gray-400'
+													: ''
+											}
+										>
+											My Account
+										</NavLink>
 									</li>
+
 									<li>
-										<button onClick={() => { logout(); setOpen(false); }} className="text-left text-pink-600 hover:underline">
+										<button onClick={() => {
+											logout();
+											setOpen(false);
+										}} className="text-left text-pink-600 hover:underline">
 											Logout
 										</button>
 									</li>
 								</>
 							) : (
 								<li>
-									<NavLink to="/login" onClick={() => setOpen(false)} className="btn-base text-white bg-primary">
+									<NavLink to="/login" onClick={() => setOpen(false)}
+									         className="btn-base text-white bg-primary">
 										Login / Sign up
 									</NavLink>
 								</li>
@@ -107,8 +137,10 @@ export default function Header() {
 			) : (
 				// Desktop Navigation
 				<nav className="flex items-center space-x-6 text-lg font-alt ml-auto">
-					<NavLink to="/" className={({ isActive }) => isActive ? "text-primary font-bold" : "text-gray-dark"}>Home</NavLink>
-					<NavLink to="/contact" className={({ isActive }) => isActive ? "text-primary font-bold" : "text-gray-dark"}>Contact</NavLink>
+					<NavLink to="/"
+					         className={({isActive}) => isActive ? 'text-primary font-bold' : 'text-gray-dark'}>Home</NavLink>
+					<NavLink to="/contact"
+					         className={({isActive}) => isActive ? 'text-primary font-bold' : 'text-gray-dark'}>Contact</NavLink>
 
 					{isLoggedIn ? (
 						<div ref={dropdownRef} className="relative ml-4">
@@ -124,13 +156,21 @@ export default function Header() {
 								<ChevronDown />
 							</button>
 							{showDropdown && (
-								<div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50 animate-slideDownFast">
-									<button
-										onClick={() => { navigate(accountPath); setShowDropdown(false); }}
-										className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+								<div
+									className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50 animate-slideDownFast">
+									<NavLink
+										to={accountPath}
+										onClick={() => setShowDropdown(false)}
+										className={({isActive}) =>
+											isActive
+												? 'text-gray-400 bg-gray-50 block w-full text-left px-4 py-2'
+												: 'hover:bg-gray-100 text-black block w-full text-left px-4 py-2'
+										}
 									>
 										My Account
-									</button>
+									</NavLink>
+
+
 									<button
 										className="block w-full text-left px-4 py-2 hover:bg-gray-100"
 									>

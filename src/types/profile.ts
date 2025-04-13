@@ -10,8 +10,8 @@ export type Profile = {
 		url: string,
 		alt: string,
 	},
-	VenueManager: boolean,
-	Venues: {
+	venueManager: boolean,
+	venues: {
 		id: string,
 		name: string,
 		description: string,
