@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import useBreakpoint from "../hooks/useBreakpoint.ts";
 import { Menu, X } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { logout } from '../utilities/logout.ts';
 
 export default function Header() {
 	const isMobile = useBreakpoint(480);
@@ -43,7 +44,7 @@ export default function Header() {
 					<div
 						ref={menuRef}
 						className={`fixed z-30 right-0 top-0 h-full w-48 bg-white shadow-lg p-4 transform transition-transform duration-300 ease-in-out ${
-							open ? "translate-x-0" : "translate-x-full"
+							open ? 'translate-x-0' : 'translate-x-full'
 						}`}
 					>
 						{/* Close Button */}
@@ -60,8 +61,8 @@ export default function Header() {
 								<NavLink
 									to="/"
 									onClick={() => setOpen(false)}
-									className={({ isActive }) =>
-										isActive ? "text-primary font-bold" : "text-gray-dark"
+									className={({isActive}) =>
+										isActive ? 'text-primary font-bold' : 'text-gray-dark'
 									}
 								>
 									Home
@@ -72,8 +73,8 @@ export default function Header() {
 									// TODO: add function whether to take user to admin page or user page
 									to="/user/exampleUser"
 									onClick={() => setOpen(false)}
-									className={({ isActive }) =>
-										isActive ? "text-primary font-bold" : "text-gray-dark"
+									className={({isActive}) =>
+										isActive ? 'text-primary font-bold' : 'text-gray-dark'
 									}
 								>
 									Profile
@@ -83,8 +84,8 @@ export default function Header() {
 								<NavLink
 									to="/user/userId/bookings"
 									onClick={() => setOpen(false)}
-									className={({ isActive }) =>
-										isActive ? "text-primary font-bold" : "text-gray-dark"
+									className={({isActive}) =>
+										isActive ? 'text-primary font-bold' : 'text-gray-dark'
 									}
 								>
 									Bookings
@@ -94,8 +95,8 @@ export default function Header() {
 								<NavLink
 									to="/contact"
 									onClick={() => setOpen(false)}
-									className={({ isActive }) =>
-										isActive ? "text-primary font-bold" : "text-gray-dark"
+									className={({isActive}) =>
+										isActive ? 'text-primary font-bold' : 'text-gray-dark'
 									}
 								>
 									Contact
@@ -104,14 +105,17 @@ export default function Header() {
 							<li>
 								<NavLink
 									to="/login"
-									className={({ isActive }) =>
-										isActive ? "hidden" : "btn-base text-white bg-primary"
+									className={({isActive}) =>
+										isActive ? 'hidden' : 'btn-base text-white bg-primary'
 									}
 								>
 									Login / sign up
 								</NavLink>
 							</li>
 						</ul>
+						<button onClick={logout} className="text-sm text-pink-600 hover:underline">
+							Logout
+						</button>
 					</div>
 				</>
 			) : (
@@ -120,7 +124,7 @@ export default function Header() {
 					<NavLink
 						// TODO: add function whether to take user to admin page or user page
 						to="/user"
-						className={({ isActive }) =>
+						className={({isActive}) =>
 							isActive ? "text-primary font-bold" : "text-gray-dark"
 						}
 					>
@@ -128,7 +132,7 @@ export default function Header() {
 					</NavLink>
 					<NavLink
 						to="/contact"
-						className={({ isActive }) =>
+						className={({isActive}) =>
 							isActive ? "text-primary font-bold" : "text-gray-dark"
 						}
 					>
@@ -136,7 +140,7 @@ export default function Header() {
 					</NavLink>
 					<NavLink
 						to="/user/exampleuser/bookings"
-						className={({ isActive }) =>
+						className={({isActive}) =>
 							isActive ? "text-primary font-bold" : "text-gray-dark"
 						}
 					>
@@ -144,7 +148,7 @@ export default function Header() {
 					</NavLink>
 					<NavLink
 						to="/login"
-						className={({ isActive }) =>
+						className={({isActive}) =>
 							isActive ? "hidden" : "btn-base text-white bg-primary"
 						}
 					>
@@ -152,6 +156,9 @@ export default function Header() {
 					</NavLink>
 				</nav>
 			)}
+			<button onClick={logout} className="text-sm text-pink-600 hover:underline">
+				Logout
+			</button>
 		</header>
 	);
 }
