@@ -4,22 +4,53 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 type BookingCalendarProps = {
 	onDateChange: (start: Date | null, end: Date | null) => void;
+	bookedRanges: { start: Date; end: Date }[];
 };
 
-export default function BookingCalendar({ onDateChange }: BookingCalendarProps) {
+function isRangeValid(start: Date, end: Date, bookedRanges: { start: Date; end: Date }[]) {
+	for (const { start: bookedStart, end: bookedEnd } of bookedRanges) {
+		if (start <= bookedEnd && end >= bookedStart) {
+			return false;
+		}
+	}
+	return true;
+}
+
+export default function BookingCalendar({ onDateChange, bookedRanges }: BookingCalendarProps) {
 	const [startDate, setStartDate] = useState<Date | null>(null);
 	const [endDate, setEndDate] = useState<Date | null>(null);
+	const [error, setError] = useState<string | null>(null);
+
+	const isDateBooked = (date: Date) => {
+		return bookedRanges.some(({ start, end }) => date >= start && date <= end);
+	};
+
+	const filterDate = (date: Date) => !isDateBooked(date);
 
 	const handleStartChange = (date: Date | null) => {
 		setStartDate(date);
-		if (date && (!endDate || date > endDate)) {
-			setEndDate(null); // reset end date if before start
+		setError(null);
+
+		if (date && endDate && (date > endDate || !isRangeValid(date, endDate, bookedRanges))) {
+			setEndDate(null);
+			onDateChange(date, null);
+		} else {
+			onDateChange(date, endDate);
 		}
-		onDateChange(date, endDate);
 	};
 
 	const handleEndChange = (date: Date | null) => {
+		if (!startDate || !date) return;
+
+		if (!isRangeValid(startDate, date, bookedRanges)) {
+			setError('Please select available dates.');
+			setEndDate(null);
+			onDateChange(startDate, null);
+			return;
+		}
+
 		setEndDate(date);
+		setError(null);
 		onDateChange(startDate, date);
 	};
 
@@ -36,6 +67,8 @@ export default function BookingCalendar({ onDateChange }: BookingCalendarProps) 
 						startDate={startDate}
 						endDate={endDate}
 						minDate={new Date()}
+						filterDate={filterDate}
+						dayClassName={(date) => (isDateBooked(date) ? 'booked-day' : '')}
 						placeholderText="Select a check-in date"
 						showYearDropdown
 						scrollableYearDropdown
@@ -53,6 +86,8 @@ export default function BookingCalendar({ onDateChange }: BookingCalendarProps) 
 						startDate={startDate}
 						endDate={endDate}
 						minDate={startDate || new Date()}
+						filterDate={filterDate}
+						dayClassName={(date) => (isDateBooked(date) ? 'booked-day' : '')}
 						placeholderText="Select a check-out date"
 						showYearDropdown
 						scrollableYearDropdown
@@ -61,6 +96,8 @@ export default function BookingCalendar({ onDateChange }: BookingCalendarProps) 
 					/>
 				</div>
 			</div>
+
+			{error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 		</div>
 	);
 }
