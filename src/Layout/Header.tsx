@@ -1,24 +1,38 @@
 import { useState, useRef, useEffect } from "react";
-import useBreakpoint from "../hooks/useBreakpoint.ts";
-import { Menu, X } from "lucide-react";
-import { NavLink } from "react-router-dom";
-import { logout } from '../utilities/logout.ts';
+import { useNavigate, NavLink } from "react-router-dom";
+import { Menu, X, ChevronDown } from "lucide-react";
+import useBreakpoint from "../hooks/useBreakpoint";
+import { logout } from "../utilities/logout";
+import { useFetchProfile } from "../hooks/useFetchProfile";
 
 export default function Header() {
 	const isMobile = useBreakpoint(480);
 	const [open, setOpen] = useState(false);
+	const [showDropdown, setShowDropdown] = useState(false);
 	const menuRef = useRef<HTMLDivElement | null>(null);
+	const dropdownRef = useRef<HTMLDivElement | null>(null);
+	const navigate = useNavigate();
+
+	const { profile } = useFetchProfile();
+	const isLoggedIn = !!profile;
+	const isAdmin = profile?.VenueManager;
+	const avatarUrl = profile?.avatar?.url || "/assets/avatar-placeholder.png";
 
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
 			if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
 				setOpen(false);
 			}
+			if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+				setShowDropdown(false);
+			}
 		};
 
-		if (open) document.addEventListener("mousedown", handleClickOutside);
+		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, [open]);
+	}, []);
+
+	const accountPath = isAdmin ? `/admin/${profile?.name}` : `/user/${profile?.name}`;
 
 	return (
 		<header className="relative bg-white shadow-md flex items-center justify-between px-4 py-2 md:px-8 md:py-4">
@@ -55,105 +69,92 @@ export default function Header() {
 							<X className="w-6 h-6" />
 						</button>
 
-						{/* Mobile Nav Links */}
+						{/* Mobile Nav */}
 						<ul className="space-y-4 text-lg font-alt">
 							<li>
-								<NavLink
-									to="/"
-									onClick={() => setOpen(false)}
-									className={({isActive}) =>
-										isActive ? 'text-primary font-bold' : 'text-gray-dark'
-									}
-								>
-									Home
-								</NavLink>
+								<NavLink to="/" onClick={() => setOpen(false)}>Home</NavLink>
 							</li>
 							<li>
-								<NavLink
-									// TODO: add function whether to take user to admin page or user page
-									to="/user/exampleUser"
-									onClick={() => setOpen(false)}
-									className={({isActive}) =>
-										isActive ? 'text-primary font-bold' : 'text-gray-dark'
-									}
-								>
-									Profile
-								</NavLink>
+								<NavLink to="/contact" onClick={() => setOpen(false)}>Contact</NavLink>
 							</li>
 							<li>
-								<NavLink
-									to="/user/userId/bookings"
-									onClick={() => setOpen(false)}
-									className={({isActive}) =>
-										isActive ? 'text-primary font-bold' : 'text-gray-dark'
-									}
-								>
-									Bookings
-								</NavLink>
+								<a href="#" onClick={() => setOpen(false)}>Inbox</a>
 							</li>
 							<li>
-								<NavLink
-									to="/contact"
-									onClick={() => setOpen(false)}
-									className={({isActive}) =>
-										isActive ? 'text-primary font-bold' : 'text-gray-dark'
-									}
-								>
-									Contact
-								</NavLink>
+								<a href="#" onClick={() => setOpen(false)}>Notification</a>
 							</li>
-							<li>
-								<NavLink
-									to="/login"
-									className={({isActive}) =>
-										isActive ? 'hidden' : 'btn-base text-white bg-primary'
-									}
-								>
-									Login / sign up
-								</NavLink>
-							</li>
+							{isLoggedIn ? (
+								<>
+									<li>
+										<NavLink to={accountPath} onClick={() => setOpen(false)}>My Account</NavLink>
+									</li>
+									<li>
+										<button onClick={() => { logout(); setOpen(false); }} className="text-left text-pink-600 hover:underline">
+											Logout
+										</button>
+									</li>
+								</>
+							) : (
+								<li>
+									<NavLink to="/login" onClick={() => setOpen(false)} className="btn-base text-white bg-primary">
+										Login / Sign up
+									</NavLink>
+								</li>
+							)}
 						</ul>
-						<button onClick={logout} className="text-sm text-pink-600 hover:underline">
-							Logout
-						</button>
 					</div>
 				</>
 			) : (
-				// Desktop Nav
-				<nav className="flex items-center space-x-6 text-lg font-alt">
-					<NavLink
-						// TODO: add function whether to take user to admin page or user page
-						to="/user"
-						className={({isActive}) =>
-							isActive ? "text-primary font-bold" : "text-gray-dark"
-						}
-					>
-						Profile
-					</NavLink>
-					<NavLink
-						to="/contact"
-						className={({isActive}) =>
-							isActive ? "text-primary font-bold" : "text-gray-dark"
-						}
-					>
-						Contact
-					</NavLink>
-					<NavLink
-						to="/user/exampleuser/bookings"
-						className={({isActive}) =>
-							isActive ? "text-primary font-bold" : "text-gray-dark"
-						}
-					>
-						Bookings
-					</NavLink>
-					<NavLink
-						to="/login"
-						className={({isActive}) =>
-							isActive ? "hidden" : "btn-base text-white bg-primary"
-						}
-					>
-						Login / sign up
-					</NavLink>
+				// Desktop Navigation
+				<nav className="flex items-center space-x-6 text-lg font-alt ml-auto">
+					<NavLink to="/" className={({ isActive }) => isActive ? "text-primary font-bold" : "text-gray-dark"}>Home</NavLink>
+					<NavLink to="/contact" className={({ isActive }) => isActive ? "text-primary font-bold" : "text-gray-dark"}>Contact</NavLink>
+
+					{isLoggedIn ? (
+						<div ref={dropdownRef} className="relative ml-4">
+							<button
+								onClick={() => setShowDropdown(!showDropdown)}
+								className="flex items-center space-x-2"
+							>
+								<img
+									src={avatarUrl}
+									alt="User Avatar"
+									className="w-8 h-8 rounded-full object-cover"
+								/>
+								<ChevronDown />
+							</button>
+							{showDropdown && (
+								<div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50 animate-slideDownFast">
+									<button
+										onClick={() => { navigate(accountPath); setShowDropdown(false); }}
+										className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+									>
+										My Account
+									</button>
+									<button
+										className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+									>
+										Inbox
+									</button>
+									<button
+										className="block w-full text-left px-4 py-2  hover:bg-gray-100"
+									>
+										Notification
+									</button>
+									<button
+										onClick={logout}
+										className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+									>
+										Logout
+									</button>
+								</div>
+							)}
+						</div>
+					) : (
+						<NavLink to="/login" className="btn-base text-white bg-primary">
+							Login / Sign up
+						</NavLink>
+					)}
 				</nav>
 			)}
 		</header>
