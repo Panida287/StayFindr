@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import axios, { AxiosError } from "axios";
 import { ENDPOINTS } from '../../constants.ts';
-import {useNavigate} from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 
 type LoginFormValues = {
 	email: string;
@@ -124,25 +124,8 @@ export default function LoginForm() {
 
 				<div className="text-center mt-6">
 					<p className="text-sm">
-						Don’t have an account? <a href="#" className="text-pink-600 hover:underline">Sign up</a>
+						Don’t have an account? <Link to="/register" className="text-pink-600 hover:underline">Sign up</Link>
 					</p>
-					<div className="relative mt-4 mb-2">
-						<hr className="border-gray-300" />
-						<span className="absolute left-1/2 transform -translate-x-1/2 -top-2 bg-white px-2 text-sm text-gray-400">
-              Or continue with
-            </span>
-					</div>
-					<div className="flex justify-around mt-4">
-						<button className="border px-4 py-2 rounded-md">
-							<span className="text-red-500 font-bold">G</span>
-						</button>
-						<button className="border px-4 py-2 rounded-md">
-							<span className="text-blue-500 font-bold">f</span>
-						</button>
-						<button className="border px-4 py-2 rounded-md">
-							<span className="text-black font-bold"></span>
-						</button>
-					</div>
 				</div>
 			</div>
 		</div>
