@@ -41,3 +41,8 @@ h6 {
 .btn-base {
     @apply px-4 py-2 rounded-full text-white font-bold transition-all;
 }
+
+.booked-day {
+    text-decoration: line-through;
+    pointer-events: none;
+}
