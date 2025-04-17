@@ -10,10 +10,7 @@ export default function RecentBookings({ venues }: Props) {
 	const allBookings = venues.flatMap((venue) =>
 		venue.bookings.map((booking) => ({
 			...booking,
-			venue: {
-				name: venue.name,
-				price: venue.price,
-			},
+			venue,
 		}))
 	);
 
