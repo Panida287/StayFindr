@@ -4,7 +4,7 @@ export const ENDPOINTS = {
 	venues: `${API_BASE_URL}/holidaze/venues`,
 	bookings: `${API_BASE_URL}/holidaze/bookings`,
 	profiles: `${API_BASE_URL}/holidaze/profiles`,
-	login: `${API_BASE_URL}/auth/login`,
+	login: `${API_BASE_URL}/auth/login?_holidaze=true`,
 	register: `${API_BASE_URL}/auth/register`,
 };
 
@@ -15,6 +15,9 @@ export const FALLBACK = {
 	name: 'John Smith',
 	email: 'johnsmith@gmail.com',
 	bio: 'I love warm hugs',
+	avatar: 'assets/images/fallback/fallbackAvatar.jpg',
+	banner: 'assets/images/fallback/fallbackBanner.jpg',
+	venue: 'assets/images/fallback/fallbackVenue.jpg',
 }
 
 export const API_KEY = "83d13e66-565f-4321-9216-c12e9fa8f030"

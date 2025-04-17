@@ -14,13 +14,15 @@ type LoginResponse = {
 	data: {
 		name: string;
 		accessToken: string;
-	}
+		venueManager: boolean;
+	};
 };
 
 export default function LoginForm() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [apiError, setApiError] = useState("");
 	const navigate = useNavigate();
+
 	const {
 		register,
 		handleSubmit,
@@ -29,22 +31,27 @@ export default function LoginForm() {
 
 	const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
 		setApiError("");
+
 		try {
 			const response = await axios.post<LoginResponse>(ENDPOINTS.login, data);
-			console.log("Login success:", response.data);
+			const { name, accessToken, venueManager } = response.data.data;
 
-			localStorage.setItem("SFUsername", response.data.data.name);
-			localStorage.setItem("SFToken", response.data.data.accessToken);
+			localStorage.setItem("SFUsername", name);
+			localStorage.setItem("SFToken", accessToken);
+			localStorage.setItem("SFRole", venueManager ? "true" : "false");
 
-			navigate("/");
-
+			if (venueManager) {
+				navigate(`/admin/${name}`);
+			} else {
+				navigate('/');
+			}
 		} catch (error) {
 			const err = error as AxiosError<{ errors?: { message?: string } }>;
-			console.error(err);
 			const message = Array.isArray(err.response?.data?.errors)
 				? err.response?.data?.errors[0]?.message
 				: err.response?.data?.errors?.message;
-			setApiError(message || "");
+
+			setApiError(message || "Login failed");
 		}
 	};
 
@@ -121,10 +128,10 @@ export default function LoginForm() {
 					</button>
 				</form>
 
-
 				<div className="text-center mt-6">
 					<p className="text-sm">
-						Don’t have an account? <Link to="/register" className="text-pink-600 hover:underline">Sign up</Link>
+						Don’t have an account?{" "}
+						<Link to="/register" className="text-pink-600 hover:underline">Sign up</Link>
 					</p>
 				</div>
 			</div>

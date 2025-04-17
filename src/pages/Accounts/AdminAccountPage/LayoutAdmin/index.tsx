@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import ProfileHeader from '../../../../components/accounts/Profile.tsx';
 import { useFetchProfile } from '../../../../hooks/useFetchProfile.ts';
+import AdminTabs from '../../../../components/accounts/AdminTabs.tsx';
 
 export default function LayoutAdmin() {
 	const { profile, isLoading, error } = useFetchProfile();
@@ -12,6 +13,9 @@ export default function LayoutAdmin() {
 	return (
 		<div>
 			<ProfileHeader profile={profile} />
+			<div className="w-full justify-between">
+				<AdminTabs />
+			</div>
 			<section>
 				<Outlet />
 			</section>
