@@ -44,6 +44,7 @@ export type Booking = {
 			alt: string;
 		};
 	};
+	venue: Venue;
 };
 
 export type Owner = {
