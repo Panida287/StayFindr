@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Venue } from "../../types/venues";
+import { FALLBACK } from '../../constants.ts';
 
 type Props = {
 	venues: Venue[];
@@ -27,7 +28,7 @@ export default function VenueOverview({ venues }: Props) {
 						className="bg-white rounded-xl shadow-sm p-4 flex items-start gap-4"
 					>
 						<img
-							src={venue.media[0]?.url || "/assets/placeholder.jpg"}
+							src={venue.media[0]?.url || FALLBACK.venue}
 							alt={venue.media[0]?.alt || "Venue image"}
 							className="w-24 h-24 object-cover rounded-md"
 						/>
