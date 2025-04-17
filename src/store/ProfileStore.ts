@@ -63,7 +63,7 @@ export const useProfileStore = create<ProfileStore>((set) => ({
 
 		try {
 			const response = await axios.get(
-				`${ENDPOINTS.profiles}/${username}/venues?_bookings=true&_venues=true`,
+				`${ENDPOINTS.profiles}/${username}/venues?_venues=true&_bookings=true`,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
