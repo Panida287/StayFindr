@@ -8,7 +8,6 @@ import 'swiper/css/navigation';
 import 'leaflet/dist/leaflet.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import App from './App.tsx';
-import AdminAccountPage from './pages/Accounts/AdminAccountPage';
 import AddNewVenuePage from './pages/Accounts/AdminAccountPage/AddNewVenuePage';
 import EditVenuePage from './pages/Accounts/AdminAccountPage/EditVenuePage';
 import LoginPage from './pages/Auth/LoginPage';
@@ -17,7 +16,9 @@ import BookingSuccessPage from './pages/BookingSuccessPage';
 import VenueDetailPage from './pages/VenueDetailPage';
 import NotFoundPage from './pages/NotFoundPage';
 import UserAccountPage from './pages/Accounts/UserAccountPage';
+import AdminPage from './pages/Accounts/AdminAccountPage';
 import Layout from './Layout';
+import LayoutAdmin from './pages/Accounts/AdminAccountPage/LayoutAdmin';
 import { Toaster } from 'react-hot-toast';
 import ManageVenuePage from './pages/Accounts/AdminAccountPage/ManageVenuePage';
 import ManageBookingsPage from './pages/Accounts/AdminAccountPage/ManageBookingsPage';
@@ -45,8 +46,12 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'admin/:adminId',
-				element: <AdminAccountPage />,
+				element: <LayoutAdmin />,
 				children: [
+					{
+						path: '',
+						element: <AdminPage />
+					},
 					{
 						path: 'manage-venues',
 						element: <ManageVenuePage />

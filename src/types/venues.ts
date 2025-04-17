@@ -1,28 +1,4 @@
 export type Venue = {
-	bookings: {
-		id: string;
-		dateFrom: string;
-		dateTo: string;
-		guests: number;
-		customer: {
-			name: string;
-			email: string;
-			bio: string;
-			avatar: {
-				url: string;
-				alt: string;
-			};
-		};
-	}[];
-	owner: {
-		name: string,
-		email: string,
-		bio: string,
-		avatar: {
-			url: string,
-			alt: string,
-		}
-	}
 	id: string;
 	name: string;
 	description: string;
@@ -50,18 +26,48 @@ export type Venue = {
 		lat: number;
 		lng: number;
 	};
+	bookings: Booking[];
+	owner: Owner;
 };
 
-export type VenueListResponse = {
-	data: Venue[];
-	meta: {
-		isFirstPage: boolean;
-		isLastPage: boolean;
-		currentPage: number;
-		previousPage: number | null;
-		nextPage: number | null;
-		pageCount: number;
-		totalCount: number;
+export type Booking = {
+	id: string;
+	dateFrom: string;
+	dateTo: string;
+	guests: number;
+	customer: {
+		name: string;
+		email: string;
+		bio: string;
+		avatar: {
+			url: string;
+			alt: string;
+		};
 	};
 };
 
+export type Owner = {
+	name: string;
+	email: string;
+	bio: string;
+	avatar: {
+		url: string;
+		alt: string;
+	};
+};
+
+export type Meta = {
+	isFirstPage: boolean;
+	isLastPage: boolean;
+	currentPage: number;
+	previousPage: number | null;
+	nextPage: number | null;
+	pageCount: number;
+	totalCount: number;
+};
+
+
+export type VenueListResponse = {
+	data: Venue[];
+	meta: Meta;
+};

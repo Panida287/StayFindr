@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { Venue, VenueListResponse } from '../types/venues';
+import { Venues, VenueListResponse } from '../types/venues';
 import { ENDPOINTS } from '../constants.ts';
 
 type FetchVenueParams = {
@@ -12,7 +12,7 @@ type FetchVenueParams = {
 };
 
 type VenueStore = {
-	venues: Venue[];
+	venues: Venues[];
 	isLoading: boolean;
 	error: string | null;
 	meta: VenueListResponse['meta'] | null;
@@ -24,7 +24,7 @@ type VenueStore = {
 	setPage: (page: number) => void;
 	setSort: (sort: string, sortOrder?: 'asc' | 'desc') => void;
 	setQuery: (query: string) => void;
-	singleVenue: Venue | null;
+	singleVenue: Venues | null;
 	isSingleVenueLoading: boolean;
 	singleVenueError: string | null;
 	fetchSingleVenue: (venueId: string) => Promise<void>;
@@ -66,12 +66,10 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 				params: requestParams,
 			});
 
-			const {data: rawData} = response;
-			const venues = Array.isArray(rawData?.data || rawData) ? (rawData.data || rawData) : [];
-			const meta = rawData?.meta ?? null;
+			const { data, meta } = response.data;
 
 			set({
-				venues,
+				venues: data,
 				meta,
 				currentPage: page,
 				currentSort: sort,
@@ -111,7 +109,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 				_owner: 'true',
 				_bookings: 'true',
 			});
-			const response = await axios.get<{ data: Venue }>(
+			const response = await axios.get<{ data: Venues }>(
 				`${ENDPOINTS.venues}/${venueId}?${params.toString()}`
 			);
 
