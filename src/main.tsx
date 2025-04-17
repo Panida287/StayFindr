@@ -45,7 +45,7 @@ const router = createBrowserRouter([
 				element: <UserAccountPage />,
 			},
 			{
-				path: 'admin/:adminId',
+				path: 'admin/:adminId/',
 				element: <LayoutAdmin />,
 				children: [
 					{

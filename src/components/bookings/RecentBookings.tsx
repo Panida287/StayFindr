@@ -20,12 +20,13 @@ export default function RecentBookings({ venues }: Props) {
 	);
 
 	const recent = sortedBookings.slice(0, 2);
+	const username = localStorage.getItem("SFUsername");
 
 	return (
 		<div className="mt-8 bg-white p-4 rounded-xl shadow-sm">
 			<div className="flex justify-between items-center mb-4">
 				<h2 className="text-xl font-semibold">Recent Bookings</h2>
-				<Link to="/manage-bookings" className="text-sm text-pink-600 hover:underline">
+				<Link to={`/admin/${username}/manage-bookings`} className="text-sm text-pink-600 hover:underline">
 					View All
 				</Link>
 			</div>
