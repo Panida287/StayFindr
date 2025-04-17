@@ -3,7 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { logout } from '../../utilities/logout';
 
 type Props = {
-	menuRef: React.RefObject<HTMLDivElement>;
+	menuRef: React.RefObject<HTMLDivElement | null>;
 	open: boolean;
 	setOpen: (open: boolean) => void;
 	isLoggedIn: boolean;
@@ -31,7 +31,6 @@ export default function MobileNavMenu({ menuRef, open, setOpen, isLoggedIn }: Pr
 				}`}
 			>
 				<div>
-					{/* Close button */}
 					<button
 						onClick={() => setOpen(false)}
 						className="ml-auto mb-4 p-1 block text-white bg-primary rounded-md"
@@ -74,7 +73,6 @@ export default function MobileNavMenu({ menuRef, open, setOpen, isLoggedIn }: Pr
 					</ul>
 				</div>
 
-				{/* Bottom section */}
 				<div className="mt-6 border-t pt-4">
 					{isLoggedIn ? (
 						<button

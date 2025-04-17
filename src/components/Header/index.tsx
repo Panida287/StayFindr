@@ -13,9 +13,7 @@ export default function Header() {
 
 	const { profile } = useFetchProfile();
 	const isLoggedIn = !!profile;
-	const isAdmin = profile?.venueManager;
 	const avatarUrl = profile?.avatar?.url || '/assets/avatar-placeholder.png';
-	const accountPath = isAdmin ? `/admin/${profile?.name}` : `/user/${profile?.name}`;
 
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
@@ -35,12 +33,10 @@ export default function Header() {
 					open={open}
 					setOpen={setOpen}
 					isLoggedIn={isLoggedIn}
-					accountPath={accountPath}
 				/>
 			) : (
 				<DesktopNavLinks
 					avatarUrl={avatarUrl}
-					accountPath={accountPath}
 					isLoggedIn={isLoggedIn}
 					showDropdown={showDropdown}
 					setShowDropdown={setShowDropdown}
