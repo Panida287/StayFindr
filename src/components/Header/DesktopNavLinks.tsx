@@ -5,7 +5,6 @@ import { logout } from '../../utilities/logout';
 type Props = {
 	dropdownRef: React.RefObject<HTMLDivElement | null>;
 	avatarUrl: string;
-	accountPath: string;
 	isLoggedIn: boolean;
 	showDropdown: boolean;
 	setShowDropdown: (value: boolean) => void;
