@@ -15,14 +15,14 @@ export type Venue = {
 		};
 	}[];
 	owner: {
-		name: string,
-		email: string,
-		bio: string,
+		name: string;
+		email: string;
+		bio: string;
 		avatar: {
-			url: string,
-			alt: string,
-		}
-	}
+			url: string;
+			alt: string;
+		};
+	};
 	id: string;
 	name: string;
 	description: string;
@@ -64,4 +64,3 @@ export type VenueListResponse = {
 		totalCount: number;
 	};
 };
-

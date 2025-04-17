@@ -66,12 +66,10 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 				params: requestParams,
 			});
 
-			const {data: rawData} = response;
-			const venues = Array.isArray(rawData?.data || rawData) ? (rawData.data || rawData) : [];
-			const meta = rawData?.meta ?? null;
+			const { data, meta } = response.data;
 
 			set({
-				venues,
+				venues: data,
 				meta,
 				currentPage: page,
 				currentSort: sort,
