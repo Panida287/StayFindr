@@ -10,6 +10,7 @@ import ImageGallery from '../../components/venues/ImageGallery';
 import { calculateNights } from '../../utilities/calculateNights';
 import { MapPin, Star, Users } from 'lucide-react';
 import { FALLBACK } from '../../constants.ts';
+import { Booking } from '../../types/venues.ts';
 
 export default function VenueDetailPage() {
 	const { venueId } = useParams<{ venueId: string }>();
@@ -36,7 +37,7 @@ export default function VenueDetailPage() {
 	const safeLat = venue?.location?.lat ?? FALLBACK.lat;
 	const safeLng = venue?.location?.lng ?? FALLBACK.lng;
 
-	const bookedDateRanges = venue.bookings.map((booking) => ({
+	const bookedDateRanges = venue.bookings.map((booking: Booking) => ({
 		start: new Date(booking.dateFrom),
 		end: new Date(booking.dateTo),
 	}));
