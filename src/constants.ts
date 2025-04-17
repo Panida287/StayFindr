@@ -4,7 +4,7 @@ export const ENDPOINTS = {
 	venues: `${API_BASE_URL}/holidaze/venues`,
 	bookings: `${API_BASE_URL}/holidaze/bookings`,
 	profiles: `${API_BASE_URL}/holidaze/profiles`,
-	login: `${API_BASE_URL}/auth/login`,
+	login: `${API_BASE_URL}/auth/login?_holidaze=true`,
 	register: `${API_BASE_URL}/auth/register`,
 };
 
