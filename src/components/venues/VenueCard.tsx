@@ -1,4 +1,4 @@
-import { Venue } from '../../types/venues.ts';
+import { Venues } from '../../types/venues.ts';
 import { Star, Users } from 'lucide-react';
 import { truncateText } from '../../utilities/truncateText.ts';
 import 'swiper/css';
@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import ImageGallery from './ImageGallery.tsx';
 
 type Props = {
-	venue: Venue;
+	venue: Venues;
 };
 
 export function VenueCard({venue}: Props) {
