@@ -6,7 +6,7 @@ import L from 'leaflet';
 import { useCreateVenue } from '../../hooks/useCreateVenue';
 import { VenueFormValues } from '../../types/forms.ts';
 import { MediaPreview } from '../commons/MediaPreview.tsx';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const markerIcon = new L.Icon({
 	iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -179,6 +179,10 @@ export default function CreateVenueForm() {
 					{apiError}
 				</div>
 			)}
+
+			<Link to="/admin/${user}/manage-venues" className="btn-base bg-gray-500 text-white mt-4">
+				Cancel
+			</Link>
 
 			<button type="submit" className="btn-base bg-pink-600 text-white mt-4" disabled={isLoading}>
 				{isLoading ? 'Creating...' : 'Create Venue'}
