@@ -11,6 +11,7 @@ import { calculateNights } from '../../utilities/calculateNights';
 import { MapPin, Star, Users } from 'lucide-react';
 import { FALLBACK } from '../../constants.ts';
 import { Booking } from '../../types/venues.ts';
+import { useNavigate } from 'react-router-dom';
 
 export default function VenueDetailPage() {
 	const { venueId } = useParams<{ venueId: string }>();
@@ -18,6 +19,8 @@ export default function VenueDetailPage() {
 	const [startDate, setStartDate] = useState<Date | null>(null);
 	const [endDate, setEndDate] = useState<Date | null>(null);
 	const [guests, setGuests] = useState<number>(1);
+	const navigate = useNavigate();
+	const isLoggedIn = localStorage.getItem('SFToken');
 
 	const {
 		handleBooking,
@@ -116,13 +119,25 @@ export default function VenueDetailPage() {
 						</div>
 					)}
 
-					<button
-						onClick={() => handleBooking(startDate, endDate, guests)}
-						className="mt-4 px-4 py-2 bg-pink-600 text-white rounded disabled:opacity-50"
-						disabled={isBookingLoading || !startDate || !endDate}
-					>
-						{isBookingLoading ? 'Booking...' : 'Book Now'}
-					</button>
+					{isLoggedIn ? (
+						<button
+							onClick={() => handleBooking(startDate, endDate, guests)}
+							className="mt-4 px-4 py-2 bg-pink-600 text-white rounded disabled:opacity-50"
+							disabled={isBookingLoading || !startDate || !endDate}
+						>
+							{isBookingLoading ? 'Booking...' : 'Book Now'}
+						</button>
+					) : (
+						<div className="mt-4 text-center">
+							<p className="text-sm text-gray-600 mb-2">You must be logged in to book this venue.</p>
+							<button
+								onClick={() => navigate('/login')}
+								className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
+							>
+								Login to Book
+							</button>
+						</div>
+					)}
 
 					{bookingError && (
 						<p className="text-sm text-red-600 mt-2">{bookingError}</p>
