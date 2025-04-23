@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { API_KEY, ENDPOINTS } from '../constants';
+import { useVenueStore } from '../store/VenueStore.ts';
 
-type Props = {
-	onError?: (message: string) => void;
-};
-
-export function useDeleteVenue({ onError }: Props = {}) {
+export function useDeleteVenue({ onError }: { onError?: (msg: string) => void }) {
 	const [isDeleting, setIsDeleting] = useState(false);
+	const removeVenue = useVenueStore((state) => state.removeVenue);
 
-	async function deleteVenue(id: string): Promise<boolean> {
+	const deleteVenue = async (id: string) => {
 		try {
 			setIsDeleting(true);
 			const token = localStorage.getItem('SFToken');
@@ -21,20 +19,16 @@ export function useDeleteVenue({ onError }: Props = {}) {
 				},
 			});
 
+			removeVenue(id);
 			return true;
-		} catch (error: unknown) {
-			console.error(error);
-			if (axios.isAxiosError(error)) {
-				const message = error.response?.data?.errors?.[0]?.message || 'Failed to delete venue.';
-				if (onError) onError(message);
-			} else {
-				if (onError) onError('An unknown error occurred.');
-			}
+		} catch (error) {
+			console.error('Delete error:', error);
+			if (onError) onError('Failed to delete venue.');
 			return false;
 		} finally {
 			setIsDeleting(false);
 		}
-	}
+	};
 
 	return { deleteVenue, isDeleting };
 }
