@@ -125,4 +125,5 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			});
 		}
 	},
+
 }));

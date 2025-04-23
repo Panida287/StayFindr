@@ -1,6 +1,7 @@
-import { Venue } from "../../types/venues";
-import { FALLBACK } from "../../constants";
+import { Venue } from "../../types/venues.ts";
+import { FALLBACK } from "../../constants.ts";
 import { Link } from 'react-router-dom';
+import DeleteVenueButton from '../commons/DeleteVenueButton.tsx';
 
 type Props = {
 	venue: Venue;
@@ -35,9 +36,7 @@ export default function ManageVenueCard({ venue }: Props) {
 						>
 							Edit
 						</Link>
-						<button className="text-sm px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-							Delete
-						</button>
+						<DeleteVenueButton venueId={venue.id} />
 					</div>
 				</div>
 			</div>
