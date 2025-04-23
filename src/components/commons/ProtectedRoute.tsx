@@ -6,22 +6,12 @@ type Props = {
 };
 
 export default function ProtectedRoute({ children, requiredRole }: Props) {
-	const profileStr = localStorage.getItem('SFProfile');
+	const role = localStorage.getItem('SFRole');
 
-	if (!profileStr) {
+	if (requiredRole === 'venueManager' && role !== 'true') {
 		return <Navigate to="/unauthorized" replace />;
 	}
 
-	try {
-		const profile = JSON.parse(profileStr);
-
-		if (requiredRole === 'venueManager' && !profile.venueManager) {
-			return <Navigate to="/unauthorized" replace />;
-		}
-
-		return <>{children}</>;
-	} catch (error) {
-		console.error('Error parsing profile:', error);
-		return <Navigate to="/unauthorized" replace />;
-	}
+	return <>{children}</>;
 }
+
