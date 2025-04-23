@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { Venue } from "../../types/venues";
-import ManageVenueCard from "./ManageVenueCard";
+import ManageVenueCard from "../venues/ManageVenueCard.tsx";
 
 type Props = {
 	venues: Venue[];

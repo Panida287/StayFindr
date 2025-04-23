@@ -28,6 +28,7 @@ type VenueStore = {
 	isSingleVenueLoading: boolean;
 	singleVenueError: string | null;
 	fetchSingleVenue: (venueId: string) => Promise<void>;
+	removeVenue: (venueId: string) => void;
 };
 
 export const useVenueStore = create<VenueStore>((set, get) => ({
@@ -125,4 +126,11 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			});
 		}
 	},
+
+	removeVenue: (venueId: string) => {
+		set((state) => ({
+			venues: state.venues.filter((venue) => venue.id !== venueId),
+		}));
+	},
+
 }));

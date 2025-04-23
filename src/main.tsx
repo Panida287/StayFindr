@@ -22,6 +22,8 @@ import LayoutAdmin from './pages/Accounts/AdminAccountPage/LayoutAdmin';
 import { Toaster } from 'react-hot-toast';
 import ManageVenuePage from './pages/Accounts/AdminAccountPage/ManageVenuePage';
 import ManageBookingsPage from './pages/Accounts/AdminAccountPage/ManageBookingsPage';
+import ProtectedRoute from './components/commons/ProtectedRoute.tsx';
+import UnauthorizedPage from './pages/UnauthorizedPage';
 
 const router = createBrowserRouter([
 	{
@@ -50,23 +52,43 @@ const router = createBrowserRouter([
 				children: [
 					{
 						path: '',
-						element: <AdminPage />
+						element: (
+							<ProtectedRoute requiredRole="venueManager">
+								<AdminPage />
+							</ProtectedRoute>
+						)
 					},
 					{
 						path: 'manage-venues',
-						element: <ManageVenuePage />
+						element: (
+							<ProtectedRoute requiredRole="venueManager">
+								<ManageVenuePage />
+							</ProtectedRoute>
+						)
 					},
 					{
 						path: 'manage-bookings',
-						element: <ManageBookingsPage />
+						element: (
+							<ProtectedRoute requiredRole="venueManager">
+								<ManageBookingsPage />
+							</ProtectedRoute>
+						)
 					},
 					{
 						path: 'new-venue',
-						element: <AddNewVenuePage />
+						element: (
+							<ProtectedRoute requiredRole="venueManager">
+								<AddNewVenuePage />
+							</ProtectedRoute>
+						)
 					},
 					{
-						path: 'edit-venue',
-						element: <EditVenuePage />
+						path: 'edit-venue/:venueId',
+						element: (
+							<ProtectedRoute requiredRole="venueManager">
+								<EditVenuePage />
+							</ProtectedRoute>
+						)
 					}
 				]
 			},
@@ -77,6 +99,10 @@ const router = createBrowserRouter([
 			{
 				path: 'register',
 				element: <RegisterPage />
+			},
+			{
+				path: 'unauthorized',
+				element: <UnauthorizedPage />
 			}
 		]
 	},

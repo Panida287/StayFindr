@@ -1,10 +1,10 @@
+import { Link } from 'react-router-dom';
 import { useFetchVenuesByProfile } from '../../../../hooks/useFetchVenuesByProfile.ts';
-import ManageVenueCard from '../../../../components/accounts/ManageVenueCard.tsx';
-import { Link, useParams } from 'react-router-dom';
+import ManageVenueCard from '../../../../components/venues/ManageVenueCard.tsx';
 
 export default function ManageVenuePage() {
 	const { venues, isLoading, error } = useFetchVenuesByProfile();
-	const { adminId } = useParams();
+	const username = localStorage.getItem('SFUsername');
 
 	if (isLoading) return <p>Loading venues...</p>;
 	if (error) return <p>Error: {error}</p>;
@@ -25,7 +25,7 @@ export default function ManageVenuePage() {
 			<div className="flex justify-between items-center mb-4">
 				<h1 className="text-2xl font-bold">Manage Venues</h1>
 				<Link
-					to={`/admin/${adminId}/new-venue`}
+					to={`/admin/${username}/new-venue`}
 					className="text-sm bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700"
 				>
 					Add New Venue
