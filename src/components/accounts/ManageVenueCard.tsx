@@ -1,11 +1,13 @@
 import { Venue } from "../../types/venues";
 import { FALLBACK } from "../../constants";
+import { Link } from 'react-router-dom';
 
 type Props = {
 	venue: Venue;
 };
 
 export default function ManageVenueCard({ venue }: Props) {
+	const user = localStorage.getItem("SFUsername");
 	return (
 		<div className="bg-white rounded-xl shadow-sm p-4 flex items-start gap-4">
 			<img
@@ -27,9 +29,12 @@ export default function ManageVenueCard({ venue }: Props) {
 					</div>
 
 					<div className="flex gap-2">
-						<button className="text-sm px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+						<Link
+							to={`/admin/${user}/edit-venue/${venue.id}`}
+							className="text-sm px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+						>
 							Edit
-						</button>
+						</Link>
 						<button className="text-sm px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
 							Delete
 						</button>
