@@ -1,5 +1,5 @@
 import { useFetchVenuesByProfile } from '../../../../hooks/useFetchVenuesByProfile.ts';
-import ManageVenueCard from '../../../../components/accounts/ManageVenueCard.tsx';
+import ManageVenueCard from '../../../../components/venues/ManageVenueCard.tsx';
 import { Link, useParams } from 'react-router-dom';
 
 export default function ManageVenuePage() {

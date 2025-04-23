@@ -65,7 +65,7 @@ const router = createBrowserRouter([
 						element: <AddNewVenuePage />
 					},
 					{
-						path: 'edit-venue',
+						path: 'edit-venue/:venueId',
 						element: <EditVenuePage />
 					}
 				]
