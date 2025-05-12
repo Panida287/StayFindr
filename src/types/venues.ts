@@ -70,5 +70,10 @@ export type Meta = {
 
 export type VenueListResponse = {
 	data: Venue[];
-	meta: Meta;
+	meta: {
+		page: number;
+		limit: number;
+		pageCount: number;
+		totalCount: number;
+	};
 };

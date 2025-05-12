@@ -1,9 +1,26 @@
+import { useState, useRef, useEffect } from 'react';
 import { useFetchVenues } from './hooks/useFetchVenues';
+import { useFetchProfile } from './hooks/useFetchProfile';
 import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown';
-import { useFetchProfile } from './hooks/useFetchProfile.ts';
+import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch';
+import Pagination from './components/venues/Pagination';
+import { format, differenceInCalendarDays } from 'date-fns';
 
 type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
+
+type SearchParams = {
+	city: string;
+	guests: number;
+	dateFrom: string;
+	dateTo: string;
+	amenities: {
+		wifi: boolean;
+		parking: boolean;
+		breakfast: boolean;
+		pets: boolean;
+	};
+};
 
 function App() {
 	useFetchProfile();
@@ -14,18 +31,30 @@ function App() {
 		error,
 		meta,
 		currentPage,
-		setPage,
-		setSort,
 		currentSort,
 		currentSortOrder,
-		query,
-		setQuery,
-		fetchVenues,
+		setPage,
+		setSort,
+		fetchAllVenues,
+		applyFilters,
 	} = useFetchVenues();
 
-	const isSearching = query.trim() !== '';
+	const [hasSearched, setHasSearched] = useState(false);
+	const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
+	const resultRef = useRef<HTMLDivElement | null>(null);
 
-	// Helper to convert store values into dropdown values
+	// Fetch all venues once on mount
+	useEffect(() => {
+		fetchAllVenues();
+	}, [fetchAllVenues]);
+
+	// Scroll to result header on page change
+	useEffect(() => {
+		if (hasSearched && resultRef.current) {
+			resultRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	}, [currentPage, hasSearched]);
+
 	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
 		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
 		if (sort === 'rating') return 'rating';
@@ -33,6 +62,20 @@ function App() {
 	};
 
 	const currentSortValue = getSortValue(currentSort, currentSortOrder);
+
+	const handleAvailabilitySearch = (params: SearchParams) => {
+		setHasSearched(true);
+		setSearchParams(params);
+
+		applyFilters({
+			query: params.city,
+			guests: params.guests,
+			dateFrom: params.dateFrom,
+			dateTo: params.dateTo,
+			amenities: params.amenities,
+			page: 1,
+		});
+	};
 
 	const handleSortChange = (value: SortValue) => {
 		let sortField = 'created';
@@ -55,49 +98,97 @@ function App() {
 
 		setSort(sortField, sortOrder);
 
-		fetchVenues({ sort: sortField, sortOrder, page: 1, query });
-	};
-
-
-
-	const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === 'Enter') {
-			fetchVenues({ query, page: 1 });
+		if (hasSearched && searchParams) {
+			applyFilters({
+				query: searchParams.city,
+				guests: searchParams.guests,
+				dateFrom: searchParams.dateFrom,
+				dateTo: searchParams.dateTo,
+				amenities: searchParams.amenities,
+				sort: sortField,
+				sortOrder,
+				page: 1,
+			});
 		}
 	};
 
-	const handleClearSearch = () => {
-		setQuery('');
-		fetchVenues({ query: '', page: 1 });
-	};
+	if (!hasSearched) {
+		return (
+			<div className="p-4 space-y-6">
+				<VenueAvailabilitySearch
+					onSearch={handleAvailabilitySearch}
+					initialCity=""
+					initialGuests={1}
+					initialDateFrom=""
+					initialDateTo=""
+					initialAmenities={{
+						wifi: false,
+						parking: false,
+						breakfast: false,
+						pets: false,
+					}}
+				/>
+			</div>
+		);
+	}
 
 	if (isLoading) return <p>Loading venues...</p>;
 	if (error) return <p>Error: {error}</p>;
 
+	const formattedFrom = searchParams?.dateFrom ? format(new Date(searchParams.dateFrom), 'MMM d') : 'any date';
+	const formattedTo = searchParams?.dateTo ? format(new Date(searchParams.dateTo), 'MMM d') : '';
+	const nights = searchParams?.dateFrom && searchParams?.dateTo
+		? differenceInCalendarDays(new Date(searchParams.dateTo), new Date(searchParams.dateFrom))
+		: 0;
+
+	const activeAmenities = searchParams
+		? Object.entries(searchParams.amenities).filter(([, v]) => v).map(([k]) => k)
+		: [];
+
 	return (
 		<div className="p-4 space-y-6">
-			<div className="flex gap-2">
-				<input
-					type="text"
-					placeholder="Search venues..."
-					value={query}
-					onChange={(e) => setQuery(e.target.value)}
-					onKeyDown={handleSearch}
-					className="flex-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-pink-500"
-				/>
-				{isSearching && (
-					<button
-						onClick={handleClearSearch}
-						className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300"
-					>
-						Clear
-					</button>
+			<VenueAvailabilitySearch
+				onSearch={handleAvailabilitySearch}
+				initialCity={searchParams?.city || ''}
+				initialGuests={searchParams?.guests || 1}
+				initialDateFrom={searchParams?.dateFrom || ''}
+				initialDateTo={searchParams?.dateTo || ''}
+				initialAmenities={searchParams?.amenities || {
+					wifi: false,
+					parking: false,
+					breakfast: false,
+					pets: false,
+				}}
+			/>
+
+			<button
+				onClick={() => {
+					setSearchParams(null);
+					setHasSearched(false);
+				}}
+				className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+			>
+				Clear Search
+			</button>
+
+			<div ref={resultRef} className="bg-gray-100 px-4 py-3 rounded text-sm text-gray-700">
+				Showing results for <strong>{searchParams?.city || 'all cities'}</strong>{' '}
+				{searchParams?.dateFrom && `from ${formattedFrom}`} {searchParams?.dateTo && `to ${formattedTo}`} —{' '}
+				{nights > 0 && `${nights} night${nights > 1 ? 's' : ''}, `}
+				{searchParams?.guests} guest{searchParams?.guests && searchParams.guests > 1 ? 's' : ''}
+				{activeAmenities.length > 0 && (
+					<span>
+						{' '}—{' '}
+						{activeAmenities.map((a) => (
+							<span key={a} className="bg-olive text-white px-2 py-0.5 rounded ml-1">
+								{a}
+							</span>
+						))}
+					</span>
 				)}
 			</div>
 
-			{!isSearching && (
-				<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
-			)}
+			<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 				{venues.length > 0 ? (
@@ -110,64 +201,11 @@ function App() {
 			</div>
 
 			{meta && meta.pageCount > 1 && (
-				<div className="flex justify-center items-center gap-1 mt-6 flex-wrap">
-					<button
-						onClick={() => setPage(1)}
-						disabled={currentPage === 1}
-						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-					>
-						First page
-					</button>
-					<button
-						onClick={() => currentPage > 1 && setPage(currentPage - 1)}
-						disabled={currentPage === 1}
-						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-					>
-						&lt;
-					</button>
-					{(() => {
-						const totalPages = meta.pageCount;
-						const range: number[] = [];
-
-						if (totalPages <= 3) {
-							for (let i = 1; i <= totalPages; i++) range.push(i);
-						} else if (currentPage === 1) {
-							range.push(1, 2, 3);
-						} else if (currentPage === totalPages) {
-							range.push(totalPages - 2, totalPages - 1, totalPages);
-						} else {
-							range.push(currentPage - 1, currentPage, currentPage + 1);
-						}
-
-						return range.map((p) => (
-							<button
-								key={p}
-								onClick={() => setPage(p)}
-								className={`px-3 py-1 rounded text-sm ${
-									p === currentPage
-										? 'bg-pink-600 text-white'
-										: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-								}`}
-							>
-								{p}
-							</button>
-						));
-					})()}
-					<button
-						onClick={() => currentPage < meta.pageCount && setPage(currentPage + 1)}
-						disabled={currentPage === meta.pageCount}
-						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-					>
-						&gt;
-					</button>
-					<button
-						onClick={() => setPage(meta.pageCount)}
-						disabled={currentPage === meta.pageCount}
-						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-					>
-						Last page
-					</button>
-				</div>
+				<Pagination
+					currentPage={currentPage}
+					pageCount={meta.pageCount}
+					onPageChange={setPage}
+				/>
 			)}
 		</div>
 	);
