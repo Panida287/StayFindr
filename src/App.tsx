@@ -128,9 +128,7 @@ function App() {
 		? differenceInCalendarDays(new Date(searchParams.dateTo), new Date(searchParams.dateFrom))
 		: 0;
 	const activeAmenities = searchParams
-		? Object.entries(searchParams.amenities)
-			.filter(([, v]) => v)
-			.map(([k]) => k)
+		? Object.entries(searchParams.amenities).filter(([, v]) => v).map(([k]) => k)
 		: [];
 
 	return (
@@ -161,10 +159,10 @@ function App() {
 
 			{/* Summary Header */}
 			<div className="bg-gray-100 px-4 py-3 rounded text-sm text-gray-700">
-				Showing results for <strong>{searchParams?.city ? searchParams.city : 'all cities'}</strong>{' '}
+				Showing results for <strong>{searchParams?.city || 'all cities'}</strong>{' '}
 				{searchParams?.dateFrom && `from ${formattedFrom}`} {searchParams?.dateTo && `to ${formattedTo}`} —{' '}
 				{nights > 0 && `${nights} night${nights > 1 ? 's' : ''}, `}
-				{typeof searchParams?.guests === 'number' && `${searchParams.guests} guest${searchParams.guests > 1 ? 's' : ''}`}
+				{searchParams?.guests} guest{searchParams?.guests && searchParams.guests > 1 ? 's' : ''}
 				{activeAmenities.length > 0 && (
 					<span>
 						{' '}—{' '}
@@ -190,11 +188,7 @@ function App() {
 			</div>
 
 			{meta && meta.pageCount > 1 && (
-				<Pagination
-					currentPage={currentPage}
-					pageCount={meta.pageCount}
-					onPageChange={setPage}
-				/>
+				<Pagination currentPage={currentPage} pageCount={meta.pageCount} onPageChange={setPage} />
 			)}
 		</div>
 	);

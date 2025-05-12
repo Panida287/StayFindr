@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import { Venue, VenueListResponse } from '../types/venues';
-import { ENDPOINTS } from '../constants.ts';
+import { ENDPOINTS } from '../constants';
 
 type Amenities = {
 	wifi: boolean;
@@ -31,6 +31,7 @@ type VenueStore = {
 		limit: number;
 		totalCount: number;
 	};
+	allFilteredVenues: Venue[];
 	currentPage: number;
 	currentSort: string;
 	currentSortOrder: 'asc' | 'desc';
@@ -39,7 +40,6 @@ type VenueStore = {
 	currentDateFrom?: string;
 	currentDateTo?: string;
 	currentAmenities?: Amenities;
-
 	fetchVenues: (params?: FetchVenueParams) => Promise<void>;
 	setPage: (page: number) => void;
 	setSort: (sort: string, sortOrder?: 'asc' | 'desc') => void;
@@ -57,6 +57,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	isLoading: false,
 	error: null,
 	meta: { pageCount: 1, limit: 12, totalCount: 0 },
+	allFilteredVenues: [],
 	currentPage: 1,
 	currentSort: 'created',
 	currentSortOrder: 'desc',
@@ -65,7 +66,6 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	currentDateFrom: undefined,
 	currentDateTo: undefined,
 	currentAmenities: undefined,
-
 	singleVenue: null,
 	isSingleVenueLoading: false,
 	singleVenueError: null,
@@ -76,7 +76,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 		const {
 			sort = get().currentSort,
 			sortOrder = get().currentSortOrder,
-			page = get().currentPage,
+			page = 1,
 			limit = 12,
 			query = get().currentQuery,
 			guests = get().currentGuests,
@@ -85,7 +85,6 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			amenities = get().currentAmenities,
 		} = params;
 
-		// Store filters for future page changes
 		set({
 			currentPage: page,
 			currentSort: sort,
@@ -97,71 +96,68 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			currentAmenities: amenities,
 		});
 
-		try {
-			const isSearching = query && query.trim() !== '';
-			const endpoint = isSearching
-				? `${ENDPOINTS.venues}/search?_bookings=true`
-				: `${ENDPOINTS.venues}?_bookings=true`;
+		const isSearching = query && query.trim() !== '';
+		const endpoint = isSearching
+			? `${ENDPOINTS.venues}/search?_bookings=true`
+			: `${ENDPOINTS.venues}?_bookings=true`;
 
+		try {
 			const response = await axios.get<VenueListResponse>(endpoint, {
 				params: {
 					q: query,
-					sort,
-					sortOrder,
-					limit: 100, // fetch enough data to paginate manually
+					sort: 'created', // server sort disabled, sorting is client-side
+					sortOrder: 'desc',
+					limit: 100,
 				},
 			});
 
-			let processedData = response.data.data;
+			let data = response.data.data;
 
-			// Filter: guests
 			if (guests) {
-				processedData = processedData.filter((venue) => venue.maxGuests >= guests);
+				data = data.filter((v) => v.maxGuests >= guests);
 			}
 
-			// Filter: date availability
 			if (dateFrom && dateTo) {
 				const from = new Date(dateFrom);
 				const to = new Date(dateTo);
-
-				processedData = processedData.map((venue) => {
-					const hasOverlap = venue.bookings?.some((booking) => {
-						const bookingFrom = new Date(booking.dateFrom);
-						const bookingTo = new Date(booking.dateTo);
-						return from <= bookingTo && to >= bookingFrom;
+				data = data.map((venue) => {
+					const hasOverlap = venue.bookings?.some((b) => {
+						const bFrom = new Date(b.dateFrom);
+						const bTo = new Date(b.dateTo);
+						return from <= bTo && to >= bFrom;
 					});
-
-					return {
-						...venue,
-						isUnavailable: hasOverlap,
-					};
+					return { ...venue, isUnavailable: hasOverlap };
 				});
 			}
 
-			// Filter: amenities
 			if (amenities) {
-				processedData = processedData.filter((venue) =>
-					Object.entries(amenities).every(([key, required]) => {
-						if (!required) return true;
-						return venue.meta[key as keyof Amenities] === true;
-					})
+				data = data.filter((venue) =>
+					Object.entries(amenities).every(([key, required]) =>
+						!required || venue.meta[key as keyof Amenities]
+					)
 				);
 			}
 
-			// Manual pagination
-			const total = processedData.length;
-			const startIndex = (page - 1) * limit;
-			const endIndex = startIndex + limit;
-			const paginatedData = processedData.slice(startIndex, endIndex);
+			// Client-side sort
+			const sorted = [...data].sort((a, b) => {
+				if (sort === 'price') {
+					return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
+				}
+				if (sort === 'rating') {
+					return sortOrder === 'asc' ? a.rating - b.rating : b.rating - a.rating;
+				}
+				return 0;
+			});
+
+			const total = sorted.length;
+			const start = (page - 1) * limit;
+			const paginated = sorted.slice(start, start + limit);
 			const pageCount = Math.ceil(total / limit);
 
 			set({
-				venues: paginatedData,
-				meta: {
-					pageCount,
-					limit,
-					totalCount: total,
-				},
+				allFilteredVenues: sorted,
+				venues: paginated,
+				meta: { limit, totalCount: total, pageCount },
 				isLoading: false,
 			});
 		} catch (error) {
@@ -171,33 +167,50 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	},
 
 	setPage: (page: number) => {
-		get().fetchVenues({ page });
+		const { allFilteredVenues, meta } = get();
+		const start = (page - 1) * meta.limit;
+		const paginated = allFilteredVenues.slice(start, start + meta.limit);
+
+		set({
+			currentPage: page,
+			venues: paginated,
+		});
 	},
 
 	setSort: (sort: string, sortOrder: 'asc' | 'desc' = 'desc') => {
-		set({ currentSort: sort, currentSortOrder: sortOrder });
+		const { allFilteredVenues, meta } = get();
+		const sorted = [...allFilteredVenues].sort((a, b) => {
+			if (sort === 'price') return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
+			if (sort === 'rating') return sortOrder === 'asc' ? a.rating - b.rating : b.rating - a.rating;
+			return 0;
+		});
+		const paginated = sorted.slice(0, meta.limit);
+		const pageCount = Math.ceil(sorted.length / meta.limit);
+
+		set({
+			currentSort: sort,
+			currentSortOrder: sortOrder,
+			currentPage: 1,
+			allFilteredVenues: sorted,
+			venues: paginated,
+			meta: {
+				limit: meta.limit,
+				pageCount,
+				totalCount: sorted.length,
+			},
+		});
 	},
 
-	setQuery: (query: string) => {
-		set({ currentQuery: query });
-	},
+	setQuery: (query: string) => set({ currentQuery: query }),
 
 	fetchSingleVenue: async (venueId: string) => {
 		set({ isSingleVenueLoading: true, singleVenueError: null });
 
 		try {
-			const params = new URLSearchParams({
-				_owner: 'true',
-				_bookings: 'true',
-			});
 			const response = await axios.get<{ data: Venue }>(
-				`${ENDPOINTS.venues}/${venueId}?${params.toString()}`
+				`${ENDPOINTS.venues}/${venueId}?_owner=true&_bookings=true`
 			);
-
-			set({
-				singleVenue: response.data.data,
-				isSingleVenueLoading: false,
-			});
+			set({ singleVenue: response.data.data, isSingleVenueLoading: false });
 		} catch (error) {
 			console.error('Failed to fetch single venue', error);
 			set({
@@ -209,7 +222,8 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 
 	removeVenue: (venueId: string) => {
 		set((state) => ({
-			venues: state.venues.filter((venue) => venue.id !== venueId),
+			venues: state.venues.filter((v) => v.id !== venueId),
+			allFilteredVenues: state.allFilteredVenues.filter((v) => v.id !== venueId),
 		}));
 	},
 }));
