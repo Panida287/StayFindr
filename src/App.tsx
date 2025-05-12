@@ -4,6 +4,7 @@ import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown';
 import { useFetchProfile } from './hooks/useFetchProfile.ts';
 import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch';
+import Pagination from './components/venues/Pagination';
 
 type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
 
@@ -146,64 +147,11 @@ function App() {
 			</div>
 
 			{meta && meta.pageCount > 1 && (
-				<div className="flex justify-center items-center gap-1 mt-6 flex-wrap">
-					<button
-						onClick={() => setPage(1)}
-						disabled={currentPage === 1}
-						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-					>
-						First page
-					</button>
-					<button
-						onClick={() => currentPage > 1 && setPage(currentPage - 1)}
-						disabled={currentPage === 1}
-						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-					>
-						&lt;
-					</button>
-					{(() => {
-						const totalPages = meta.pageCount;
-						const range: number[] = [];
-
-						if (totalPages <= 3) {
-							for (let i = 1; i <= totalPages; i++) range.push(i);
-						} else if (currentPage === 1) {
-							range.push(1, 2, 3);
-						} else if (currentPage === totalPages) {
-							range.push(totalPages - 2, totalPages - 1, totalPages);
-						} else {
-							range.push(currentPage - 1, currentPage, currentPage + 1);
-						}
-
-						return range.map((p) => (
-							<button
-								key={p}
-								onClick={() => setPage(p)}
-								className={`px-3 py-1 rounded text-sm ${
-									p === currentPage
-										? 'bg-pink-600 text-white'
-										: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-								}`}
-							>
-								{p}
-							</button>
-						));
-					})()}
-					<button
-						onClick={() => currentPage < meta.pageCount && setPage(currentPage + 1)}
-						disabled={currentPage === meta.pageCount}
-						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-					>
-						&gt;
-					</button>
-					<button
-						onClick={() => setPage(meta.pageCount)}
-						disabled={currentPage === meta.pageCount}
-						className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-					>
-						Last page
-					</button>
-				</div>
+				<Pagination
+					currentPage={currentPage}
+					pageCount={meta.pageCount}
+					onPageChange={setPage}
+				/>
 			)}
 		</div>
 	);
