@@ -10,15 +10,20 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 	const renderPageNumbers = () => {
 		const pages: number[] = [];
 
-		if (pageCount <= 3) {
+		if (pageCount <= 5) {
 			for (let i = 1; i <= pageCount; i++) pages.push(i);
-		} else if (currentPage === 1) {
-			pages.push(1, 2, 3);
-		} else if (currentPage === pageCount) {
-			pages.push(pageCount - 2, pageCount - 1, pageCount);
 		} else {
-			pages.push(currentPage - 1, currentPage, currentPage + 1);
+			if (currentPage <= 3) {
+				pages.push(1, 2, 3, 4);
+			} else if (currentPage >= pageCount - 2) {
+				pages.push(pageCount - 3, pageCount - 2, pageCount - 1, pageCount);
+			} else {
+				pages.push(currentPage - 1, currentPage, currentPage + 1);
+			}
 		}
+
+		const hasLeftEllipsis = pages[0] > 2;
+		const hasRightEllipsis = pages[pages.length - 1] < pageCount - 1;
 
 		return (
 			<>
@@ -30,7 +35,7 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 						>
 							1
 						</button>
-						<span className="px-2">...</span>
+						{hasLeftEllipsis && <span className="px-2">...</span>}
 					</>
 				)}
 
@@ -48,7 +53,7 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 					</button>
 				))}
 
-				{pages[pages.length - 1] < pageCount && (
+				{hasRightEllipsis && (
 					<>
 						<span className="px-2">...</span>
 						<button

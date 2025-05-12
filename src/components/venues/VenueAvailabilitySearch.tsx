@@ -2,29 +2,26 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+type Amenities = {
+	wifi: boolean;
+	parking: boolean;
+	breakfast: boolean;
+	pets: boolean;
+};
+
 type Props = {
 	onSearch: (params: {
 		city: string;
 		guests: number;
 		dateFrom: string;
 		dateTo: string;
-		amenities: {
-			wifi: boolean;
-			parking: boolean;
-			breakfast: boolean;
-			pets: boolean;
-		};
+		amenities: Amenities;
 	}) => void;
 	initialCity?: string;
 	initialGuests?: number;
 	initialDateFrom?: string;
 	initialDateTo?: string;
-	initialAmenities?: {
-		wifi: boolean;
-		parking: boolean;
-		breakfast: boolean;
-		pets: boolean;
-	};
+	initialAmenities?: Amenities;
 };
 
 export default function VenueAvailabilitySearch({
@@ -47,13 +44,7 @@ export default function VenueAvailabilitySearch({
 		const end = initialDateTo ? new Date(initialDateTo) : null;
 		return [start, end];
 	});
-
-	const [amenities, setAmenities] = useState({
-		wifi: initialAmenities?.wifi ?? false,
-		parking: initialAmenities?.parking ?? false,
-		breakfast: initialAmenities?.breakfast ?? false,
-		pets: initialAmenities?.pets ?? false,
-	});
+	const [amenities, setAmenities] = useState<Amenities>(initialAmenities);
 
 	useEffect(() => {
 		setCity(initialCity);
@@ -62,7 +53,8 @@ export default function VenueAvailabilitySearch({
 			initialDateFrom ? new Date(initialDateFrom) : null,
 			initialDateTo ? new Date(initialDateTo) : null,
 		]);
-	}, [initialCity, initialGuests, initialDateFrom, initialDateTo]);
+		setAmenities(initialAmenities);
+	}, [initialCity, initialGuests, initialDateFrom, initialDateTo, initialAmenities]);
 
 	const [startDate, endDate] = dateRange;
 

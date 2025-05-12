@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useFetchVenues } from './hooks/useFetchVenues';
+import { useFetchProfile } from './hooks/useFetchProfile';
 import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown';
-import { useFetchProfile } from './hooks/useFetchProfile.ts';
 import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch';
 import Pagination from './components/venues/Pagination';
 
@@ -108,6 +108,12 @@ function App() {
 					initialGuests={1}
 					initialDateFrom=""
 					initialDateTo=""
+					initialAmenities={{
+						wifi: false,
+						parking: false,
+						breakfast: false,
+						pets: false,
+					}}
 				/>
 			</div>
 		);

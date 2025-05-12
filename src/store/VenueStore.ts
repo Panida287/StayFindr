@@ -3,6 +3,13 @@ import axios from 'axios';
 import { Venue, VenueListResponse } from '../types/venues';
 import { ENDPOINTS } from '../constants.ts';
 
+type Amenities = {
+	wifi: boolean;
+	parking: boolean;
+	breakfast: boolean;
+	pets: boolean;
+};
+
 type FetchVenueParams = {
 	query?: string;
 	sort?: string;
@@ -12,27 +19,32 @@ type FetchVenueParams = {
 	guests?: number;
 	dateFrom?: string;
 	dateTo?: string;
-	amenities?: {
-		wifi: boolean;
-		parking: boolean;
-		breakfast: boolean;
-		pets: boolean;
-	};
+	amenities?: Amenities;
 };
 
 type VenueStore = {
 	venues: Venue[];
 	isLoading: boolean;
 	error: string | null;
-	meta: VenueListResponse['meta'] | null;
+	meta: {
+		pageCount: number;
+		limit: number;
+		totalCount: number;
+	};
 	currentPage: number;
 	currentSort: string;
 	currentSortOrder: 'asc' | 'desc';
 	currentQuery: string;
+	currentGuests?: number;
+	currentDateFrom?: string;
+	currentDateTo?: string;
+	currentAmenities?: Amenities;
+
 	fetchVenues: (params?: FetchVenueParams) => Promise<void>;
 	setPage: (page: number) => void;
 	setSort: (sort: string, sortOrder?: 'asc' | 'desc') => void;
 	setQuery: (query: string) => void;
+
 	singleVenue: Venue | null;
 	isSingleVenueLoading: boolean;
 	singleVenueError: string | null;
@@ -44,11 +56,16 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	venues: [],
 	isLoading: false,
 	error: null,
-	meta: null,
+	meta: { pageCount: 1, limit: 12, totalCount: 0 },
 	currentPage: 1,
 	currentSort: 'created',
 	currentSortOrder: 'desc',
 	currentQuery: '',
+	currentGuests: undefined,
+	currentDateFrom: undefined,
+	currentDateTo: undefined,
+	currentAmenities: undefined,
+
 	singleVenue: null,
 	isSingleVenueLoading: false,
 	singleVenueError: null,
@@ -62,41 +79,47 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			page = get().currentPage,
 			limit = 12,
 			query = get().currentQuery,
-			guests,
-			dateFrom,
-			dateTo,
-			amenities,
+			guests = get().currentGuests,
+			dateFrom = get().currentDateFrom,
+			dateTo = get().currentDateTo,
+			amenities = get().currentAmenities,
 		} = params;
 
-		const isSearching = query && query.trim() !== '';
-		const endpoint = isSearching
-			? `${ENDPOINTS.venues}/search?_bookings=true`
-			: `${ENDPOINTS.venues}?_bookings=true`;
-
-		const requestParams: Record<string, string | number> = {
-			q: query,
-			sort,
-			sortOrder,
-			page,
-			limit,
-		};
-
-		if (dateFrom) requestParams.dateFrom = dateFrom;
-		if (dateTo) requestParams.dateTo = dateTo;
+		// Store filters for future page changes
+		set({
+			currentPage: page,
+			currentSort: sort,
+			currentSortOrder: sortOrder,
+			currentQuery: query,
+			currentGuests: guests,
+			currentDateFrom: dateFrom,
+			currentDateTo: dateTo,
+			currentAmenities: amenities,
+		});
 
 		try {
+			const isSearching = query && query.trim() !== '';
+			const endpoint = isSearching
+				? `${ENDPOINTS.venues}/search?_bookings=true`
+				: `${ENDPOINTS.venues}?_bookings=true`;
+
 			const response = await axios.get<VenueListResponse>(endpoint, {
-				params: requestParams,
+				params: {
+					q: query,
+					sort,
+					sortOrder,
+					limit: 100, // fetch enough data to paginate manually
+				},
 			});
 
-			const { data, meta } = response.data;
+			let processedData = response.data.data;
 
-			// Step 1: Filter by guests
-			let processedData = guests
-				? data.filter((venue) => venue.maxGuests >= guests)
-				: data;
+			// Filter: guests
+			if (guests) {
+				processedData = processedData.filter((venue) => venue.maxGuests >= guests);
+			}
 
-			// Step 2: Mark isUnavailable based on booking overlap
+			// Filter: date availability
 			if (dateFrom && dateTo) {
 				const from = new Date(dateFrom);
 				const to = new Date(dateTo);
@@ -115,41 +138,40 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 				});
 			}
 
+			// Filter: amenities
 			if (amenities) {
-				processedData = processedData.filter((venue) => {
-					return Object.entries(amenities).every(([key, required]) => {
+				processedData = processedData.filter((venue) =>
+					Object.entries(amenities).every(([key, required]) => {
 						if (!required) return true;
-						return venue.meta[key as 'wifi' | 'parking' | 'breakfast' | 'pets'] === true;
+						return venue.meta[key as keyof Amenities] === true;
 					})
-				});
+				);
 			}
 
+			// Manual pagination
+			const total = processedData.length;
+			const startIndex = (page - 1) * limit;
+			const endIndex = startIndex + limit;
+			const paginatedData = processedData.slice(startIndex, endIndex);
+			const pageCount = Math.ceil(total / limit);
+
 			set({
-				venues: processedData,
-				meta,
-				currentPage: page,
-				currentSort: sort,
-				currentSortOrder: sortOrder,
-				currentQuery: query,
+				venues: paginatedData,
+				meta: {
+					pageCount,
+					limit,
+					totalCount: total,
+				},
 				isLoading: false,
 			});
-		} catch (error: unknown) {
+		} catch (error) {
 			console.error('API error:', error);
-			set({
-				error: 'Failed to fetch venues',
-				isLoading: false,
-			});
+			set({ error: 'Failed to fetch venues', isLoading: false });
 		}
 	},
 
 	setPage: (page: number) => {
-		const { currentSort, currentSortOrder, currentQuery } = get();
-		get().fetchVenues({
-			sort: currentSort,
-			sortOrder: currentSortOrder,
-			page,
-			query: currentQuery,
-		});
+		get().fetchVenues({ page });
 	},
 
 	setSort: (sort: string, sortOrder: 'asc' | 'desc' = 'desc') => {
