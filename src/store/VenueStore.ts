@@ -4,11 +4,20 @@ import { Venue, VenueListResponse } from '../types/venues';
 import { ENDPOINTS } from '../constants.ts';
 
 type FetchVenueParams = {
-	page?: number;
-	limit?: number;
+	query?: string;
 	sort?: string;
 	sortOrder?: 'asc' | 'desc';
-	query?: string;
+	page?: number;
+	limit?: number;
+	guests?: number;
+	dateFrom?: string;
+	dateTo?: string;
+	amenities?: {
+		wifi: boolean;
+		parking: boolean;
+		breakfast: boolean;
+		pets: boolean;
+	};
 };
 
 type VenueStore = {
@@ -45,7 +54,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	singleVenueError: null,
 
 	fetchVenues: async (params: FetchVenueParams = {}) => {
-		set({isLoading: true, error: null});
+		set({ isLoading: true, error: null });
 
 		const {
 			sort = get().currentSort,
@@ -53,14 +62,27 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			page = get().currentPage,
 			limit = 12,
 			query = get().currentQuery,
+			guests,
+			dateFrom,
+			dateTo,
+			amenities,
 		} = params;
 
 		const isSearching = query && query.trim() !== '';
-		const endpoint = isSearching ? `${ENDPOINTS.venues}/search?_bookings=true` : `${ENDPOINTS.venues}?_bookings=true`;
+		const endpoint = isSearching
+			? `${ENDPOINTS.venues}/search?_bookings=true`
+			: `${ENDPOINTS.venues}?_bookings=true`;
 
-		const requestParams: Record<string, string | number> = isSearching
-			? {q: query}
-			: {limit, sort, sortOrder, page};
+		const requestParams: Record<string, string | number> = {
+			q: query,
+			sort,
+			sortOrder,
+			page,
+			limit,
+		};
+
+		if (dateFrom) requestParams.dateFrom = dateFrom;
+		if (dateTo) requestParams.dateTo = dateTo;
 
 		try {
 			const response = await axios.get<VenueListResponse>(endpoint, {
@@ -69,8 +91,41 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 
 			const { data, meta } = response.data;
 
+			// Step 1: Filter by guests
+			let processedData = guests
+				? data.filter((venue) => venue.maxGuests >= guests)
+				: data;
+
+			// Step 2: Mark isUnavailable based on booking overlap
+			if (dateFrom && dateTo) {
+				const from = new Date(dateFrom);
+				const to = new Date(dateTo);
+
+				processedData = processedData.map((venue) => {
+					const hasOverlap = venue.bookings?.some((booking) => {
+						const bookingFrom = new Date(booking.dateFrom);
+						const bookingTo = new Date(booking.dateTo);
+						return from <= bookingTo && to >= bookingFrom;
+					});
+
+					return {
+						...venue,
+						isUnavailable: hasOverlap,
+					};
+				});
+			}
+
+			if (amenities) {
+				processedData = processedData.filter((venue) => {
+					return Object.entries(amenities).every(([key, required]) => {
+						if (!required) return true;
+						return venue.meta[key as 'wifi' | 'parking' | 'breakfast' | 'pets'] === true;
+					})
+				});
+			}
+
 			set({
-				venues: data,
+				venues: processedData,
 				meta,
 				currentPage: page,
 				currentSort: sort,
@@ -78,7 +133,6 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 				currentQuery: query,
 				isLoading: false,
 			});
-
 		} catch (error: unknown) {
 			console.error('API error:', error);
 			set({
@@ -89,21 +143,25 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 	},
 
 	setPage: (page: number) => {
-		const {currentSort, currentSortOrder, currentQuery} = get();
-		get().fetchVenues({sort: currentSort, sortOrder: currentSortOrder, page, query: currentQuery});
+		const { currentSort, currentSortOrder, currentQuery } = get();
+		get().fetchVenues({
+			sort: currentSort,
+			sortOrder: currentSortOrder,
+			page,
+			query: currentQuery,
+		});
 	},
 
 	setSort: (sort: string, sortOrder: 'asc' | 'desc' = 'desc') => {
 		set({ currentSort: sort, currentSortOrder: sortOrder });
 	},
 
-
 	setQuery: (query: string) => {
-		set({currentQuery: query});
+		set({ currentQuery: query });
 	},
 
 	fetchSingleVenue: async (venueId: string) => {
-		set({isSingleVenueLoading: true, singleVenueError: null});
+		set({ isSingleVenueLoading: true, singleVenueError: null });
 
 		try {
 			const params = new URLSearchParams({
@@ -132,5 +190,4 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			venues: state.venues.filter((venue) => venue.id !== venueId),
 		}));
 	},
-
 }));

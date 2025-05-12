@@ -3,20 +3,32 @@ import { Star, Users } from 'lucide-react';
 import { truncateText } from '../../utilities/truncateText.ts';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { Link } from 'react-router-dom';
 import ImageGallery from './ImageGallery.tsx';
 
+type VenueWithAvailability = Venue & { isUnavailable?: boolean };
+
 type Props = {
-	venue: Venue;
+	venue: VenueWithAvailability;
 };
 
-export function VenueCard({venue}: Props) {
-	const {name, location, price, rating, media, maxGuests} = venue;
-	const images = media?.length ? media : [{url: 'https://placehold.co/400x300', alt: 'Placeholder'}];
+export function VenueCard({ venue }: Props) {
+	const { name, location, price, rating, media, maxGuests, isUnavailable } = venue;
+	const images = media?.length ? media : [{ url: 'https://placehold.co/400x300', alt: 'Placeholder' }];
 
 	return (
-		<Link to={`/venue/${venue.id}`}
-		      className="rounded-xl overflow-hidden shadow-md relative bg-white">
+		<a
+			href={`/venue/${venue.id}`}
+			target="_blank"
+			rel="noopener noreferrer"
+			className="rounded-xl overflow-hidden shadow-md relative bg-white"
+		>
+			{/* Availability Tag */}
+			{isUnavailable && (
+				<div className="absolute top-2 left-2 z-10 bg-red-600 text-white text-xs px-2 py-1 rounded">
+					Not available during your selected dates
+				</div>
+			)}
+
 			<ImageGallery images={images} altFallback={name} heightClass="h-48" />
 
 			<div className="p-4 space-y-1">
@@ -24,6 +36,7 @@ export function VenueCard({venue}: Props) {
 				<p className="text-sm text-gray-500">
 					{truncateText(location?.city, 20)}, {truncateText(location?.country, 20)}
 				</p>
+
 				<div className="flex items-center justify-between mt-2">
 					<div className="flex items-center text-sm text-yellow-500 font-medium">
 						<Star className="w-4 h-4 mr-1" />
@@ -33,11 +46,12 @@ export function VenueCard({venue}: Props) {
 						${price} <span className="text-gray-500 text-xs">/night</span>
 					</p>
 				</div>
+
 				<div className="flex items-center gap-2 text-gray-600 text-sm">
 					<Users className="w-4 h-4" />
 					<span>Max guests: {maxGuests}</span>
 				</div>
 			</div>
-		</Link>
+		</a>
 	);
 }

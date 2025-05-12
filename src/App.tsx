@@ -1,9 +1,24 @@
+import { useState } from 'react';
 import { useFetchVenues } from './hooks/useFetchVenues';
 import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown';
 import { useFetchProfile } from './hooks/useFetchProfile.ts';
+import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch';
 
 type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
+
+type SearchParams = {
+	city: string;
+	guests: number;
+	dateFrom: string;
+	dateTo: string;
+	amenities: {
+		wifi: boolean;
+		parking: boolean;
+		breakfast: boolean;
+		pets: boolean;
+	};
+};
 
 function App() {
 	useFetchProfile();
@@ -18,14 +33,12 @@ function App() {
 		setSort,
 		currentSort,
 		currentSortOrder,
-		query,
-		setQuery,
 		fetchVenues,
 	} = useFetchVenues();
 
-	const isSearching = query.trim() !== '';
+	const [hasSearched, setHasSearched] = useState(false);
+	const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
 
-	// Helper to convert store values into dropdown values
 	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
 		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
 		if (sort === 'rating') return 'rating';
@@ -33,6 +46,20 @@ function App() {
 	};
 
 	const currentSortValue = getSortValue(currentSort, currentSortOrder);
+
+	const handleAvailabilitySearch = (params: SearchParams) => {
+		setHasSearched(true);
+		setSearchParams(params);
+
+		fetchVenues({
+			query: params.city,
+			guests: params.guests,
+			dateFrom: params.dateFrom,
+			dateTo: params.dateTo,
+			amenities: params.amenities,
+			page: 1,
+		});
+	};
 
 	const handleSortChange = (value: SortValue) => {
 		let sortField = 'created';
@@ -55,49 +82,58 @@ function App() {
 
 		setSort(sortField, sortOrder);
 
-		fetchVenues({ sort: sortField, sortOrder, page: 1, query });
-	};
-
-
-
-	const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === 'Enter') {
-			fetchVenues({ query, page: 1 });
+		if (hasSearched && searchParams) {
+			fetchVenues({
+				query: searchParams.city,
+				guests: searchParams.guests,
+				dateFrom: searchParams.dateFrom,
+				dateTo: searchParams.dateTo,
+				amenities: searchParams.amenities,
+				sort: sortField,
+				sortOrder,
+				page: 1,
+			});
 		}
 	};
 
-	const handleClearSearch = () => {
-		setQuery('');
-		fetchVenues({ query: '', page: 1 });
-	};
+	if (!hasSearched) {
+		return (
+			<div className="p-4 space-y-6">
+				<VenueAvailabilitySearch
+					onSearch={handleAvailabilitySearch}
+					initialCity=""
+					initialGuests={1}
+					initialDateFrom=""
+					initialDateTo=""
+				/>
+			</div>
+		);
+	}
 
 	if (isLoading) return <p>Loading venues...</p>;
 	if (error) return <p>Error: {error}</p>;
 
 	return (
 		<div className="p-4 space-y-6">
-			<div className="flex gap-2">
-				<input
-					type="text"
-					placeholder="Search venues..."
-					value={query}
-					onChange={(e) => setQuery(e.target.value)}
-					onKeyDown={handleSearch}
-					className="flex-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-pink-500"
-				/>
-				{isSearching && (
-					<button
-						onClick={handleClearSearch}
-						className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300"
-					>
-						Clear
-					</button>
-				)}
-			</div>
+			<VenueAvailabilitySearch
+				onSearch={handleAvailabilitySearch}
+				initialCity={searchParams?.city || ''}
+				initialGuests={searchParams?.guests || 1}
+				initialDateFrom={searchParams?.dateFrom || ''}
+				initialDateTo={searchParams?.dateTo || ''}
+			/>
 
-			{!isSearching && (
-				<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
-			)}
+			<button
+				onClick={() => {
+					setSearchParams(null);
+					setHasSearched(false);
+				}}
+				className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+			>
+				Clear Search
+			</button>
+
+			<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 				{venues.length > 0 ? (
