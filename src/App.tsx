@@ -6,6 +6,8 @@ import { useFetchProfile } from './hooks/useFetchProfile.ts';
 import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch';
 import Pagination from './components/venues/Pagination';
 
+import { format, differenceInCalendarDays } from 'date-fns';
+
 type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
 
 type SearchParams = {
@@ -114,6 +116,17 @@ function App() {
 	if (isLoading) return <p>Loading venues...</p>;
 	if (error) return <p>Error: {error}</p>;
 
+	const formattedFrom = searchParams?.dateFrom ? format(new Date(searchParams.dateFrom), 'MMM d') : 'any date';
+	const formattedTo = searchParams?.dateTo ? format(new Date(searchParams.dateTo), 'MMM d') : '';
+	const nights = searchParams?.dateFrom && searchParams?.dateTo
+		? differenceInCalendarDays(new Date(searchParams.dateTo), new Date(searchParams.dateFrom))
+		: 0;
+	const activeAmenities = searchParams
+		? Object.entries(searchParams.amenities)
+			.filter(([, v]) => v)
+			.map(([k]) => k)
+		: [];
+
 	return (
 		<div className="p-4 space-y-6">
 			<VenueAvailabilitySearch
@@ -122,6 +135,12 @@ function App() {
 				initialGuests={searchParams?.guests || 1}
 				initialDateFrom={searchParams?.dateFrom || ''}
 				initialDateTo={searchParams?.dateTo || ''}
+				initialAmenities={searchParams?.amenities || {
+					wifi: false,
+					parking: false,
+					breakfast: false,
+					pets: false,
+				}}
 			/>
 
 			<button
@@ -133,6 +152,24 @@ function App() {
 			>
 				Clear Search
 			</button>
+
+			{/* Summary Header */}
+			<div className="bg-gray-100 px-4 py-3 rounded text-sm text-gray-700">
+				Showing results for <strong>{searchParams?.city ? searchParams.city : 'all cities'}</strong>{' '}
+				{searchParams?.dateFrom && `from ${formattedFrom}`} {searchParams?.dateTo && `to ${formattedTo}`} —{' '}
+				{nights > 0 && `${nights} night${nights > 1 ? 's' : ''}, `}
+				{typeof searchParams?.guests === 'number' && `${searchParams.guests} guest${searchParams.guests > 1 ? 's' : ''}`}
+				{activeAmenities.length > 0 && (
+					<span>
+						{' '}—{' '}
+						{activeAmenities.map((a) => (
+							<span key={a} className="bg-olive text-white px-2 py-0.5 rounded ml-1">
+								{a}
+							</span>
+						))}
+					</span>
+				)}
+			</div>
 
 			<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
 

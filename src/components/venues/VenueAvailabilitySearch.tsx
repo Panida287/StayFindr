@@ -19,6 +19,12 @@ type Props = {
 	initialGuests?: number;
 	initialDateFrom?: string;
 	initialDateTo?: string;
+	initialAmenities?: {
+		wifi: boolean;
+		parking: boolean;
+		breakfast: boolean;
+		pets: boolean;
+	};
 };
 
 export default function VenueAvailabilitySearch({
@@ -27,6 +33,12 @@ export default function VenueAvailabilitySearch({
 	                                                initialGuests = 1,
 	                                                initialDateFrom = '',
 	                                                initialDateTo = '',
+	                                                initialAmenities = {
+		                                                wifi: false,
+		                                                parking: false,
+		                                                breakfast: false,
+		                                                pets: false,
+	                                                },
                                                 }: Props) {
 	const [city, setCity] = useState(initialCity);
 	const [guests, setGuests] = useState(initialGuests);
@@ -37,10 +49,10 @@ export default function VenueAvailabilitySearch({
 	});
 
 	const [amenities, setAmenities] = useState({
-		wifi: false,
-		parking: false,
-		breakfast: false,
-		pets: false,
+		wifi: initialAmenities?.wifi ?? false,
+		parking: initialAmenities?.parking ?? false,
+		breakfast: initialAmenities?.breakfast ?? false,
+		pets: initialAmenities?.pets ?? false,
 	});
 
 	useEffect(() => {
