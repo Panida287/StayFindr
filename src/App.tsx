@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useFetchVenues } from './hooks/useFetchVenues';
 import { useFetchProfile } from './hooks/useFetchProfile';
 import { VenueCard } from './components/venues/VenueCard';
 import { SortDropdown } from './components/venues/SortDropdown';
 import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch';
 import Pagination from './components/venues/Pagination';
-
 import { format, differenceInCalendarDays } from 'date-fns';
 
 type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
@@ -32,15 +31,29 @@ function App() {
 		error,
 		meta,
 		currentPage,
-		setPage,
-		setSort,
 		currentSort,
 		currentSortOrder,
-		fetchVenues,
+		setPage,
+		setSort,
+		fetchAllVenues,
+		applyFilters,
 	} = useFetchVenues();
 
 	const [hasSearched, setHasSearched] = useState(false);
 	const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
+	const resultRef = useRef<HTMLDivElement | null>(null);
+
+	// Fetch all venues once on mount
+	useEffect(() => {
+		fetchAllVenues();
+	}, [fetchAllVenues]);
+
+	// Scroll to result header on page change
+	useEffect(() => {
+		if (hasSearched && resultRef.current) {
+			resultRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	}, [currentPage, hasSearched]);
 
 	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
 		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
@@ -54,7 +67,7 @@ function App() {
 		setHasSearched(true);
 		setSearchParams(params);
 
-		fetchVenues({
+		applyFilters({
 			query: params.city,
 			guests: params.guests,
 			dateFrom: params.dateFrom,
@@ -86,7 +99,7 @@ function App() {
 		setSort(sortField, sortOrder);
 
 		if (hasSearched && searchParams) {
-			fetchVenues({
+			applyFilters({
 				query: searchParams.city,
 				guests: searchParams.guests,
 				dateFrom: searchParams.dateFrom,
@@ -127,6 +140,7 @@ function App() {
 	const nights = searchParams?.dateFrom && searchParams?.dateTo
 		? differenceInCalendarDays(new Date(searchParams.dateTo), new Date(searchParams.dateFrom))
 		: 0;
+
 	const activeAmenities = searchParams
 		? Object.entries(searchParams.amenities).filter(([, v]) => v).map(([k]) => k)
 		: [];
@@ -157,8 +171,7 @@ function App() {
 				Clear Search
 			</button>
 
-			{/* Summary Header */}
-			<div className="bg-gray-100 px-4 py-3 rounded text-sm text-gray-700">
+			<div ref={resultRef} className="bg-gray-100 px-4 py-3 rounded text-sm text-gray-700">
 				Showing results for <strong>{searchParams?.city || 'all cities'}</strong>{' '}
 				{searchParams?.dateFrom && `from ${formattedFrom}`} {searchParams?.dateTo && `to ${formattedTo}`} —{' '}
 				{nights > 0 && `${nights} night${nights > 1 ? 's' : ''}, `}
@@ -188,7 +201,11 @@ function App() {
 			</div>
 
 			{meta && meta.pageCount > 1 && (
-				<Pagination currentPage={currentPage} pageCount={meta.pageCount} onPageChange={setPage} />
+				<Pagination
+					currentPage={currentPage}
+					pageCount={meta.pageCount}
+					onPageChange={setPage}
+				/>
 			)}
 		</div>
 	);

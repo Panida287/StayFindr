@@ -1,6 +1,6 @@
-import { useVenueStore } from '../store/VenueStore.ts';
+import { useVenueStore } from '../store/VenueStore';
 
-export const useFetchVenues = () => {
+export function useFetchVenues() {
 	const {
 		venues,
 		isLoading,
@@ -9,11 +9,10 @@ export const useFetchVenues = () => {
 		currentPage,
 		currentSort,
 		currentSortOrder,
-		currentQuery,
-		fetchVenues,
 		setPage,
 		setSort,
-		setQuery,
+		fetchAllVenues,
+		applyFilters,
 	} = useVenueStore();
 
 	return {
@@ -26,8 +25,7 @@ export const useFetchVenues = () => {
 		currentSortOrder,
 		setPage,
 		setSort,
-		query: currentQuery,
-		setQuery,
-		fetchVenues,
+		fetchAllVenues,
+		applyFilters,
 	};
-};
+}
