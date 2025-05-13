@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useFetchVenues } from '../../hooks/useFetchVenues';
 import { SortDropdown, SortValue } from '../../components/venues/SortDropdown';
 import VenueAvailabilitySearch from '../../components/venues/VenueAvailabilitySearch';
@@ -11,7 +11,8 @@ import { SearchParams } from '../../App';
 function BrowsePage() {
 	const location = useLocation();
 	const resultRef = useRef<HTMLDivElement | null>(null);
-	const searchParams = (location.state as { params: SearchParams })?.params;
+	const initialParams = (location.state as { params: SearchParams })?.params;
+	const [searchParams, setSearchParams] = useState<SearchParams | null>(initialParams);
 
 	const {
 		venues,
@@ -27,10 +28,16 @@ function BrowsePage() {
 	} = useFetchVenues();
 
 	useEffect(() => {
-		if (searchParams) {
-			applyFilters({ ...searchParams, page: 1 });
+		if (initialParams) {
+			applyFilters({ ...initialParams, query: initialParams.city, page: 1 });
 		}
-	}, [searchParams, applyFilters]);
+	}, []);
+
+	useEffect(() => {
+		if (resultRef.current) {
+			resultRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	}, [currentPage]);
 
 	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
 		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
@@ -40,6 +47,12 @@ function BrowsePage() {
 	};
 
 	const currentSortValue = getSortValue(currentSort, currentSortOrder);
+
+	const scrollToResults = () => {
+		if (resultRef.current) {
+			resultRef.current.scrollIntoView({ behavior: 'smooth' });
+		}
+	};
 
 	const handleSortChange = (value: SortValue) => {
 		let sortField = 'created';
@@ -66,8 +79,32 @@ function BrowsePage() {
 
 		setSort(sortField, sortOrder);
 		if (searchParams) {
-			applyFilters({ ...searchParams, sort: sortField, sortOrder, page: 1 });
+			applyFilters({
+				...searchParams,
+				query: searchParams.city,
+				sort: sortField,
+				sortOrder,
+				page: 1,
+			});
+			scrollToResults();
 		}
+	};
+
+	const handleClearSearch = () => {
+		setSearchParams(null);
+		applyFilters({ page: 1 });
+		scrollToResults();
+	};
+
+	const handleSearch = (params: SearchParams) => {
+		setSearchParams(params);
+		applyFilters({ ...params, query: params.city, page: 1 });
+		scrollToResults();
+	};
+
+	const handlePageChange = (page: number) => {
+		setPage(page);
+		scrollToResults();
 	};
 
 	const formattedFrom = searchParams?.dateFrom ? format(new Date(searchParams.dateFrom), 'MMM d') : 'any date';
@@ -83,7 +120,7 @@ function BrowsePage() {
 	return (
 		<div className="p-4 space-y-6">
 			<VenueAvailabilitySearch
-				onSearch={(params) => applyFilters({ ...params, page: 1 })}
+				onSearch={handleSearch}
 				initialCity={searchParams?.city || ''}
 				initialGuests={searchParams?.guests || 1}
 				initialDateFrom={searchParams?.dateFrom || ''}
@@ -95,6 +132,13 @@ function BrowsePage() {
 					pets: false,
 				}}
 			/>
+
+			<button
+				onClick={handleClearSearch}
+				className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+			>
+				Clear Search
+			</button>
 
 			<div ref={resultRef} className="bg-gray-100 px-4 py-3 rounded text-sm text-gray-700">
 				Showing results for <strong>{searchParams?.city || 'all cities'}</strong>{' '}
@@ -131,7 +175,7 @@ function BrowsePage() {
 				<Pagination
 					currentPage={currentPage}
 					pageCount={meta.pageCount}
-					onPageChange={setPage}
+					onPageChange={handlePageChange}
 				/>
 			)}
 		</div>
