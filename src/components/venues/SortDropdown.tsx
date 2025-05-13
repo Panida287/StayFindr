@@ -1,4 +1,4 @@
-type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
+type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating' | 'popularity';
 
 type Props = {
 	onChange: (sort: SortValue) => void;
@@ -21,6 +21,7 @@ export const SortDropdown = ({ onChange, currentSort }: Props) => {
 				<option value="priceAsc">Price: Low to High</option>
 				<option value="priceDesc">Price: High to Low</option>
 				<option value="rating">Rating: High to Low</option>
+				<option value="popularity">Most Popular</option>
 			</select>
 		</div>
 	);

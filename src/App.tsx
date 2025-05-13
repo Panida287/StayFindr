@@ -7,7 +7,7 @@ import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch
 import Pagination from './components/venues/Pagination';
 import { format, differenceInCalendarDays } from 'date-fns';
 
-type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating';
+type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating' | 'popularity';
 
 type SearchParams = {
 	city: string;
@@ -58,6 +58,7 @@ function App() {
 	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
 		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
 		if (sort === 'rating') return 'rating';
+		if (sort === 'bookings') return 'popularity';
 		return 'newest';
 	};
 
@@ -94,7 +95,12 @@ function App() {
 				sortField = 'rating';
 				sortOrder = 'desc';
 				break;
+			case 'popularity':
+				sortField = 'bookings';
+				sortOrder = 'desc';
+				break;
 		}
+
 
 		setSort(sortField, sortOrder);
 

@@ -86,6 +86,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			}
 
 			set({ allVenues: all, isLoading: false });
+
 			get().applyFilters(); // initial render
 		} catch (error) {
 			console.error('Failed to fetch all venues:', error);
@@ -153,6 +154,10 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 					? new Date(a.created).getTime() - new Date(b.created).getTime()
 					: new Date(b.created).getTime() - new Date(a.created).getTime()
 			);
+		}
+
+		if (sort === 'bookings') {
+			filtered.sort((a, b) => b.bookings.length - a.bookings.length);
 		}
 
 		const limit = 12;
