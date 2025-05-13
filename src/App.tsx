@@ -33,6 +33,8 @@ function App() {
 
 	return (
 		<div className="p-4 space-y-10">
+			<TopVenuesCarousel />
+
 			<VenueAvailabilitySearch
 				onSearch={handleAvailabilitySearch}
 				initialCity=""
@@ -46,8 +48,6 @@ function App() {
 					pets: false,
 				}}
 			/>
-
-			<TopVenuesCarousel /> {/* ✅ Add this here */}
 		</div>
 	);
 }
