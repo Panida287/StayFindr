@@ -1,33 +1,37 @@
-interface ButtonProps {
+type Props = {
 	text: string;
 	onClick?: () => void;
-	type?: 'button' | 'submit' | 'reset';
-	variant?: 'primary' | 'secondary' | 'accent' | 'danger' | 'success';
-}
+	textColor?: string;      // e.g. 'text-primary'
+	arrowColor?: string;     // e.g. 'text-[#A97C50]'
+	bgColor?: string;        // e.g. 'bg-secondary'
+	borderColor?: string;    // e.g. 'border-[#333]'
+};
 
-export function Button({
-	                       text,
-	                       onClick,
-	                       type = 'button',
-	                       variant = 'primary',
-                       }: ButtonProps) {
-	const baseStyle = 'px-4 py-2 rounded-full text-white font-bold transition-all';
-
-	const variantStyles = {
-		primary: 'bg-primary hover:bg-pink-800',
-		secondary: 'bg-secondary hover:bg-orange-600',
-		accent: 'bg-accent hover:bg-blue-800',
-		danger: 'bg-error hover:bg-red-700',
-		success: 'bg-success hover:bg-green-700',
-	};
-
+export default function SplitButton({
+	                                    text,
+	                                    onClick,
+	                                    textColor = 'text-primary',
+	                                    arrowColor = 'text-[#A97C50]',
+	                                    bgColor = 'bg-secondary',
+	                                    borderColor = 'border-[#A97C50]',
+                                    }: Props) {
 	return (
 		<button
-			type={type}
 			onClick={onClick}
-			className={`${baseStyle} ${variantStyles[variant]}`}
+			className={`relative group overflow-hidden inline-flex items-center rounded-full border border-t ${borderColor} border-b ${borderColor} border-l ${borderColor} border-r-0 ${bgColor} text-sm font-bold`}
 		>
-			{text}
+			{/* Expanding white background */}
+			<span className="absolute top-[1px] bottom-[1px] left-[1px] z-0 bg-white w-[110px] group-hover:w-[calc(100%-1px)] transition-all duration-500 ease-in-out rounded-full" />
+
+			{/* Text and Arrow */}
+			<span className="relative z-10 flex items-center whitespace-nowrap">
+				<span className={`px-6 py-2 ${textColor} transition-colors duration-500 group-hover:text-primary`}>
+					{text}
+				</span>
+				<span className={`pr-4 ${arrowColor} transition-colors duration-500`}>
+					›
+				</span>
+			</span>
 		</button>
 	);
 }

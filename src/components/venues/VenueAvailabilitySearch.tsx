@@ -69,73 +69,59 @@ export default function VenueAvailabilitySearch({
 	};
 
 	return (
-		<div className="bg-cream p-6 rounded-xl max-w-md w-full mx-auto space-y-4">
-			<h2 className="text-2xl font-bold text-olive">Find your next stay</h2>
-			<p className="text-gray-600">Curated stays, effortless booking, and cozy getaways await.</p>
+		<div className="relative z-10 max-w-6xl mx-auto px-4">
+			<div className="bg-white rounded-lg shadow-md flex flex-wrap items-center gap-2 md:gap-4 px-4 py-3">
 
-			{/* City / Search input */}
-			<input
-				type="text"
-				placeholder="Search by city, country, or venue name"
-				value={city}
-				onChange={(e) => setCity(e.target.value)}
-				className="w-full px-4 py-2 border rounded"
-			/>
+				{/* City */}
+				<input
+					type="text"
+					placeholder="Room / City"
+					value={city}
+					onChange={(e) => setCity(e.target.value)}
+					className="flex-1 px-4 w-30 py-2 w-24 rounded-full bg-gray-50 border border-gray-200 text-sm"
+				/>
 
-			{/* Date picker */}
-			<DatePicker
-				selectsRange
-				startDate={startDate}
-				endDate={endDate}
-				onChange={(dates) => setDateRange(dates)}
-				placeholderText="Check-in > Check-out"
-				minDate={new Date()}
-				className="w-full px-4 py-2 border rounded"
-			/>
+				<span className="h-10 w-[1px] bg-secondary"/>
 
-			{/* Guests counter */}
-			<div className="flex items-center justify-between border px-4 py-2 rounded">
-				<span>Guests</span>
-				<div className="flex items-center gap-3">
-					<button
-						onClick={() => setGuests((g) => Math.max(1, g - 1))}
-						className="px-2 py-1 bg-gray-100 rounded"
-					>
-						-
-					</button>
-					<span>{guests}</span>
-					<button
-						onClick={() => setGuests((g) => g + 1)}
-						className="px-2 py-1 bg-gray-100 rounded"
-					>
-						+
-					</button>
+				{/* Check-in / out */}
+				<DatePicker
+					selectsRange
+					startDate={startDate}
+					endDate={endDate}
+					onChange={(dates) => setDateRange(dates)}
+					placeholderText="Check-in → Check-out"
+					minDate={new Date()}
+					className="flex-1 px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm"
+				/>
+
+				{/* Guests */}
+				<div className="flex-1 min-w-[120px] flex items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm">
+					<span>Guests</span>
+					<div className="flex items-center gap-2">
+						<button
+							onClick={() => setGuests((g) => Math.max(1, g - 1))}
+							className="px-2 bg-gray-100 rounded-full"
+						>
+							–
+						</button>
+						<span>{guests}</span>
+						<button
+							onClick={() => setGuests((g) => g + 1)}
+							className="px-2 bg-gray-100 rounded-full"
+						>
+							+
+						</button>
+					</div>
 				</div>
-			</div>
 
-			{/* Amenity checkboxes */}
-			<div className="grid grid-cols-2 gap-2 text-sm">
-				{(['wifi', 'parking', 'breakfast', 'pets'] as const).map((key) => (
-					<label key={key} className="flex items-center gap-2">
-						<input
-							type="checkbox"
-							checked={amenities[key]}
-							onChange={() =>
-								setAmenities((prev) => ({ ...prev, [key]: !prev[key] }))
-							}
-						/>
-						<span className="capitalize">{key}</span>
-					</label>
-				))}
+				{/* Search Button */}
+				<button
+					onClick={handleSearch}
+					className="px-6 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-900 transition"
+				>
+					Check Availability
+				</button>
 			</div>
-
-			{/* Search button */}
-			<button
-				onClick={handleSearch}
-				className="w-full bg-olive text-white py-2 rounded hover:bg-olive-dark"
-			>
-				Search
-			</button>
 		</div>
 	);
 }

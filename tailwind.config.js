@@ -17,22 +17,23 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Quicksand", "sans-serif"],
-        alt: ["Lato", "sans-serif"],
+        heading: ["Cormorant Garamond", "serif"],
+        body: ["Plus Jakarta Sans", "sans-serif"],
       },
       colors: {
-        primary: "#D90A52",
-        secondary: "#F2994A",
-        accent: "#1F71BA",
-        subtleAccent: "#E2B93B",
+        primary: "#4A5A3E",           // Brand Primary
+        secondary: "#F7F1E6",         // Brand Secondary
+        info: "#1F71BA",              // State - Info
+        success: "#27AE60",           // State - Success
+        background: "#DEECD7",        // State - Background
+        error: "#EB5757",             // State - Error
+        black: "#282828",             // Black
+        white: "#FFFFFF",            // White
         gray: {
-          light: "#F5F5F5",
-          DEFAULT: "#BDBDBD",
-          dark: "#4F4F4F"
+          1: "#828282",              // Gray 1
+          2: "#BDBDBD",              // Gray 2
+          3: "#E0E0E0",              // Gray 3
         },
-        error: "#EB5757",
-        warning: "#E2B93B",
-        success: "#27AE60"
       }
     },
     screens: {

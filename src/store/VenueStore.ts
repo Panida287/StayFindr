@@ -51,6 +51,8 @@ type VenueStore = {
 	singleVenueError: string | null;
 	fetchSingleVenue: (venueId: string) => Promise<void>;
 	removeVenue: (venueId: string) => void;
+
+	getTopVenues: () => Venue[];
 };
 
 export const useVenueStore = create<VenueStore>((set, get) => ({
@@ -86,6 +88,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			}
 
 			set({ allVenues: all, isLoading: false });
+
 			get().applyFilters(); // initial render
 		} catch (error) {
 			console.error('Failed to fetch all venues:', error);
@@ -155,6 +158,10 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			);
 		}
 
+		if (sort === 'bookings') {
+			filtered.sort((a, b) => b.bookings.length - a.bookings.length);
+		}
+
 		const limit = 12;
 		const total = filtered.length;
 		const pageCount = Math.ceil(total / limit);
@@ -204,5 +211,13 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			venues: state.venues.filter((venue) => venue.id !== venueId),
 			allVenues: state.allVenues.filter((venue) => venue.id !== venueId),
 		}));
+	},
+
+	getTopVenues: () => {
+		const all = get().allVenues;
+		return all
+			.filter((venue) => Array.isArray(venue.bookings))
+			.sort((a, b) => b.bookings.length - a.bookings.length)
+			.slice(0, 5);
 	},
 }));
