@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Reset base styles */
 html,
 body,
 #root {
@@ -10,38 +11,66 @@ body,
     padding: 0;
 }
 
+/* Body text styling */
 body {
-    @apply text-gray-dark bg-gray-light font-alt;;
+    @apply text-gray-1 bg-background font-body;
 }
 
+/* Typography based on your style guide */
 h1 {
-    @apply text-[47px] font-bold font-sans;
+    @apply text-[47px] leading-[61.6px] font-heading;
 }
 
 h2 {
-    @apply text-[40px] font-bold font-sans;
+    @apply text-[40px] leading-[52.8px] font-heading;
 }
 
 h3 {
-    @apply text-[33px] font-bold font-sans;
+    @apply text-[33px] leading-[44px] font-heading;
 }
 
 h4 {
-    @apply text-[27px] font-bold font-sans;
+    @apply text-[27px] leading-[35.2px] font-heading;
 }
 
 h5 {
-    @apply text-[24px] font-bold font-sans;
+    @apply text-[24px] leading-[26.4px] font-heading;
 }
 
 h6 {
-    @apply text-[20px] font-bold font-sans;
+    @apply text-[20px] leading-[22px] font-heading;
 }
 
-.btn-base {
-    @apply px-4 py-2 rounded-full text-white font-bold transition-all;
+/* Base pill shape */
+.btn-pill {
+    @apply inline-flex items-center justify-between px-6 py-2 rounded-full text-sm font-bold transition-all duration-300;
 }
 
+/* Filled primary styles */
+.btn-brown {
+    @apply bg-[#A97C50] text-white;
+}
+
+.btn-dark {
+    @apply bg-black text-white;
+}
+
+/* Outline (reversed) styles */
+.btn-outline-brown {
+    @apply bg-white text-[#A97C50] border border-[#A97C50];
+}
+
+.btn-outline-dark {
+    @apply bg-white text-black border border-black;
+}
+
+/* Icon side pill layout */
+.btn-dual::after {
+    content: '›';
+    @apply ml-3 text-xl;
+}
+
+/* Booked calendar day */
 .booked-day {
     text-decoration: line-through;
     pointer-events: none;

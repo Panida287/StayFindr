@@ -3,6 +3,7 @@ import { useFetchVenues } from './hooks/useFetchVenues';
 import { useFetchProfile } from './hooks/useFetchProfile';
 import { useNavigate } from 'react-router-dom';
 import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch';
+import TopVenuesCarousel from './components/venues/TopVenuesCarousel.tsx';
 
 export type SearchParams = {
 	city: string;
@@ -31,7 +32,7 @@ function App() {
 	};
 
 	return (
-		<div className="p-4 space-y-6">
+		<div className="p-4 space-y-10">
 			<VenueAvailabilitySearch
 				onSearch={handleAvailabilitySearch}
 				initialCity=""
@@ -45,6 +46,8 @@ function App() {
 					pets: false,
 				}}
 			/>
+
+			<TopVenuesCarousel /> {/* ✅ Add this here */}
 		</div>
 	);
 }
