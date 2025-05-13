@@ -1,4 +1,4 @@
-type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating' | 'popularity';
+export type SortValue = 'newest' | 'priceAsc' | 'priceDesc' | 'rating' | 'popularity';
 
 type Props = {
 	onChange: (sort: SortValue) => void;

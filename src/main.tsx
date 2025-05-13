@@ -24,6 +24,7 @@ import ManageVenuePage from './pages/Accounts/AdminAccountPage/ManageVenuePage';
 import ManageBookingsPage from './pages/Accounts/AdminAccountPage/ManageBookingsPage';
 import ProtectedRoute from './components/commons/ProtectedRoute.tsx';
 import UnauthorizedPage from './pages/UnauthorizedPage';
+import BrowsePage from './pages/BrowsePage';
 
 const router = createBrowserRouter([
 	{
@@ -35,12 +36,16 @@ const router = createBrowserRouter([
 				element: <App />,
 			},
 			{
+				path: 'browse',
+				element: <BrowsePage />,
+			},
+			{
 				path: 'venue/:venueId',
-				element: <VenueDetailPage />
+				element: <VenueDetailPage />,
 			},
 			{
 				path: 'booking-success',
-				element: <BookingSuccessPage />
+				element: <BookingSuccessPage />,
 			},
 			{
 				path: 'user/:userId',
@@ -56,7 +61,7 @@ const router = createBrowserRouter([
 							<ProtectedRoute requiredRole="venueManager">
 								<AdminPage />
 							</ProtectedRoute>
-						)
+						),
 					},
 					{
 						path: 'manage-venues',
@@ -64,7 +69,7 @@ const router = createBrowserRouter([
 							<ProtectedRoute requiredRole="venueManager">
 								<ManageVenuePage />
 							</ProtectedRoute>
-						)
+						),
 					},
 					{
 						path: 'manage-bookings',
@@ -72,7 +77,7 @@ const router = createBrowserRouter([
 							<ProtectedRoute requiredRole="venueManager">
 								<ManageBookingsPage />
 							</ProtectedRoute>
-						)
+						),
 					},
 					{
 						path: 'new-venue',
@@ -80,7 +85,7 @@ const router = createBrowserRouter([
 							<ProtectedRoute requiredRole="venueManager">
 								<AddNewVenuePage />
 							</ProtectedRoute>
-						)
+						),
 					},
 					{
 						path: 'edit-venue/:venueId',
@@ -88,28 +93,28 @@ const router = createBrowserRouter([
 							<ProtectedRoute requiredRole="venueManager">
 								<EditVenuePage />
 							</ProtectedRoute>
-						)
-					}
-				]
+						),
+					},
+				],
 			},
 			{
 				path: 'login',
-				element: <LoginPage />
+				element: <LoginPage />,
 			},
 			{
 				path: 'register',
-				element: <RegisterPage />
+				element: <RegisterPage />,
 			},
 			{
 				path: 'unauthorized',
-				element: <UnauthorizedPage />
-			}
-		]
+				element: <UnauthorizedPage />,
+			},
+		],
 	},
 	{
 		path: '*',
 		element: <NotFoundPage />,
-	}
+	},
 ]);
 
 createRoot(document.getElementById('root')!).render(
