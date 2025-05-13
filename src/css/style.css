@@ -13,7 +13,7 @@ body,
 
 /* Body text styling */
 body {
-    @apply text-gray-1 bg-background font-body;
+    @apply text-gray-1 bg-secondary font-body;
 }
 
 /* Typography based on your style guide */
@@ -39,35 +39,6 @@ h5 {
 
 h6 {
     @apply text-[20px] leading-[22px] font-heading;
-}
-
-/* Base pill shape */
-.btn-pill {
-    @apply inline-flex items-center justify-between px-6 py-2 rounded-full text-sm font-bold transition-all duration-300;
-}
-
-/* Filled primary styles */
-.btn-brown {
-    @apply bg-[#A97C50] text-white;
-}
-
-.btn-dark {
-    @apply bg-black text-white;
-}
-
-/* Outline (reversed) styles */
-.btn-outline-brown {
-    @apply bg-white text-[#A97C50] border border-[#A97C50];
-}
-
-.btn-outline-dark {
-    @apply bg-white text-black border border-black;
-}
-
-/* Icon side pill layout */
-.btn-dual::after {
-    content: '›';
-    @apply ml-3 text-xl;
 }
 
 /* Booked calendar day */

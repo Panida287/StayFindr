@@ -10,7 +10,7 @@ export default function TopVenueCard({ venue }: Props) {
 
 	return (
 		<div
-			className="relative h-full w-full rounded-2xl overflow-hidden shadow-lg"
+			className="relative h-full w-full overflow-hidden shadow-lg"
 			style={{
 				backgroundImage: `url(${image})`,
 				backgroundSize: 'cover',

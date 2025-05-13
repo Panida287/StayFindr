@@ -8,7 +8,7 @@ const TopVenuesCarousel = () => {
 	const topVenues = getTopVenues();
 
 	return (
-		<section className="relative h-[450px] px-4 py-10">
+		<section className="relative -mt-[128px] h-[500px]">
 			<div className="absolute inset-0 z-20 flex items-center justify-center text-center pointer-events-none">
 				<h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
 					Find Your Perfect Stay
@@ -20,7 +20,7 @@ const TopVenuesCarousel = () => {
 				spaceBetween={20}
 				slidesPerView={1}
 				navigation
-				pagination={{ clickable: true }}
+				pagination={{clickable: true}}
 				autoplay={{
 					delay: 4000,
 					disableOnInteraction: false,

@@ -17,8 +17,8 @@ export default {
         },
       },
       fontFamily: {
-        heading: ["Playfair Display", "serif"],
-        body: ["Quicksand", "sans-serif"],
+        heading: ["Cormorant Garamond", "serif"],
+        body: ["Plus Jakarta Sans", "sans-serif"],
       },
       colors: {
         primary: "#4A5A3E",           // Brand Primary

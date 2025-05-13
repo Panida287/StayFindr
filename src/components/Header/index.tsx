@@ -25,8 +25,8 @@ export default function Header() {
 	}, []);
 
 	return (
-		<header className="relative bg-white shadow-md flex items-center justify-between px-4 py-2 md:px-8 md:py-4">
-			<img src="/assets/logo.png" alt="Logo" className="h-10 m-2 md:h-24 md:m-0" />
+		<header className="relative z-50 bg-secondary/80 backdrop-blur-sm shadow-md flex items-center justify-between px-4 m-4 rounded-full md:px-8">
+			<img src="/assets/logo-dark.png" alt="Logo" className="h-10 m-2 md:h-24 md:m-0" />
 			{isMobile ? (
 				<MobileNavMenu
 					menuRef={menuRef}

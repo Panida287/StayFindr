@@ -32,23 +32,26 @@ function App() {
 	};
 
 	return (
-		<div className="p-4 space-y-10">
+		<>
 			<TopVenuesCarousel />
 
-			<VenueAvailabilitySearch
-				onSearch={handleAvailabilitySearch}
-				initialCity=""
-				initialGuests={1}
-				initialDateFrom=""
-				initialDateTo=""
-				initialAmenities={{
-					wifi: false,
-					parking: false,
-					breakfast: false,
-					pets: false,
-				}}
-			/>
-		</div>
+			<div className="relative -mt-[33px]">
+				<VenueAvailabilitySearch
+					onSearch={handleAvailabilitySearch}
+					initialCity=""
+					initialGuests={1}
+					initialDateFrom=""
+					initialDateTo=""
+					initialAmenities={{
+						wifi: false,
+						parking: false,
+						breakfast: false,
+						pets: false,
+					}}
+				/>
+			</div>
+
+		</>
 	);
 }
 
