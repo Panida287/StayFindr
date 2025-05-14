@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { logout } from '../../utilities/logout';
-import SplitButton from '../commons/Buttons.tsx';
+import {SplitButton} from '../commons/Buttons.tsx';
 
 type Props = {
 	dropdownRef: React.RefObject<HTMLDivElement | null>;
@@ -22,37 +22,27 @@ export default function DesktopNavLinks({
 	const isAdmin = localStorage.getItem('SFRole') === 'true';
 
 	return (
-		<nav className="flex items-center space-x-12 text-md font-body ml-auto">
-			<NavLink
-				to="/"
-				className={({isActive}) =>
-					`text-primary font-body font-medium transition-colors duration-300 hover:text-green-600 ${
-						isActive ? 'font-bold' : ''
-					}`
-				}
-			>
-				Home
-			</NavLink>
-
+		<nav className="flex items-center space-x-4 ml-auto">
 			<NavLink
 				to="/about"
 				className={({isActive}) =>
-					`text-primary font-body font-medium transition-colors duration-300 hover:text-green-600 ${
+					`text-primary font-heading font-medium rounded-full py-1 px-4 transition-colors duration-300 hover:bg-primary hover:text-secondary ${
 						isActive ? 'font-bold' : ''
 					}`
 				}
 			>
 				About us
 			</NavLink>
-
-			<SplitButton
-				text="Book Now"
-				bgColor="bg-primary"
-				textColor="text-primary"
-				arrowColor="text-white"
-				borderColor="border-primary"
-				onClick={() => console.log('Booking...')}
-			/>
+			<NavLink
+				to="/about"
+				className={({isActive}) =>
+					`text-primary font-heading font-medium rounded-full py-1 px-4 transition-colors duration-300 hover:bg-primary hover:text-secondary ${
+						isActive ? 'font-bold' : ''
+					}`
+				}
+			>
+				Contact Us
+			</NavLink>
 
 			{isLoggedIn ? (
 				<div ref={dropdownRef} className="relative ml-4">
@@ -118,8 +108,15 @@ export default function DesktopNavLinks({
 					)}
 				</div>
 			) : (
-				<NavLink to="/login" className="btn-base text-white bg-primary">
-					Login / Sign up
+				<NavLink to="/login">
+					<SplitButton
+						text="Login/Sign up"
+						bgColor="bg-primary"
+						textColor="text-primary"
+						arrowColor="text-white"
+						borderColor="border-primary"
+						className="font-heading pr-1"
+					/>
 				</NavLink>
 			)}
 		</nav>

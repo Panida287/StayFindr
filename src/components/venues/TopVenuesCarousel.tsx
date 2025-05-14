@@ -1,41 +1,78 @@
-import { useVenueStore } from '../../store/VenueStore.ts';
-import TopVenueCard from './TopVenueCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Autoplay, EffectFade } from 'swiper/modules';
+import { SplitButton } from '../commons/Buttons.tsx';
+import { Link } from 'react-router-dom';
+import { useVenueStore } from '../../store/VenueStore.ts';
+import 'swiper/css';
 
-const TopVenuesCarousel = () => {
+export default function TopVenuesCarousel() {
 	const getTopVenues = useVenueStore((state) => state.getTopVenues);
 	const topVenues = getTopVenues();
 
 	return (
-		<section className="relative -mt-[128px] h-[500px]">
-			<div className="absolute inset-0 z-20 flex items-center justify-center text-center pointer-events-none">
-				<h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+		<section className="relative -mt-[128px] h-[500px] overflow-hidden">
+			{/* Left white fade overlay */}
+			<div className="absolute inset-y-0 left-0 w-2/3 z-20 bg-gradient-to-r from-white/70 via-white/60 to-transparent pointer-events-none" />
+
+			{/* Text content in top-left */}
+			<div className="absolute top-56 left-10 z-30 flex flex-col text-primary max-w-sm space-y-3">
+				<h2 className="text-4xl font-bold leading-tight font-heading">
 					Find Your Perfect Stay
 				</h2>
+				<p className="text-sm text-primary">
+					Discover curated venues from across the globe. Experience exceptional stays in beautiful locations
+					with ease.
+				</p>
 			</div>
 
+			{/* Background image carousel */}
 			<Swiper
-				modules={[Navigation, Pagination, Autoplay]}
-				spaceBetween={20}
+				modules={[Autoplay, EffectFade]}
+				effect="fade"
+				fadeEffect={{crossFade: true}}
+				spaceBetween={0}
 				slidesPerView={1}
-				navigation
-				pagination={{clickable: true}}
 				autoplay={{
-					delay: 4000,
+					delay: 7000,
 					disableOnInteraction: false,
 				}}
 				loop={true}
-				className="h-full"
+				className="h-full !transform-none"
 			>
-				{topVenues.map((venue) => (
-					<SwiperSlide key={venue.id}>
-						<TopVenueCard venue={venue} />
-					</SwiperSlide>
-				))}
+				{topVenues.map((venue) => {
+					const image = venue.media?.[0]?.url || '/placeholder.jpg';
+					return (
+						<SwiperSlide key={venue.id}>
+							<div
+								className="relative h-full w-full"
+								style={{
+									backgroundImage: `url(${image})`,
+									backgroundSize: 'cover',
+									backgroundPosition: 'center',
+								}}
+							>
+								<div className="absolute bottom-20 right-10 z-50 text-right text-white">
+									<p className="text-lg font-semibold drop-shadow">
+										{venue.location?.city}, {venue.location?.country}
+									</p>
+									<Link to={`/venue/${venue.id}`} className="mt-2 inline-block">
+										<SplitButton
+											text="Book now"
+											textColor="text-yellow-500"
+											hoverTextColor="group-hover:text-yellow-500"
+											arrowColor="text-white"
+											arrowHoverColor="group-hover:text-yellow-500"
+											bgColor="bg-yellow-500"
+											borderColor="border-yellow-500"
+											className="font-heading"
+										/>
+									</Link>
+								</div>
+							</div>
+						</SwiperSlide>
+					);
+				})}
 			</Swiper>
 		</section>
 	);
-};
-
-export default TopVenuesCarousel;
+}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import {CommonButton} from '../../commons/Buttons.tsx';
 
 type Amenities = {
 	wifi: boolean;
@@ -69,8 +70,8 @@ export default function VenueAvailabilitySearch({
 	};
 
 	return (
-		<div className="relative z-10 max-w-6xl mx-auto px-4">
-			<div className="bg-white rounded-lg shadow-md flex flex-wrap items-center gap-2 md:gap-4 px-4 py-3">
+		<div className="relative z-50 w-full px-4">
+			<div className="bg-white rounded-lg shadow-md w-full max-w-4xl mx-auto flex flex-col items-start gap-4 px-4 py-3 md:flex-row md:flex-wrap">
 
 				{/* City */}
 				<input
@@ -78,10 +79,10 @@ export default function VenueAvailabilitySearch({
 					placeholder="Room / City"
 					value={city}
 					onChange={(e) => setCity(e.target.value)}
-					className="flex-1 px-4 w-30 py-2 w-24 rounded-full bg-gray-50 border border-gray-200 text-sm"
+					className="px-4 w-full flex flex-1 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm md:w-40"
 				/>
 
-				<span className="h-10 w-[1px] bg-secondary"/>
+				<span className="hidden h-10 w-[1px] bg-secondary md:block" />
 
 				{/* Check-in / out */}
 				<DatePicker
@@ -91,11 +92,15 @@ export default function VenueAvailabilitySearch({
 					onChange={(dates) => setDateRange(dates)}
 					placeholderText="Check-in → Check-out"
 					minDate={new Date()}
-					className="flex-1 px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm"
+					className="w-full px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm"
+					wrapperClassName="w-full flex md:w-52"
 				/>
 
+				<span className="hidden h-10 w-[1px] bg-secondary md:block" />
+
 				{/* Guests */}
-				<div className="flex-1 min-w-[120px] flex items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm">
+				<div
+					className="flex w-full items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm md:max-w-40">
 					<span>Guests</span>
 					<div className="flex items-center gap-2">
 						<button
@@ -115,12 +120,12 @@ export default function VenueAvailabilitySearch({
 				</div>
 
 				{/* Search Button */}
-				<button
+				<CommonButton
 					onClick={handleSearch}
-					className="px-6 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-900 transition"
+					className="bg-primary text-white hover:bg-background hover:text-primary w-full md:w-fit"
 				>
-					Check Availability
-				</button>
+					Search
+				</CommonButton>
 			</div>
 		</div>
 	);

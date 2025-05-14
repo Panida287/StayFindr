@@ -5,7 +5,7 @@ import MobileNavMenu from './MobileNavMenu';
 import DesktopNavLinks from './DesktopNavLinks';
 
 export default function Header() {
-	const isMobile = useBreakpoint(480);
+	const isMobile = useBreakpoint(600);
 	const [open, setOpen] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const menuRef = useRef<HTMLDivElement | null>(null);
@@ -25,8 +25,8 @@ export default function Header() {
 	}, []);
 
 	return (
-		<header className="relative z-50 bg-secondary/80 backdrop-blur-sm shadow-md flex items-center justify-between px-4 m-4 rounded-full md:px-8">
-			<img src="/assets/logo-dark.png" alt="Logo" className="h-10 m-2 md:h-24 md:m-0" />
+		<header className="relative z-50 bg-white/70 bg-blur-3xl backdrop-blur-sm shadow-md flex items-center justify-between px-4 m-4 rounded-full md:px-8">
+			<img src="/assets/images/logos/logo-horiz.png" alt="Logo" className="h-10 m-2" />
 			{isMobile ? (
 				<MobileNavMenu
 					menuRef={menuRef}

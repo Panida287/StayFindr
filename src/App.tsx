@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useFetchVenues } from './hooks/useFetchVenues';
 import { useFetchProfile } from './hooks/useFetchProfile';
 import { useNavigate } from 'react-router-dom';
-import VenueAvailabilitySearch from './components/venues/VenueAvailabilitySearch';
+import VenueAvailabilitySearch from './components/venues/SearchAndFilters/VenueAvailabilitySearch.tsx';
 import TopVenuesCarousel from './components/venues/TopVenuesCarousel.tsx';
 
 export type SearchParams = {
