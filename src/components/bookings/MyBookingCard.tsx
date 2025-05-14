@@ -29,7 +29,6 @@ export default function MyBookingCard({ booking, refreshBookings }: MyBookingCar
 	const { updateGuests, loading: updating } = useUpdateGuests();
 	const { deleteBooking, loading: deleting } = useDeleteBooking();
 
-	// Confirm guest update
 	const handleGuestUpdate = async () => {
 		const updatePromise = updateGuests(id, newGuests);
 

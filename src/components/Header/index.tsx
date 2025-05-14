@@ -26,7 +26,7 @@ export default function Header() {
 
 	return (
 		<header className="relative z-50 bg-secondary/80 backdrop-blur-sm shadow-md flex items-center justify-between px-4 m-4 rounded-full md:px-8">
-			<img src="/assets/logo-dark.png" alt="Logo" className="h-10 m-2 md:h-24 md:m-0" />
+			<img src="/assets/images/logos/logo-horiz.png" alt="Logo" className="h-10 m-2" />
 			{isMobile ? (
 				<MobileNavMenu
 					menuRef={menuRef}

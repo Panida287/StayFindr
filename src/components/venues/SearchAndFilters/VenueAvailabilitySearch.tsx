@@ -70,7 +70,7 @@ export default function VenueAvailabilitySearch({
 
 	return (
 		<div className="relative z-10 max-w-6xl mx-auto px-4">
-			<div className="bg-white rounded-lg shadow-md flex flex-wrap items-center gap-2 md:gap-4 px-4 py-3">
+			<div className="bg-white rounded-lg shadow-md flex flex-wrap items-center gap-2 px-4 py-3">
 
 				{/* City */}
 				<input
@@ -78,10 +78,10 @@ export default function VenueAvailabilitySearch({
 					placeholder="Room / City"
 					value={city}
 					onChange={(e) => setCity(e.target.value)}
-					className="flex-1 px-4 w-30 py-2 w-24 rounded-full bg-gray-50 border border-gray-200 text-sm"
+					className="flex-1 px-4 min-w-40 py-2 w-24 rounded-full bg-gray-50 border border-gray-200 text-sm"
 				/>
 
-				<span className="h-10 w-[1px] bg-secondary"/>
+				<span className="h-10 w-[1px] bg-secondary" />
 
 				{/* Check-in / out */}
 				<DatePicker
@@ -91,11 +91,14 @@ export default function VenueAvailabilitySearch({
 					onChange={(dates) => setDateRange(dates)}
 					placeholderText="Check-in → Check-out"
 					minDate={new Date()}
-					className="flex-1 px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm"
+					className="flex flex-1 w-52 px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm"
 				/>
 
+				<span className="hidden h-10 w-[1px] bg-secondary md:block" />
+
 				{/* Guests */}
-				<div className="flex-1 min-w-[120px] flex items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm">
+				<div
+					className="flex min-w-40 flex-1 items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm">
 					<span>Guests</span>
 					<div className="flex items-center gap-2">
 						<button
@@ -119,7 +122,7 @@ export default function VenueAvailabilitySearch({
 					onClick={handleSearch}
 					className="px-6 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-900 transition"
 				>
-					Check Availability
+					Search
 				</button>
 			</div>
 		</div>
