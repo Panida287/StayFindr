@@ -1,7 +1,7 @@
 import { useVenueStore } from '../../store/VenueStore.ts';
 import TopVenueCard from './TopVenueCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 
 const TopVenuesCarousel = () => {
 	const getTopVenues = useVenueStore((state) => state.getTopVenues);
@@ -16,17 +16,16 @@ const TopVenuesCarousel = () => {
 			</div>
 
 			<Swiper
-				modules={[Navigation, Pagination, Autoplay]}
+				modules={[Autoplay]}
 				spaceBetween={20}
 				slidesPerView={1}
-				navigation
 				pagination={{clickable: true}}
 				autoplay={{
-					delay: 4000,
+					delay: 7000,
 					disableOnInteraction: false,
 				}}
 				loop={true}
-				className="h-full"
+				className="h-full !transform-none"
 			>
 				{topVenues.map((venue) => (
 					<SwiperSlide key={venue.id}>
