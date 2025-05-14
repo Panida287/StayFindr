@@ -70,7 +70,7 @@ export default function VenueAvailabilitySearch({
 	};
 
 	return (
-		<div className="relative z-10 w-full px-4">
+		<div className="relative z-50 w-full px-4">
 			<div className="bg-white rounded-lg shadow-md w-full max-w-4xl mx-auto flex flex-col items-start gap-4 px-4 py-3 md:flex-row md:flex-wrap">
 
 				{/* City */}
