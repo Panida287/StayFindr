@@ -4,6 +4,8 @@ import { format, differenceInDays } from 'date-fns';
 import { Profile } from '../../types/profile.ts';
 import useUpdateGuests from '../../hooks/useUpdateGuests.ts';
 import Modal from '../commons/Modal.tsx';
+import useDeleteBooking from '../../hooks/useDeleteBooking.ts';
+import toast from 'react-hot-toast';
 
 type MyBookingCardProps = {
 	booking: Profile['bookings'][0];
@@ -20,25 +22,54 @@ export default function MyBookingCard({ booking, refreshBookings }: MyBookingCar
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [newGuests, setNewGuests] = useState(guests);
 	const [isConfirming, setIsConfirming] = useState(false);
+	const [isDeleting, setIsDeleting] = useState(false);
+
 	const maxGuests = venue.maxGuests;
 
-	const { updateGuests, loading } = useUpdateGuests();
+	const { updateGuests, loading: updating } = useUpdateGuests();
+	const { deleteBooking, loading: deleting } = useDeleteBooking();
 
-	const handleSubmit = () => {
-		if (newGuests < 1 || newGuests > maxGuests) {
-			alert(`Guests must be between 1 and ${maxGuests}`);
-			return;
-		}
-		setIsConfirming(true);
-	};
+	// Confirm guest update
+	const handleGuestUpdate = async () => {
+		const updatePromise = updateGuests(id, newGuests);
 
-	const handleConfirm = async () => {
-		const success = await updateGuests(id, newGuests);
+		toast.promise(updatePromise, {
+			loading: 'Updating booking...',
+			success: 'Booking updated successfully',
+			error: 'Failed to update booking',
+		});
+
+		const success = await updatePromise;
 		if (success) {
 			setIsConfirming(false);
 			setIsModalOpen(false);
-			refreshBookings(); // Refresh from parent
+			refreshBookings();
 		}
+	};
+
+	const handleDelete = async () => {
+		const deletePromise = deleteBooking(id);
+
+		toast.promise(deletePromise, {
+			loading: 'Canceling booking...',
+			success: 'Booking has been canceled',
+			error: 'Failed to cancel booking',
+		});
+
+		const success = await deletePromise;
+		if (success) {
+			setIsDeleting(false);
+			refreshBookings();
+		}
+	};
+
+	// Validate guest number
+	const handleSubmit = () => {
+		if (newGuests < 1 || newGuests > maxGuests) {
+			toast.error(`Guests must be between 1 and ${maxGuests}`);
+			return;
+		}
+		setIsConfirming(true);
 	};
 
 	return (
@@ -70,17 +101,20 @@ export default function MyBookingCard({ booking, refreshBookings }: MyBookingCar
 					>
 						Edit Guests
 					</button>
-					<button className="px-4 py-1 text-sm text-red-600 border border-red-500 rounded hover:bg-red-50">
+					<button
+						onClick={() => setIsDeleting(true)}
+						className="px-4 py-1 text-sm text-red-600 border border-red-500 rounded hover:bg-red-50"
+					>
 						Cancel Booking
 					</button>
 				</div>
 			</div>
 
+			{/* Edit Guests Modal */}
 			<Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
 				{!isConfirming ? (
 					<div className="space-y-4">
 						<h2 className="text-xl font-semibold">Edit Guests</h2>
-
 						<div className="flex items-center gap-4">
 							<button
 								onClick={() => setNewGuests((prev) => Math.max(1, prev - 1))}
@@ -89,9 +123,7 @@ export default function MyBookingCard({ booking, refreshBookings }: MyBookingCar
 							>
 								−
 							</button>
-
 							<span className="text-lg font-medium">{newGuests}</span>
-
 							<button
 								onClick={() => setNewGuests((prev) => Math.min(maxGuests, prev + 1))}
 								className="px-3 py-1 rounded-full bg-gray-200 hover:bg-gray-300 text-xl font-bold"
@@ -100,46 +132,51 @@ export default function MyBookingCard({ booking, refreshBookings }: MyBookingCar
 								+
 							</button>
 						</div>
-
 						<p className="text-sm text-gray-500">Maximum guests: {maxGuests}</p>
-
 						<div className="flex justify-end gap-2">
-							<button
-								onClick={() => setIsModalOpen(false)}
-								className="btn-base bg-gray-400"
-							>
+							<button onClick={() => setIsModalOpen(false)} className="btn-base bg-gray-400">
 								Cancel
 							</button>
-							<button
-								onClick={handleSubmit}
-								className="btn-base bg-green-500"
-							>
+							<button onClick={handleSubmit} className="btn-base bg-green-500">
 								Continue
 							</button>
 						</div>
 					</div>
-
 				) : (
 					<div className="space-y-4">
 						<h2 className="text-xl font-semibold">Confirm Update</h2>
 						<p>Are you sure you want to change number of guests to {newGuests}?</p>
 						<div className="flex justify-end gap-2">
-							<button
-								onClick={() => setIsConfirming(false)}
-								className="btn-base bg-gray-400"
-							>
+							<button onClick={() => setIsConfirming(false)} className="btn-base bg-gray-400">
 								Back
 							</button>
-							<button
-								onClick={handleConfirm}
-								disabled={loading}
-								className="btn-base bg-green-600"
-							>
-								{loading ? 'Saving...' : 'Confirm'}
+							<button onClick={handleGuestUpdate} disabled={updating} className="btn-base bg-green-600">
+								{updating ? 'Saving...' : 'Confirm'}
 							</button>
 						</div>
 					</div>
 				)}
+			</Modal>
+
+			{/* Delete Booking Modal */}
+			<Modal isOpen={isDeleting} onClose={() => setIsDeleting(false)}>
+				<div className="space-y-4">
+					<h2 className="text-xl font-semibold text-red-600">Cancel Booking</h2>
+					<p>Are you sure you want to cancel this booking?</p>
+					<p className="text-sm text-gray-500">This action cannot be undone.</p>
+					<div className="flex justify-end gap-2">
+						<button onClick={() => setIsDeleting(false)} className="btn-base bg-gray-400">
+							Back
+						</button>
+						<button
+							onClick={handleDelete}
+							disabled={deleting}
+							className="btn-base bg-red-600 text-white"
+						>
+							{deleting ? 'Deleting...' : 'Yes, Cancel'}
+						</button>
+					</div>
+				</div>
 			</Modal>
 		</div>
 	);
