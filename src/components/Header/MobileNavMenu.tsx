@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { logout } from '../../utilities/logout';
 import { createPortal } from 'react-dom';
+import { SplitButton } from '../commons/Buttons.tsx';
 
 type Props = {
 	menuRef: React.RefObject<HTMLDivElement | null>;
@@ -13,9 +14,6 @@ type Props = {
 export default function MobileNavMenu({ menuRef, open, setOpen, isLoggedIn }: Props) {
 	const user = localStorage.getItem('SFUsername');
 	const isAdmin = localStorage.getItem('SFRole') === 'true';
-
-	const activeClass = ({ isActive }: { isActive: boolean }) =>
-		isActive ? 'text-primary font-semibold' : '';
 
 	return (
 		<>
@@ -40,59 +38,109 @@ export default function MobileNavMenu({ menuRef, open, setOpen, isLoggedIn }: Pr
 							<X className="w-6 h-6" />
 						</button>
 
-						<ul className="space-y-4 text-lg font-alt">
+						<ul className="text-xl font-heading">
+							<li className="pt-2 pb-2 mx-4 border-t border-gray-200">
+								<NavLink
+									to="/"
+									className={({isActive}) =>
+										`${isActive ? 'text-primary font-semibold' : ''} hover:text-primary transition duration-200`
+									}
+									onClick={() => setOpen(false)}
+								>
+									Home
+								</NavLink>
+							</li>
+
 							{isLoggedIn && (
 								<>
-									<li>
-										<NavLink to={`/user/${user}`} className={activeClass} onClick={() => setOpen(false)}>
+									<li className="pt-2 pb-2 mx-4 border-t border-gray-200">
+										<NavLink
+											to={`/user/${user}`}
+											className={({isActive}) =>
+												`${isActive ? 'text-primary font-semibold' : ''} hover:text-primary transition duration-200`
+											}
+											onClick={() => setOpen(false)}
+										>
 											My Bookings
 										</NavLink>
 									</li>
 									{isAdmin && (
-										<li>
-											<NavLink to={`/admin/${user}`} className={activeClass} onClick={() => setOpen(false)}>
+										<li className="pt-2 pb-2 mx-4 border-t border-gray-200">
+											<NavLink
+												to={`/admin/${user}`}
+												className={({isActive}) =>
+													`${isActive ? 'text-primary font-semibold' : ''} hover:text-primary transition duration-200`
+												}
+												onClick={() => setOpen(false)}
+											>
 												Dashboard
 											</NavLink>
 										</li>
 									)}
+									<li className="pt-2 pb-2 mx-4 border-t border-gray-200">
+										<a href="#" className="hover:text-primary transition duration-200">Inbox</a>
+									</li>
+									<li className="pt-2 pb-2 mx-4 border-t border-gray-200">
+										<a href="#"
+										   className="hover:text-primary transition duration-200">Notification</a>
+									</li>
 								</>
 							)}
 
-							<li>
-								<NavLink to="/" className={activeClass} onClick={() => setOpen(false)}>
-									Browse
+							<li className="pt-2 pb-2 mx-4 border-t border-gray-200">
+								<NavLink
+									to="/about"
+									className={({isActive}) =>
+										`${isActive ? 'text-primary font-semibold' : ''} hover:text-primary transition duration-200`
+									}
+									onClick={() => setOpen(false)}
+								>
+									About Us
 								</NavLink>
 							</li>
 
-							<li>
-								<NavLink to="/contact" className={activeClass} onClick={() => setOpen(false)}>
-									Contact
+							<li className="pt-2 pb-2 mx-4 border-t border-b border-gray-200">
+								<NavLink
+									to="/contact"
+									className={({isActive}) =>
+										`${isActive ? 'text-primary font-semibold' : ''} hover:text-primary transition duration-200`
+									}
+									onClick={() => setOpen(false)}
+								>
+									Contact Us
 								</NavLink>
 							</li>
-
-							<li><a href="#">Inbox</a></li>
-							<li><a href="#">Notification</a></li>
 						</ul>
+
 					</div>
 
-					<div className="mt-6 border-t pt-4">
+					<div className="mt-6 border-t pt-4 flex justify-center">
 						{isLoggedIn ? (
-							<button
+							<SplitButton
+								text="Logout"
+								bgColor="bg-red-800"
+								textColor="text-red-800"
+								arrowColor="text-white"
+								borderColor="border-red-800"
 								onClick={() => {
 									logout();
 									setOpen(false);
 								}}
-								className="text-pink-600 hover:underline w-full text-left"
-							>
-								Logout
-							</button>
+								className="font-heading"
+							/>
+
 						) : (
-							<NavLink
-								to="/login"
-								onClick={() => setOpen(false)}
-								className="btn-base text-white bg-primary block text-center"
-							>
-								Login / Sign up
+							<NavLink to="/login">
+								<NavLink to="/login" onClick={() => setOpen(false)}>
+									<SplitButton
+										text="Login/Sign up"
+										bgColor="bg-primary"
+										textColor="text-primary"
+										arrowColor="text-white"
+										borderColor="border-primary"
+										className="font-heading pr-1"
+									/>
+								</NavLink>
 							</NavLink>
 						)}
 					</div>

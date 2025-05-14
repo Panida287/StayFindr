@@ -5,7 +5,7 @@ import MobileNavMenu from './MobileNavMenu';
 import DesktopNavLinks from './DesktopNavLinks';
 
 export default function Header() {
-	const isMobile = useBreakpoint(480);
+	const isMobile = useBreakpoint(600);
 	const [open, setOpen] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const menuRef = useRef<HTMLDivElement | null>(null);
