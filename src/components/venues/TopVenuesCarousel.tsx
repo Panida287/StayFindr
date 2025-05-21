@@ -12,14 +12,15 @@ export default function TopVenuesCarousel() {
 	return (
 		<section className="relative -mt-[128px] h-[500px] overflow-hidden">
 			{/* Left white fade overlay */}
-			<div className="absolute inset-y-0 left-0 w-2/3 z-20 bg-gradient-to-r from-white/70 via-white/60 to-transparent pointer-events-none" />
+			<div className="absolute w-1/2 h-full inset-y-10 left-0 z-20 bg-gradient-to-r from-black/60 via-black/50 to-transparent" />
 
 			{/* Text content in top-left */}
-			<div className="absolute top-56 left-10 z-30 flex flex-col text-primary max-w-sm space-y-3">
+			<div className="absolute top-56 left-10 z-30 flex flex-col text-secondary w-2/3 space-y-3 sm:1/2">
+
 				<h2 className="text-4xl font-bold leading-tight font-heading">
 					Find Your Perfect Stay
 				</h2>
-				<p className="text-sm text-primary">
+				<p className="hidden text-sm text-secondary w-2/3 sm:flex">
 					Discover curated venues from across the globe. Experience exceptional stays in beautiful locations
 					with ease.
 				</p>
@@ -64,7 +65,7 @@ export default function TopVenuesCarousel() {
 											arrowHoverColor="group-hover:text-yellow-500"
 											bgColor="bg-yellow-500"
 											borderColor="border-yellow-500"
-											className="font-heading"
+											className="font-heading "
 										/>
 									</Link>
 								</div>

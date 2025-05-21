@@ -76,7 +76,7 @@ export default function VenueAvailabilitySearch({
 				{/* City */}
 				<input
 					type="text"
-					placeholder="Room / City"
+					placeholder="Venue / City"
 					value={city}
 					onChange={(e) => setCity(e.target.value)}
 					className="px-4 w-full flex flex-1 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm md:w-40"
@@ -93,7 +93,7 @@ export default function VenueAvailabilitySearch({
 					placeholderText="Check-in → Check-out"
 					minDate={new Date()}
 					className="w-full px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm"
-					wrapperClassName="w-full flex md:w-52"
+					wrapperClassName="w-full flex-2 flex md:w-56"
 				/>
 
 				<span className="hidden h-10 w-[1px] bg-secondary md:block" />
@@ -122,7 +122,7 @@ export default function VenueAvailabilitySearch({
 				{/* Search Button */}
 				<CommonButton
 					onClick={handleSearch}
-					className="bg-primary text-white hover:bg-background hover:text-primary w-full md:w-fit"
+					className="bg-primary flex-1 text-white hover:bg-background hover:text-primary w-full md:w-fit"
 				>
 					Search
 				</CommonButton>
