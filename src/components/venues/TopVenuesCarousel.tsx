@@ -34,11 +34,11 @@ export default function TopVenuesCarousel() {
 				spaceBetween={0}
 				slidesPerView={1}
 				autoplay={{
-					delay: 7000,
+					delay: 2000,
 					disableOnInteraction: false,
 				}}
 				loop={true}
-				className="h-full !transform-none"
+				className="h-full"
 			>
 				{topVenues.map((venue) => {
 					const image = venue.media?.[0]?.url || '/placeholder.jpg';
