@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useFetchVenues } from '../../hooks/useFetchVenues';
 import { SortDropdown, SortValue } from '../../components/venues/SearchAndFilters/SortDropdown.tsx';
-import VenueAvailabilitySearch from '../../components/venues/SearchAndFilters/VenueAvailabilitySearch.tsx';
+import VenueAvailabilitySearch, { VenueAvailabilitySearchRef } from '../../components/venues/SearchAndFilters/VenueAvailabilitySearch.tsx';
 import { VenueCard } from '../../components/venues/VenueCard';
 import Pagination from '../../components/commons/Pagination.tsx';
 import { format, differenceInCalendarDays } from 'date-fns';
@@ -12,6 +12,7 @@ import AmenitiesFilter from '../../components/venues/SearchAndFilters/AmenitiesF
 function BrowsePage() {
 	const location = useLocation();
 	const resultRef = useRef<HTMLDivElement | null>(null);
+	const searchRef = useRef<VenueAvailabilitySearchRef>(null);
 	const initialParams = (location.state as { params: SearchParams })?.params;
 
 	const defaultParams: SearchParams = {
@@ -108,6 +109,7 @@ function BrowsePage() {
 		setPendingAmenities(reset.amenities);
 		setActiveFilters(reset);
 		applyFilters({ ...reset, page: 1 });
+		searchRef.current?.clearForm();
 		scrollToResults();
 	};
 
@@ -149,6 +151,7 @@ function BrowsePage() {
 	return (
 		<div className="p-4 space-y-6">
 			<VenueAvailabilitySearch
+				ref={searchRef}
 				onInputChange={(params) => setPendingSearch({ ...params, amenities: pendingAmenities })}
 				onSearchClick={handleSearchClick}
 				initialCity={activeFilters.city}
