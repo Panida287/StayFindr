@@ -88,12 +88,34 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			}
 
 			set({ allVenues: all, isLoading: false });
-			get().applyFilters(); // Apply initial filters (empty/default)
+
+			const {
+				currentQuery,
+				currentSort,
+				currentSortOrder,
+				currentPage,
+				currentGuests,
+				currentDateFrom,
+				currentDateTo,
+				currentAmenities,
+			} = get();
+
+			get().applyFilters({
+				query: currentQuery,
+				sort: currentSort,
+				sortOrder: currentSortOrder,
+				page: currentPage,
+				guests: currentGuests,
+				dateFrom: currentDateFrom,
+				dateTo: currentDateTo,
+				amenities: currentAmenities,
+			});
 		} catch (error) {
 			console.error('Failed to fetch all venues:', error);
 			set({ error: 'Failed to load venues', isLoading: false });
 		}
 	},
+
 
 	applyFilters: (params: FetchVenueParams = {}) => {
 		const {
@@ -109,8 +131,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 
 		let filtered = [...get().allVenues];
 
-		// Text search
-		if (query && query.trim() !== '') {
+		if (query?.trim()) {
 			const q = query.toLowerCase();
 			filtered = filtered.filter((venue) =>
 				(venue.name?.toLowerCase().includes(q) ?? false) ||
@@ -119,12 +140,10 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			);
 		}
 
-		// Guest filter
 		if (guests) {
-			filtered = filtered.filter(v => v.maxGuests >= guests);
+			filtered = filtered.filter((v) => v.maxGuests >= guests);
 		}
 
-		// Date availability filter
 		if (dateFrom && dateTo) {
 			const from = new Date(dateFrom);
 			const to = new Date(dateTo);
@@ -139,25 +158,21 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			});
 		}
 
-		// Amenities filter (match only if selected)
 		if (amenities) {
 			filtered = filtered.filter((venue) =>
 				Object.entries(amenities).every(([key, val]) => {
-					// Only check keys that are set to true
 					return !val || venue.meta?.[key as keyof Amenities] === true;
 				})
 			);
 		}
 
-		// Sorting
 		if (sort === 'price') {
-			filtered.sort((a, b) => (sortOrder === 'asc' ? a.price - b.price : b.price - a.price));
+			filtered.sort((a, b) => sortOrder === 'asc' ? a.price - b.price : b.price - a.price);
 		} else if (sort === 'rating') {
 			filtered.sort((a, b) => b.rating - a.rating);
 		} else if (sort === 'bookings') {
 			filtered.sort((a, b) => b.bookings.length - a.bookings.length);
 		} else {
-			// Default: sort by created date
 			filtered.sort((a, b) =>
 				sortOrder === 'asc'
 					? new Date(a.created).getTime() - new Date(b.created).getTime()
@@ -165,13 +180,11 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			);
 		}
 
-		// Pagination
 		const limit = 12;
 		const total = filtered.length;
 		const pageCount = Math.ceil(total / limit);
 		const paginated = filtered.slice((page - 1) * limit, page * limit);
 
-		// Update store
 		set({
 			venues: paginated,
 			meta: { pageCount, limit, totalCount: total },
@@ -185,6 +198,7 @@ export const useVenueStore = create<VenueStore>((set, get) => ({
 			currentAmenities: amenities,
 		});
 	},
+
 
 	setPage: (page: number) => {
 		get().applyFilters({ page });
