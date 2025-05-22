@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { logout } from '../../utilities/logout';
+import { logout } from '../../utilities/logout.ts';
 import { createPortal } from 'react-dom';
-import { SplitButton } from '../commons/Buttons.tsx';
+import { SplitButton } from '../../components/commons/Buttons.tsx';
 
 type Props = {
 	menuRef: React.RefObject<HTMLDivElement | null>;

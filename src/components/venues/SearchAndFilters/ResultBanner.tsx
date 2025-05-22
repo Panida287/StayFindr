@@ -21,7 +21,7 @@ const ResultsBanner = forwardRef<HTMLDivElement, Props>(({ filters }, ref) => {
 
 	const activeA = Object.keys(amenities).filter(k => amenities[k]);
 	return (
-		<div ref={ref} className="bg-background px-4 py-3 rounded text-sm text-primary max-w-5xl mx-auto leading-loose">
+		<div ref={ref} className="sticky top-20 z-20 bg-background/80 backdrop-blur-lg px-4 py-3 rounded text-sm text-primary max-w-5xl mx-auto leading-loose">
 			Showing results for <strong className="capitalize">{city || 'all cities'}</strong>
 			{formattedFrom && <> from <strong>{formattedFrom}</strong></>}
 			{formattedTo   && <> to   <strong>{formattedTo}</strong></>}

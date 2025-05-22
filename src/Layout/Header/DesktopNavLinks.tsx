@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
-import { logout } from '../../utilities/logout';
-import {SplitButton} from '../commons/Buttons.tsx';
+import { logout } from '../../utilities/logout.ts';
+import {SplitButton} from '../../components/commons/Buttons.tsx';
 
 type Props = {
 	dropdownRef: React.RefObject<HTMLDivElement | null>;
@@ -23,6 +23,16 @@ export default function DesktopNavLinks({
 
 	return (
 		<nav className="flex items-center space-x-4 ml-auto">
+			<NavLink
+				to="/"
+				className={({isActive}) =>
+					`text-primary font-heading font-medium rounded-full py-1 px-4 transition-colors duration-300 hover:bg-primary hover:text-secondary ${
+						isActive ? 'font-bold' : ''
+					}`
+				}
+			>
+				Home
+			</NavLink>
 			<NavLink
 				to="/about"
 				className={({isActive}) =>
@@ -53,7 +63,7 @@ export default function DesktopNavLinks({
 						<img
 							src={avatarUrl}
 							alt="User Avatar"
-							className="w-10 h-10 rounded-full object-cover"
+							className="w-8 h-8 rounded-full object-cover"
 						/>
 						<ChevronDown className="text-primary" />
 					</button>
@@ -64,7 +74,7 @@ export default function DesktopNavLinks({
 							<NavLink
 								to={`/user/${user}`}
 								onClick={() => setShowDropdown(false)}
-								className="relative block w-full text-left px-4 py-2 hover:bg-secondary hover:rounded-t-lg text-primary font-body font-light text-sm"
+								className="relative block w-full text-left px-4 py-2 hover:bg-secondary hover:rounded-t-lg text-primary font-heading font-light text-md"
 							>
 								My Bookings
 								<span
@@ -75,7 +85,7 @@ export default function DesktopNavLinks({
 								<NavLink
 									to={`/admin/${user}`}
 									onClick={() => setShowDropdown(false)}
-									className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-body font-light text-sm"
+									className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-heading font-light text-md"
 								>
 									Dashboard
 									<span
@@ -84,13 +94,13 @@ export default function DesktopNavLinks({
 							)}
 
 							<button
-								className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-body font-light text-sm">
+								className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-heading font-light text-md">
 								Inbox
 								<span
 									className="absolute bottom-0 left-1/2 w-[60%] h-[1px] bg-background -translate-x-1/2" />
 							</button>
 							<button
-								className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-body font-light text-sm">
+								className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-heading font-light text-md">
 								Notification
 								<span
 									className="absolute bottom-0 left-1/2 w-[60%] h-[1px] bg-background -translate-x-1/2" />
@@ -100,7 +110,7 @@ export default function DesktopNavLinks({
 									setShowDropdown(false);
 									logout();
 								}}
-								className="relative block w-full text-left px-4 py-2 text-red-600 hover:bg-secondary hover:rounded-b-lg font-body font-light text-sm"
+								className="relative block w-full text-left px-4 py-2 text-red-600 hover:bg-secondary hover:rounded-b-lg font-heading font-light text-md"
 							>
 								Logout
 							</button>

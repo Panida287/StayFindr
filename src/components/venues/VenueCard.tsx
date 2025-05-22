@@ -34,7 +34,7 @@ export function VenueCard({ venue }: Props) {
 			)}
 
 			{/* Image Section */}
-			<div className="w-full h-60 md:max-w-72">
+			<div className="w-full h-60 md:max-w-56 lg:max-w-72">
 				<ImageGallery images={images} altFallback={name} heightClass="h-full" />
 			</div>
 

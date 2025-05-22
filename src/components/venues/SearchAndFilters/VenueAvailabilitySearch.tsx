@@ -36,7 +36,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 			onInputChange,
 			onSearchClick,
 			initialCity = '',
-			initialGuests = 1,
+			initialGuests = 2,
 			initialDateFrom = '',
 			initialDateTo = '',
 			initialAmenities = {
@@ -56,6 +56,16 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 			return [start, end];
 		});
 
+		// Reset local state whenever parent props change
+		useEffect(() => {
+			setCity(initialCity);
+			setGuests(initialGuests);
+			setDateRange([
+				initialDateFrom ? new Date(initialDateFrom) : null,
+				initialDateTo   ? new Date(initialDateTo)   : null,
+			]);
+		}, [initialCity, initialGuests, initialDateFrom, initialDateTo]);
+
 		const [amenities] = useState(initialAmenities);
 		const [startDate, endDate] = dateRange;
 
@@ -64,7 +74,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 				city: city.trim(),
 				guests,
 				dateFrom: startDate ? startDate.toISOString() : '',
-				dateTo: endDate ? endDate.toISOString() : '',
+				dateTo:   endDate   ? endDate.toISOString()   : '',
 				amenities,
 			});
 		}, [city, guests, startDate, endDate]);
@@ -72,16 +82,14 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 		useImperativeHandle(ref, () => ({
 			clearForm: () => {
 				setCity('');
-				setGuests(1);
+				setGuests(2);
 				setDateRange([null, null]);
 			},
 		}));
 
 		return (
 			<div className="relative z-20 mx-auto">
-				<div
-					className="bg-white rounded-lg shadow-md w-[calc(100%-2rem)] max-w-5xl mx-auto flex flex-col items-start gap-4 px-4 py-3 md:flex-row md:flex-wrap">
-
+				<div className="bg-white rounded-lg shadow-md w-[calc(100%-2rem)] max-w-5xl mx-auto flex flex-col items-start gap-4 px-4 py-3 md:flex-row md:flex-wrap">
 					{/* Destination */}
 					<input
 						type="text"
@@ -108,16 +116,20 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 					<span className="hidden h-10 w-[1px] bg-secondary md:block" />
 
 					{/* Guests */}
-					<div
-						className="flex w-full items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm md:max-w-40">
+					<div className="flex w-full items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm md:max-w-40">
 						<span>Guests</span>
 						<div className="flex items-center gap-2">
-							<button onClick={() => setGuests((g) => Math.max(1, g - 1))}
-							        className="px-2 bg-gray-100 rounded-full">
+							<button
+								onClick={() => setGuests((g) => Math.max(1, g - 1))}
+								className="px-2 bg-gray-100 rounded-full"
+							>
 								–
 							</button>
 							<span>{guests}</span>
-							<button onClick={() => setGuests((g) => g + 1)} className="px-2 bg-gray-100 rounded-full">
+							<button
+								onClick={() => setGuests((g) => g + 1)}
+								className="px-2 bg-gray-100 rounded-full"
+							>
 								+
 							</button>
 						</div>
