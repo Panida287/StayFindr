@@ -5,6 +5,7 @@ import SearchSection from '../../components/venues/SearchAndFilters/SearchSectio
 import ResultsBanner from '../../components/venues/SearchAndFilters/ResultBanner';
 import VenueList from '../../components/venues/VenueList';
 import Pagination from '../../components/commons/Pagination';
+import { SortDropdown, SortValue } from '../../components/venues/SearchAndFilters/SortDropdown';
 import { SearchParams } from '../../App';
 
 export default function BrowsePage() {
@@ -18,11 +19,11 @@ export default function BrowsePage() {
 		amenities: { wifi: false, parking: false, breakfast: false, pets: false },
 	};
 
-	// ACTIVE = what's actually applied to your banner & data store
+	// ACTIVE filters drive banner/data
 	const [activeFilters, setActiveFilters] = useState<SearchParams>(
 		initialParams || defaultParams
 	);
-	// PENDING = what the user is currently editing
+	// PENDING filters drive the inputs
 	const [pendingFilters, setPendingFilters] = useState<SearchParams>(
 		initialParams || defaultParams
 	);
@@ -33,16 +34,19 @@ export default function BrowsePage() {
 		error,
 		meta,
 		currentPage,
+		currentSort,
+		currentSortOrder,
 		setPage,
+		setSort,
 		applyFilters,
 		fetchAllVenues,
 	} = useFetchVenues();
 
 	const resultRef = useRef<HTMLDivElement>(null);
 
-	// On mount, fetch & apply the ACTIVE filters once
+	// initial load
 	useEffect(() => {
-		fetchAllVenues().then(() => {
+		fetchAllVenues().then(() =>
 			applyFilters({
 				query: activeFilters.city,
 				guests: activeFilters.guests,
@@ -52,21 +56,68 @@ export default function BrowsePage() {
 				sort: 'created',
 				sortOrder: 'desc',
 				page: 1,
-			});
-		});
+			})
+		);
 	}, []);
 
+	// scroll on page change
 	useEffect(() => {
 		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [currentPage]);
 
+	// map store sort → dropdown value
+	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
+		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
+		if (sort === 'rating') return 'rating';
+		if (sort === 'bookings') return 'popularity';
+		return 'newest';
+	};
+	const currentSortValue = getSortValue(currentSort, currentSortOrder);
+
+	// handle dropdown change
+	const handleSortChange = (value: SortValue) => {
+		let sortField = 'created';
+		let sortOrder: 'asc' | 'desc' = 'desc';
+		switch (value) {
+			case 'priceAsc':
+				sortField = 'price';
+				sortOrder = 'asc';
+				break;
+			case 'priceDesc':
+				sortField = 'price';
+				sortOrder = 'desc';
+				break;
+			case 'rating':
+				sortField = 'rating';
+				sortOrder = 'desc';
+				break;
+			case 'popularity':
+				sortField = 'bookings';
+				sortOrder = 'desc';
+				break;
+		}
+
+		const updated = {
+			...activeFilters,
+			sort: sortField,
+			sortOrder,
+			query: activeFilters.city,
+			page: 1,
+		};
+		setSort(sortField, sortOrder);
+		setActiveFilters(updated);
+		applyFilters(updated);
+		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+	};
+
+	// Search, Apply, Clear handlers (unchanged)
 	const handleSearchClick = () => {
 		setActiveFilters(pendingFilters);
 		applyFilters({
 			...pendingFilters,
 			query: pendingFilters.city,
-			sort: 'created',
-			sortOrder: 'desc',
+			sort: currentSort,
+			sortOrder: currentSortOrder,
 			page: 1,
 		});
 	};
@@ -76,8 +127,8 @@ export default function BrowsePage() {
 		applyFilters({
 			...pendingFilters,
 			query: pendingFilters.city,
-			sort: 'created',
-			sortOrder: 'desc',
+			sort: currentSort,
+			sortOrder: currentSortOrder,
 			page: 1,
 		});
 	};
@@ -93,7 +144,8 @@ export default function BrowsePage() {
 			page: 1,
 		});
 	};
-	
+
+	// pagination
 	const onPageChange = (page: number) => {
 		setPage(page);
 		applyFilters({ ...activeFilters, query: activeFilters.city, page });
@@ -110,6 +162,11 @@ export default function BrowsePage() {
 			/>
 
 			<ResultsBanner filters={activeFilters} ref={resultRef} />
+
+			{/* Sort dropdown */}
+			<div className="flex justify-end w-[calc(100%-2rem)] max-w-5xl mx-auto px-4">
+				<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
+			</div>
 
 			<VenueList venues={venues} isLoading={isLoading} error={error} />
 
