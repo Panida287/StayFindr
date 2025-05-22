@@ -63,7 +63,7 @@ export default function DesktopNavLinks({
 						<img
 							src={avatarUrl}
 							alt="User Avatar"
-							className="w-10 h-10 rounded-full object-cover"
+							className="w-8 h-8 rounded-full object-cover"
 						/>
 						<ChevronDown className="text-primary" />
 					</button>

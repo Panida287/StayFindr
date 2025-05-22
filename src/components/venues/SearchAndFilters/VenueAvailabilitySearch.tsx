@@ -36,7 +36,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 			onInputChange,
 			onSearchClick,
 			initialCity = '',
-			initialGuests = 1,
+			initialGuests = 2,
 			initialDateFrom = '',
 			initialDateTo = '',
 			initialAmenities = {
@@ -82,7 +82,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 		useImperativeHandle(ref, () => ({
 			clearForm: () => {
 				setCity('');
-				setGuests(1);
+				setGuests(2);
 				setDateRange([null, null]);
 			},
 		}));
