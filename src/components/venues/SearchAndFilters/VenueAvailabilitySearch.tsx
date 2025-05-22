@@ -78,16 +78,17 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 		}));
 
 		return (
-			<div className="relative z-50 w-full px-4">
-				<div className="bg-white rounded-lg shadow-md w-full max-w-4xl mx-auto flex flex-col items-start gap-4 px-4 py-3 md:flex-row md:flex-wrap">
+			<div className="relative z-20 mx-auto">
+				<div
+					className="bg-white rounded-lg shadow-md w-[calc(100%-2rem)] max-w-5xl mx-auto flex flex-col items-start gap-4 px-4 py-3 md:flex-row md:flex-wrap">
 
-					{/* City */}
+					{/* Destination */}
 					<input
 						type="text"
 						placeholder="Destination or property"
 						value={city}
 						onChange={(e) => setCity(e.target.value)}
-						className="px-4 w-full flex flex-1 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm md:w-40"
+						className="px-4 w-full flex flex-1 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm md:w-56"
 					/>
 
 					<span className="hidden h-10 w-[1px] bg-secondary md:block" />
@@ -107,10 +108,12 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 					<span className="hidden h-10 w-[1px] bg-secondary md:block" />
 
 					{/* Guests */}
-					<div className="flex w-full items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm md:max-w-40">
+					<div
+						className="flex w-full items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm md:max-w-40">
 						<span>Guests</span>
 						<div className="flex items-center gap-2">
-							<button onClick={() => setGuests((g) => Math.max(1, g - 1))} className="px-2 bg-gray-100 rounded-full">
+							<button onClick={() => setGuests((g) => Math.max(1, g - 1))}
+							        className="px-2 bg-gray-100 rounded-full">
 								–
 							</button>
 							<span>{guests}</span>
@@ -123,7 +126,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 					{/* Search Button */}
 					<CommonButton
 						onClick={onSearchClick}
-						className="bg-primary flex-1 text-white hover:bg-background hover:text-primary w-full md:w-fit"
+						className="bg-primary flex-1 text-white hover:bg-background hover:text-primary w-full md:w-fit lg:flex-grow-0"
 					>
 						Search
 					</CommonButton>

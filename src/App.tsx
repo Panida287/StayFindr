@@ -60,7 +60,7 @@ function App() {
 		<>
 			<TopVenuesCarousel />
 
-			<div className="relative -mt-[33px]">
+			<div className="relative -mt-[33px] w-full">
 				<VenueAvailabilitySearch
 					onInputChange={handleInputChange}
 					onSearchClick={handleSearchClick}

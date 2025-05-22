@@ -149,7 +149,7 @@ function BrowsePage() {
 		: [];
 
 	return (
-		<div className="p-4 space-y-6">
+		<div className="translate-y-24 space-y-6">
 			<VenueAvailabilitySearch
 				ref={searchRef}
 				onInputChange={(params) => setPendingSearch({ ...params, amenities: pendingAmenities })}
