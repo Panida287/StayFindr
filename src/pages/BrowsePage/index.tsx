@@ -10,20 +10,21 @@ import { SearchParams } from '../../App';
 
 export default function BrowsePage() {
 	const location = useLocation();
+	const [currentPage, setCurrentPage] = useState(1);
+	const resultRef = useRef<HTMLDivElement>(null);
+
 	const initialParams = (location.state as { params?: SearchParams })?.params;
 	const defaultParams: SearchParams = {
 		city: '',
 		guests: 1,
 		dateFrom: '',
 		dateTo: '',
-		amenities: {wifi: false, parking: false, breakfast: false, pets: false},
+		amenities: { wifi: false, parking: false, breakfast: false, pets: false },
 	};
 
-	// ACTIVE = what's applied
 	const [activeFilters, setActiveFilters] = useState<SearchParams>(
 		initialParams || defaultParams
 	);
-	// PENDING = what's being edited
 	const [pendingFilters, setPendingFilters] = useState<SearchParams>(
 		initialParams || defaultParams
 	);
@@ -33,133 +34,77 @@ export default function BrowsePage() {
 		isLoading,
 		error,
 		meta,
-		currentPage,
 		currentSort,
 		currentSortOrder,
+		fetchAllVenues,
+		applyFilters,
 		setPage,
 		setSort,
-		applyFilters,
-		fetchAllVenues,
 	} = useFetchVenues();
 
-	const searchRef = useRef<any>(null);
-	const resultRef = useRef<HTMLDivElement>(null);
-
-	// Initial fetch + apply
+	// Initial load: fetch all venues & apply default filters
 	useEffect(() => {
 		fetchAllVenues().then(() =>
 			applyFilters({
+				...activeFilters,
 				query: activeFilters.city,
-				guests: activeFilters.guests,
-				dateFrom: activeFilters.dateFrom,
-				dateTo: activeFilters.dateTo,
-				amenities: activeFilters.amenities,
 				sort: 'created',
 				sortOrder: 'desc',
 				page: 1,
 			})
 		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Scroll on page change
+	// Re-apply filters and scroll whenever page, filters, or sort change
 	useEffect(() => {
-		resultRef.current?.scrollIntoView({behavior: 'smooth'});
-	}, [currentPage]);
+		setPage(currentPage);
+		applyFilters({
+			...activeFilters,
+			query: activeFilters.city,
+			sort: currentSort,
+			sortOrder: currentSortOrder,
+			page: currentPage,
+		});
+		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+	}, [currentPage, activeFilters, currentSort, currentSortOrder]);
 
-	// Sort dropdown mapping
-	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
-		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
-		if (sort === 'rating') return 'rating';
-		if (sort === 'bookings') return 'popularity';
-		return 'newest';
-	};
-	const currentSortValue = getSortValue(currentSort, currentSortOrder);
-
+	// Handlers
 	const handleSortChange = (value: SortValue) => {
 		let sortField = 'created';
 		let sortOrder: 'asc' | 'desc' = 'desc';
-		if (value === 'priceAsc') {
-			sortField = 'price';
-			sortOrder = 'asc';
-		}
-		if (value === 'priceDesc') {
-			sortField = 'price';
-			sortOrder = 'desc';
-		}
-		if (value === 'rating') {
-			sortField = 'rating';
-			sortOrder = 'desc';
-		}
-		if (value === 'popularity') {
-			sortField = 'bookings';
-			sortOrder = 'desc';
-		}
+		if (value === 'priceAsc') [sortField, sortOrder] = ['price', 'asc'];
+		if (value === 'priceDesc') [sortField, sortOrder] = ['price', 'desc'];
+		if (value === 'rating') [sortField, sortOrder] = ['rating', 'desc'];
+		if (value === 'popularity') [sortField, sortOrder] = ['bookings', 'desc'];
 
-		const updated = {
-			...activeFilters,
-			sort: sortField,
-			sortOrder,
-			query: activeFilters.city,
-			page: 1,
-		};
 		setSort(sortField, sortOrder);
-		setActiveFilters(updated);
-		applyFilters(updated);
-		resultRef.current?.scrollIntoView({behavior: 'smooth'});
+		setCurrentPage(1);
 	};
 
-	// “Search” button
 	const handleSearchClick = () => {
 		setActiveFilters(pendingFilters);
-		applyFilters({
-			...pendingFilters,
-			query: pendingFilters.city,
-			sort: currentSort,
-			sortOrder: currentSortOrder,
-			page: 1,
-		});
-		resultRef.current?.scrollIntoView({behavior: 'smooth'});
+		setCurrentPage(1);
 	};
 
-	// “Apply Filter” under amenities
 	const handleApplyAmenities = () => {
 		setActiveFilters(pendingFilters);
-		applyFilters({
-			...pendingFilters,
-			query: pendingFilters.city,
-			sort: currentSort,
-			sortOrder: currentSortOrder,
-			page: 1,
-		});
-		resultRef.current?.scrollIntoView({behavior: 'smooth'});
+		setCurrentPage(1);
 	};
 
-	// **Clear**: reset filters, clear inputs, scroll to results
 	const handleClear = () => {
 		setPendingFilters(defaultParams);
 		setActiveFilters(defaultParams);
-		applyFilters({
-			...defaultParams,
-			query: '',
-			sort: 'created',
-			sortOrder: 'desc',
-			page: 1,
-		});
-		searchRef.current?.clearForm();
-		resultRef.current?.scrollIntoView({behavior: 'smooth'});
+		setCurrentPage(1);
 	};
 
-	// Pagination
 	const onPageChange = (page: number) => {
-		setPage(page);
-		applyFilters({...activeFilters, query: activeFilters.city, page});
-		resultRef.current?.scrollIntoView({behavior: 'smooth'});
+		setCurrentPage(page);
 	};
 
 	return (
 		<div className="mt-24 space-y-6">
 			<SearchSection
-				ref={searchRef}
 				filters={pendingFilters}
 				setFilters={setPendingFilters}
 				onSearchClick={handleSearchClick}
@@ -167,21 +112,29 @@ export default function BrowsePage() {
 				onApplyAmenities={handleApplyAmenities}
 			/>
 
-			<ResultsBanner filters={activeFilters} ref={resultRef} />
+			<div ref={resultRef} className="space-y-6">
+				<ResultsBanner filters={activeFilters} />
 
-			<div className="flex justify-end w-[calc(100%-2rem)] max-w-5xl mx-auto px-4">
-				<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
+				<div className="flex justify-end w-[calc(100%-2rem)] max-w-5xl mx-auto px-4">
+					<SortDropdown onChange={handleSortChange} currentSort={(() => {
+						if (currentSort === 'price' && currentSortOrder === 'asc') return 'priceAsc';
+						if (currentSort === 'price' && currentSortOrder === 'desc') return 'priceDesc';
+						if (currentSort === 'rating') return 'rating';
+						if (currentSort === 'bookings') return 'popularity';
+						return 'newest';
+					})()} />
+				</div>
+
+				<VenueList venues={venues} isLoading={isLoading} error={error} />
+
+				{meta.pageCount > 1 && (
+					<Pagination
+						currentPage={currentPage}
+						pageCount={meta.pageCount}
+						onPageChange={onPageChange}
+					/>
+				)}
 			</div>
-
-			<VenueList venues={venues} isLoading={isLoading} error={error} />
-
-			{meta.pageCount > 1 && (
-				<Pagination
-					currentPage={currentPage}
-					pageCount={meta.pageCount}
-					onPageChange={onPageChange}
-				/>
-			)}
 		</div>
 	);
 }
