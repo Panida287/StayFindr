@@ -10,7 +10,7 @@ export default function RatingBadge({ rating }: RatingBadgeProps) {
 	return (
 		<div className="flex items-center gap-2">
 			{/* big yellow star */}
-			<i className="fa-solid fa-star-sharp text-3xl text-yellow-500"></i>
+			<i className="fa-solid fa-star-sharp text-2xl text-yellow-500"></i>
 
 			{/* rating text */}
 			<span className="text-black font-bold">
