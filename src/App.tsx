@@ -51,7 +51,7 @@ function App() {
 	const handleSearchClick = () => {
 		const paramsWithQuery = {
 			...searchParams,
-			query: searchParams.city, // Ensure `query` is included
+			query: searchParams.city,
 		};
 		navigate('/browse', { state: { params: paramsWithQuery } });
 	};
@@ -60,7 +60,7 @@ function App() {
 		<>
 			<TopVenuesCarousel />
 
-			<div className="relative -mt-[33px]">
+			<div className="relative -mt-[33px] w-full">
 				<VenueAvailabilitySearch
 					onInputChange={handleInputChange}
 					onSearchClick={handleSearchClick}
