@@ -27,7 +27,7 @@ export default function BookingCalendar({
                                         }: BookingCalendarProps) {
 	const [showCalendar, setShowCalendar] = useState(false);
 	const [range, setRange] = useState<[Date | null, Date | null]>(initialRange);
-	const [error, setError] = useState<string|null>(null);
+	const [error, setError] = useState<string | null>(null);
 	const [start, end] = range;
 	const ref = useRef<HTMLDivElement>(null);
 
@@ -47,11 +47,11 @@ export default function BookingCalendar({
 		return () => document.removeEventListener('mousedown', onClickOutside);
 	}, [showCalendar]);
 
-	const handleChange = (dates: [Date|null, Date|null]) => {
+	const handleChange = (dates: [Date | null, Date | null]) => {
 		const [s, e] = dates;
 		// If clicking the same start again, reset
 		if (start && s && !e && start.getTime() === s.getTime()) {
-			setRange([null,null]);
+			setRange([null, null]);
 			setError(null);
 			onDateChange(null, null);
 			setShowCalendar(false);
@@ -121,6 +121,7 @@ export default function BookingCalendar({
 						minDate={new Date()}
 						inline
 						monthsShown={2}
+						calendarClassName="two-months inline-flex gap-4"
 						className="border rounded"
 					/>
 					{error && <p className="text-red-600 text-sm mt-1">{error}</p>}

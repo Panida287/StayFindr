@@ -80,7 +80,7 @@ export default function VenueDetailPage() {
 					<VenueAmenities meta={meta} />
 				</div>
 
-				<div className="flex flex-col md:flex-row gap-6">
+				<div className="flex flex-col gap-6">
 					<div className="flex-1">
 						<p className="flex items-center text-gray-600 gap-2 mb-2">
 							<MapPin className="w-5 h-5" />
@@ -88,7 +88,7 @@ export default function VenueDetailPage() {
 						</p>
 						<VenueMap lat={safeLat} lng={safeLng} name={name} />
 					</div>
-					<div className="md:w-1/3 bg-secondary rounded-xl p-6">
+					<div className="w-full bg-secondary rounded-xl p-6">
 						<h4 className="font-semibold text-primary mb-4">Check availability</h4>
 						<BookingForm
 							price={price}

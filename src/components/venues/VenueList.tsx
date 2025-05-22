@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { Venue } from '../../types/venues';
-import {VenueCard} from './VenueCard';
+import VenueCard from './VenueCard';
 import { SearchParams } from '../../App';
 
 interface VenueListProps {

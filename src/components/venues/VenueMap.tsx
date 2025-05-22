@@ -24,7 +24,7 @@ const VenueMap = ({ lat, lng, name }: VenueMapProps) => {
 			center={position}
 			zoom={13}
 			scrollWheelZoom={false}
-			className='h-64 w-full rounded-lg'
+			className='h-64 rounded-lg'
 		>
 			<TileLayer
 				attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
