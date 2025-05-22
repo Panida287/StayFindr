@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
-import { logout } from '../../utilities/logout';
-import {SplitButton} from '../commons/Buttons.tsx';
+import { logout } from '../../utilities/logout.ts';
+import {SplitButton} from '../../components/commons/Buttons.tsx';
 
 type Props = {
 	dropdownRef: React.RefObject<HTMLDivElement | null>;

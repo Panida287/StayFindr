@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { useFetchProfile } from '../../hooks/useFetchProfile';
-import useBreakpoint from '../../hooks/useBreakpoint';
-import MobileNavMenu from './MobileNavMenu';
-import DesktopNavLinks from './DesktopNavLinks';
+import { useFetchProfile } from '../../hooks/useFetchProfile.ts';
+import useBreakpoint from '../../hooks/useBreakpoint.ts';
+import MobileNavMenu from './MobileNavMenu.tsx';
+import DesktopNavLinks from './DesktopNavLinks.tsx';
 
 export default function Header() {
 	const isMobile = useBreakpoint(600);

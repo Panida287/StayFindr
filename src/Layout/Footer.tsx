@@ -3,10 +3,10 @@ import { FaFacebookF, FaInstagram } from 'react-icons/fa';
 export default function NavigationFooter() {
 
 	return (
-		<footer className="bg-gray-dark text-gray-light px-8 py-12 mt-12 text-sm">
+		<footer className="bg-background w-full text-gray-light px-8 py-12 mt-12 text-sm">
 			<div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
 				<div>
-					<h4 className="text-white font-bold mb-2">About</h4>
+					<h4 className="text-primary font-bold mb-2">About</h4>
 					<ul className="space-y-1">
 						<li>How it works</li>
 						<li>Careers</li>
@@ -14,7 +14,7 @@ export default function NavigationFooter() {
 					</ul>
 				</div>
 				<div>
-					<h4 className="text-white font-bold mb-2">Community</h4>
+					<h4 className="text-primary font-bold mb-2">Community</h4>
 					<ul className="space-y-1">
 						<li>Referral program</li>
 						<li>Gift cards</li>
@@ -22,7 +22,7 @@ export default function NavigationFooter() {
 					</ul>
 				</div>
 				<div>
-					<h4 className="text-white font-bold mb-2">Host</h4>
+					<h4 className="text-primary font-bold mb-2">Host</h4>
 					<ul className="space-y-1">
 						<li>Host your home</li>
 						<li>Host experiences</li>
@@ -30,7 +30,7 @@ export default function NavigationFooter() {
 					</ul>
 				</div>
 				<div>
-					<h4 className="text-white font-bold mb-2">Support</h4>
+					<h4 className="text-primary font-bold mb-2">Support</h4>
 					<ul className="space-y-1">
 						<li>Help center</li>
 						<li>Trust & safety</li>
@@ -39,9 +39,9 @@ export default function NavigationFooter() {
 				</div>
 			</div>
 
-			<div className="flex justify-between items-center mt-8 border-t border-gray text-xs pt-4">
+			<div className="flex max-w-6xl mx-auto justify-between items-center mt-8 border-t border-gray text-xs pt-4">
 				<span>© 2025 StayFindr</span>
-				<div className="flex space-x-4 text-white">
+				<div className="flex space-x-4 text-primary">
 					<FaFacebookF className="w-4 h-4" />
 					<FaInstagram className="w-4 h-4" />
 				</div>
