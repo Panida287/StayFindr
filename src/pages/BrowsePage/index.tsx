@@ -16,7 +16,7 @@ export default function BrowsePage() {
 		guests: 1,
 		dateFrom: '',
 		dateTo: '',
-		amenities: { wifi: false, parking: false, breakfast: false, pets: false },
+		amenities: {wifi: false, parking: false, breakfast: false, pets: false},
 	};
 
 	// ACTIVE = what's applied
@@ -63,7 +63,7 @@ export default function BrowsePage() {
 
 	// Scroll on page change
 	useEffect(() => {
-		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+		resultRef.current?.scrollIntoView({behavior: 'smooth'});
 	}, [currentPage]);
 
 	// Sort dropdown mapping
@@ -78,10 +78,22 @@ export default function BrowsePage() {
 	const handleSortChange = (value: SortValue) => {
 		let sortField = 'created';
 		let sortOrder: 'asc' | 'desc' = 'desc';
-		if (value === 'priceAsc') { sortField = 'price'; sortOrder = 'asc'; }
-		if (value === 'priceDesc') { sortField = 'price'; sortOrder = 'desc'; }
-		if (value === 'rating') { sortField = 'rating'; sortOrder = 'desc'; }
-		if (value === 'popularity') { sortField = 'bookings'; sortOrder = 'desc'; }
+		if (value === 'priceAsc') {
+			sortField = 'price';
+			sortOrder = 'asc';
+		}
+		if (value === 'priceDesc') {
+			sortField = 'price';
+			sortOrder = 'desc';
+		}
+		if (value === 'rating') {
+			sortField = 'rating';
+			sortOrder = 'desc';
+		}
+		if (value === 'popularity') {
+			sortField = 'bookings';
+			sortOrder = 'desc';
+		}
 
 		const updated = {
 			...activeFilters,
@@ -93,7 +105,7 @@ export default function BrowsePage() {
 		setSort(sortField, sortOrder);
 		setActiveFilters(updated);
 		applyFilters(updated);
-		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+		resultRef.current?.scrollIntoView({behavior: 'smooth'});
 	};
 
 	// “Search” button
@@ -106,7 +118,7 @@ export default function BrowsePage() {
 			sortOrder: currentSortOrder,
 			page: 1,
 		});
-		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+		resultRef.current?.scrollIntoView({behavior: 'smooth'});
 	};
 
 	// “Apply Filter” under amenities
@@ -119,7 +131,7 @@ export default function BrowsePage() {
 			sortOrder: currentSortOrder,
 			page: 1,
 		});
-		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+		resultRef.current?.scrollIntoView({behavior: 'smooth'});
 	};
 
 	// **Clear**: reset filters, clear inputs, scroll to results
@@ -134,18 +146,18 @@ export default function BrowsePage() {
 			page: 1,
 		});
 		searchRef.current?.clearForm();
-		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+		resultRef.current?.scrollIntoView({behavior: 'smooth'});
 	};
 
 	// Pagination
 	const onPageChange = (page: number) => {
 		setPage(page);
-		applyFilters({ ...activeFilters, query: activeFilters.city, page });
-		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+		applyFilters({...activeFilters, query: activeFilters.city, page});
+		resultRef.current?.scrollIntoView({behavior: 'smooth'});
 	};
 
 	return (
-		<div className="translate-y-24 space-y-6">
+		<div className="mt-24 space-y-6">
 			<SearchSection
 				ref={searchRef}
 				filters={pendingFilters}
