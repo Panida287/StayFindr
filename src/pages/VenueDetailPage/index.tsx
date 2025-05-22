@@ -4,11 +4,11 @@ import { useHandleBooking } from '../../hooks/useHandleBooking';
 import VenueMap from '../../components/venues/VenueMap';
 import OwnerInfo from '../../components/venues/OwnerInfo';
 import VenueAmenities from '../../components/venues/VenueAmenities';
-import ImageGallery from '../../components/venues/ImageGallery';
 import { MapPin, Star, Users } from 'lucide-react';
 import { FALLBACK } from '../../constants.ts';
 import { Booking } from '../../types/venues.ts';
 import BookingForm from '../../components/bookings/BookingForm.tsx';
+import ImageGalleryAlternative from '../../components/venues/ImageGalleryAlternative.tsx';
 
 export default function VenueDetailPage() {
 	const { venueId } = useParams<{ venueId: string }>();
@@ -37,10 +37,10 @@ export default function VenueDetailPage() {
 	}));
 
 	return (
-		<div className="p-6 max-w-5xl mx-auto">
+		<div className="p-6 max-w-5xl mt-20 mx-auto">
 			<h1 className="text-2xl font-bold mb-4">{name}</h1>
 
-			<ImageGallery images={images} altFallback={name} heightClass="h-48" />
+			<ImageGalleryAlternative images={images} altFallback={name} />
 
 			<div className="space-y-4">
 				<p className="text-gray-700">{description}</p>
