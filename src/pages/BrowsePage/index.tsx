@@ -19,11 +19,11 @@ export default function BrowsePage() {
 		amenities: { wifi: false, parking: false, breakfast: false, pets: false },
 	};
 
-	// ACTIVE filters drive banner/data
+	// ACTIVE = what's applied
 	const [activeFilters, setActiveFilters] = useState<SearchParams>(
 		initialParams || defaultParams
 	);
-	// PENDING filters drive the inputs
+	// PENDING = what's being edited
 	const [pendingFilters, setPendingFilters] = useState<SearchParams>(
 		initialParams || defaultParams
 	);
@@ -42,9 +42,10 @@ export default function BrowsePage() {
 		fetchAllVenues,
 	} = useFetchVenues();
 
+	const searchRef = useRef<any>(null);
 	const resultRef = useRef<HTMLDivElement>(null);
 
-	// initial load
+	// Initial fetch + apply
 	useEffect(() => {
 		fetchAllVenues().then(() =>
 			applyFilters({
@@ -60,12 +61,12 @@ export default function BrowsePage() {
 		);
 	}, []);
 
-	// scroll on page change
+	// Scroll on page change
 	useEffect(() => {
 		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, [currentPage]);
 
-	// map store sort → dropdown value
+	// Sort dropdown mapping
 	const getSortValue = (sort: string, order: 'asc' | 'desc'): SortValue => {
 		if (sort === 'price') return order === 'asc' ? 'priceAsc' : 'priceDesc';
 		if (sort === 'rating') return 'rating';
@@ -74,28 +75,13 @@ export default function BrowsePage() {
 	};
 	const currentSortValue = getSortValue(currentSort, currentSortOrder);
 
-	// handle dropdown change
 	const handleSortChange = (value: SortValue) => {
 		let sortField = 'created';
 		let sortOrder: 'asc' | 'desc' = 'desc';
-		switch (value) {
-			case 'priceAsc':
-				sortField = 'price';
-				sortOrder = 'asc';
-				break;
-			case 'priceDesc':
-				sortField = 'price';
-				sortOrder = 'desc';
-				break;
-			case 'rating':
-				sortField = 'rating';
-				sortOrder = 'desc';
-				break;
-			case 'popularity':
-				sortField = 'bookings';
-				sortOrder = 'desc';
-				break;
-		}
+		if (value === 'priceAsc') { sortField = 'price'; sortOrder = 'asc'; }
+		if (value === 'priceDesc') { sortField = 'price'; sortOrder = 'desc'; }
+		if (value === 'rating') { sortField = 'rating'; sortOrder = 'desc'; }
+		if (value === 'popularity') { sortField = 'bookings'; sortOrder = 'desc'; }
 
 		const updated = {
 			...activeFilters,
@@ -110,7 +96,7 @@ export default function BrowsePage() {
 		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
-	// Search, Apply, Clear handlers (unchanged)
+	// “Search” button
 	const handleSearchClick = () => {
 		setActiveFilters(pendingFilters);
 		applyFilters({
@@ -120,8 +106,10 @@ export default function BrowsePage() {
 			sortOrder: currentSortOrder,
 			page: 1,
 		});
+		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
+	// “Apply Filter” under amenities
 	const handleApplyAmenities = () => {
 		setActiveFilters(pendingFilters);
 		applyFilters({
@@ -131,8 +119,10 @@ export default function BrowsePage() {
 			sortOrder: currentSortOrder,
 			page: 1,
 		});
+		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
+	// **Clear**: reset filters, clear inputs, scroll to results
 	const handleClear = () => {
 		setPendingFilters(defaultParams);
 		setActiveFilters(defaultParams);
@@ -143,17 +133,21 @@ export default function BrowsePage() {
 			sortOrder: 'desc',
 			page: 1,
 		});
+		searchRef.current?.clearForm();
+		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
-	// pagination
+	// Pagination
 	const onPageChange = (page: number) => {
 		setPage(page);
 		applyFilters({ ...activeFilters, query: activeFilters.city, page });
+		resultRef.current?.scrollIntoView({ behavior: 'smooth' });
 	};
 
 	return (
 		<div className="translate-y-24 space-y-6">
 			<SearchSection
+				ref={searchRef}
 				filters={pendingFilters}
 				setFilters={setPendingFilters}
 				onSearchClick={handleSearchClick}
@@ -163,7 +157,6 @@ export default function BrowsePage() {
 
 			<ResultsBanner filters={activeFilters} ref={resultRef} />
 
-			{/* Sort dropdown */}
 			<div className="flex justify-end w-[calc(100%-2rem)] max-w-5xl mx-auto px-4">
 				<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
 			</div>
