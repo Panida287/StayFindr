@@ -8,6 +8,7 @@ import Pagination from '../../components/commons/Pagination.tsx';
 import { format, differenceInCalendarDays } from 'date-fns';
 import { SearchParams } from '../../App';
 import AmenitiesFilter from '../../components/venues/SearchAndFilters/AmenitiesFilter.tsx';
+import AdBanner from '../../components/commons/AdBanner.tsx';
 
 function BrowsePage() {
 	const location = useLocation();
@@ -150,6 +151,7 @@ function BrowsePage() {
 
 	return (
 		<div className="translate-y-24 space-y-6">
+			<AdBanner />
 			<VenueAvailabilitySearch
 				ref={searchRef}
 				onInputChange={(params) => setPendingSearch({ ...params, amenities: pendingAmenities })}

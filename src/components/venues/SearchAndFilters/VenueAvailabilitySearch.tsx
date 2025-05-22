@@ -85,7 +85,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 					{/* Destination */}
 					<input
 						type="text"
-						placeholder="Destination or property"
+						placeholder="Destination / property"
 						value={city}
 						onChange={(e) => setCity(e.target.value)}
 						className="px-4 w-full flex flex-1 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm md:w-56"
@@ -126,7 +126,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 					{/* Search Button */}
 					<CommonButton
 						onClick={onSearchClick}
-						className="bg-primary flex-1 text-white hover:bg-background hover:text-primary w-full md:w-fit lg:flex-grow-0"
+						className="bg-primary flex-1 text-white hover:bg-background hover:text-primary w-full md:w-fit"
 					>
 						Search
 					</CommonButton>
