@@ -10,12 +10,12 @@ export default function TopVenuesCarousel() {
 	const topVenues = getTopVenues();
 
 	return (
-		<section className="relative -mt-[128px] h-[500px] overflow-hidden">
+		<section className="relative -mt-[128px] h-[500px] overflow-hidden max-w-6xl mx-auto">
 			{/* Left white fade overlay */}
-			<div className="absolute w-1/2 h-full inset-y-10 left-0 z-20 bg-gradient-to-r from-black/60 via-black/50 to-transparent" />
+			<div className="absolute w-1/2 h-full inset-y-10 left-0 z-20 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
 
 			{/* Text content in top-left */}
-			<div className="absolute top-56 left-10 z-30 flex flex-col text-secondary w-2/3 space-y-3 sm:1/2">
+			<div className="absolute top-56 left-10 z-30 flex flex-col text-secondary w-1/2 space-y-3 sm:top-48 md:top-56">
 
 				<h2 className="text-4xl font-bold leading-tight font-heading">
 					Find Your Perfect Stay
