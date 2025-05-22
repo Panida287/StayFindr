@@ -14,6 +14,14 @@ function BrowsePage() {
 	const resultRef = useRef<HTMLDivElement | null>(null);
 	const initialParams = (location.state as { params: SearchParams })?.params;
 
+	const defaultParams: SearchParams = {
+		city: '',
+		guests: 1,
+		dateFrom: '',
+		dateTo: '',
+		amenities: { wifi: false, parking: false, breakfast: false, pets: false },
+	};
+
 	const {
 		venues,
 		isLoading,
@@ -27,28 +35,13 @@ function BrowsePage() {
 		applyFilters,
 	} = useFetchVenues();
 
-	const [activeFilters, setActiveFilters] = useState<SearchParams>({
-		city: initialParams?.city || '',
-		guests: initialParams?.guests || 1,
-		dateFrom: initialParams?.dateFrom || '',
-		dateTo: initialParams?.dateTo || '',
-		amenities: initialParams?.amenities || {
-			wifi: false,
-			parking: false,
-			breakfast: false,
-			pets: false,
-		},
-	});
+	const [activeFilters, setActiveFilters] = useState<SearchParams>(initialParams || defaultParams);
+	const [pendingSearch, setPendingSearch] = useState<SearchParams>(initialParams || defaultParams);
+	const [pendingAmenities, setPendingAmenities] = useState(initialParams?.amenities || defaultParams.amenities);
 
 	useEffect(() => {
 		if (initialParams) {
-			const filters = {
-				...activeFilters,
-				query: initialParams.city,
-				page: 1,
-			};
-			setActiveFilters(filters);
-			applyFilters(filters);
+			applyFilters({ ...initialParams, query: initialParams.city, page: 1 });
 		}
 	}, []);
 
@@ -96,43 +89,33 @@ function BrowsePage() {
 				break;
 		}
 
+		const updated = {
+			...activeFilters,
+			sort: sortField,
+			sortOrder,
+			query: activeFilters.city,
+			page: 1,
+		};
 		setSort(sortField, sortOrder);
-
-		const updated = { ...activeFilters, sort: sortField, sortOrder, page: 1 };
 		setActiveFilters(updated);
 		applyFilters(updated);
 		scrollToResults();
 	};
 
 	const handleClearSearch = () => {
-		const reset = {
-			city: '',
-			guests: 1,
-			dateFrom: '',
-			dateTo: '',
-			amenities: {
-				wifi: false,
-				parking: false,
-				breakfast: false,
-				pets: false,
-			},
-		};
+		const reset = { ...defaultParams, query: '' };
+		setPendingSearch(reset);
+		setPendingAmenities(reset.amenities);
 		setActiveFilters(reset);
 		applyFilters({ ...reset, page: 1 });
 		scrollToResults();
 	};
 
-	const handleSearch = (params: SearchParams) => {
-		const updated = { ...params, page: 1 };
-		setActiveFilters(updated);
-		applyFilters(updated);
-		scrollToResults();
-	};
-
-	const handleAmenitiesApply = (newAmenities: SearchParams['amenities']) => {
+	const handleSearchClick = () => {
 		const updated = {
-			...activeFilters,
-			amenities: newAmenities,
+			...pendingSearch,
+			amenities: pendingAmenities,
+			query: pendingSearch.city,
 			page: 1,
 		};
 		setActiveFilters(updated);
@@ -140,9 +123,14 @@ function BrowsePage() {
 		scrollToResults();
 	};
 
-	const handlePageChange = (page: number) => {
-		const updated = { ...activeFilters, page };
-		setPage(page);
+	const handleApplyAmenities = () => {
+		const updated = {
+			...pendingSearch,
+			amenities: pendingAmenities,
+			query: pendingSearch.city,
+			page: 1,
+		};
+		setActiveFilters(updated);
 		applyFilters(updated);
 		scrollToResults();
 	};
@@ -161,7 +149,8 @@ function BrowsePage() {
 	return (
 		<div className="p-4 space-y-6">
 			<VenueAvailabilitySearch
-				onSearch={handleSearch}
+				onInputChange={(params) => setPendingSearch({ ...params, amenities: pendingAmenities })}
+				onSearchClick={handleSearchClick}
 				initialCity={activeFilters.city}
 				initialGuests={activeFilters.guests}
 				initialDateFrom={activeFilters.dateFrom}
@@ -176,13 +165,18 @@ function BrowsePage() {
 				Clear Search
 			</button>
 
-			{/* New Amenity Filter Section */}
 			<div className="bg-white p-4 rounded shadow space-y-4">
 				<h2 className="text-lg font-semibold">Filter by Amenities</h2>
 				<AmenitiesFilter
-					amenities={activeFilters.amenities}
-					onChange={(newAmenities) => handleAmenitiesApply(newAmenities)}
+					amenities={pendingAmenities}
+					onChange={(newAmenities) => setPendingAmenities(newAmenities)}
 				/>
+				<button
+					onClick={handleApplyAmenities}
+					className="mt-2 bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark"
+				>
+					Apply Filter
+				</button>
 			</div>
 
 			<div ref={resultRef} className="bg-gray-100 px-4 py-3 rounded text-sm text-gray-700">
@@ -192,13 +186,13 @@ function BrowsePage() {
 				{activeFilters.guests} guest{activeFilters.guests > 1 ? 's' : ''}
 				{activeAmenities.length > 0 && (
 					<span>
-						{' '}—{' '}
+            {' '}—{' '}
 						{activeAmenities.map((a) => (
 							<span key={a} className="bg-olive text-white px-2 py-0.5 rounded ml-1">
-								{a}
-							</span>
+                {a}
+              </span>
 						))}
-					</span>
+          </span>
 				)}
 			</div>
 
@@ -220,7 +214,11 @@ function BrowsePage() {
 				<Pagination
 					currentPage={currentPage}
 					pageCount={meta.pageCount}
-					onPageChange={handlePageChange}
+					onPageChange={(page) => {
+						setPage(page);
+						applyFilters({ ...activeFilters, query: activeFilters.city, page });
+						scrollToResults();
+					}}
 				/>
 			)}
 		</div>

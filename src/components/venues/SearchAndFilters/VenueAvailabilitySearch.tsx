@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import {CommonButton} from '../../commons/Buttons.tsx';
+import { CommonButton } from '../../commons/Buttons.tsx';
 
 type Amenities = {
 	wifi: boolean;
@@ -11,13 +11,14 @@ type Amenities = {
 };
 
 type Props = {
-	onSearch: (params: {
+	onInputChange: (params: {
 		city: string;
 		guests: number;
 		dateFrom: string;
 		dateTo: string;
 		amenities: Amenities;
 	}) => void;
+	onSearchClick: () => void;
 	initialCity?: string;
 	initialGuests?: number;
 	initialDateFrom?: string;
@@ -26,7 +27,8 @@ type Props = {
 };
 
 export default function VenueAvailabilitySearch({
-	                                                onSearch,
+	                                                onInputChange,
+	                                                onSearchClick,
 	                                                initialCity = '',
 	                                                initialGuests = 1,
 	                                                initialDateFrom = '',
@@ -45,29 +47,19 @@ export default function VenueAvailabilitySearch({
 		const end = initialDateTo ? new Date(initialDateTo) : null;
 		return [start, end];
 	});
-	const [amenities, setAmenities] = useState<Amenities>(initialAmenities);
 
-	useEffect(() => {
-		setCity(initialCity);
-		setGuests(initialGuests);
-		setDateRange([
-			initialDateFrom ? new Date(initialDateFrom) : null,
-			initialDateTo ? new Date(initialDateTo) : null,
-		]);
-		setAmenities(initialAmenities);
-	}, [initialCity, initialGuests, initialDateFrom, initialDateTo, initialAmenities]);
-
+	const [amenities] = useState(initialAmenities); // still needed to lift with other fields
 	const [startDate, endDate] = dateRange;
 
-	const handleSearch = () => {
-		onSearch({
+	useEffect(() => {
+		onInputChange({
 			city: city.trim(),
 			guests,
 			dateFrom: startDate ? startDate.toISOString() : '',
 			dateTo: endDate ? endDate.toISOString() : '',
 			amenities,
 		});
-	};
+	}, [city, guests, startDate, endDate]);
 
 	return (
 		<div className="relative z-50 w-full px-4">
@@ -76,7 +68,7 @@ export default function VenueAvailabilitySearch({
 				{/* City */}
 				<input
 					type="text"
-					placeholder="Room / City"
+					placeholder="Destination or property"
 					value={city}
 					onChange={(e) => setCity(e.target.value)}
 					className="px-4 w-full flex flex-1 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm md:w-40"
@@ -93,14 +85,13 @@ export default function VenueAvailabilitySearch({
 					placeholderText="Check-in → Check-out"
 					minDate={new Date()}
 					className="w-full px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm"
-					wrapperClassName="w-full flex md:w-52"
+					wrapperClassName="w-full flex-2 flex md:w-48"
 				/>
 
 				<span className="hidden h-10 w-[1px] bg-secondary md:block" />
 
 				{/* Guests */}
-				<div
-					className="flex w-full items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm md:max-w-40">
+				<div className="flex w-full items-center justify-between bg-gray-50 border border-gray-200 rounded-full px-4 py-2 text-sm md:max-w-40">
 					<span>Guests</span>
 					<div className="flex items-center gap-2">
 						<button
@@ -121,8 +112,8 @@ export default function VenueAvailabilitySearch({
 
 				{/* Search Button */}
 				<CommonButton
-					onClick={handleSearch}
-					className="bg-primary text-white hover:bg-background hover:text-primary w-full md:w-fit"
+					onClick={onSearchClick}
+					className="bg-primary flex-1 text-white hover:bg-background hover:text-primary w-full md:w-fit"
 				>
 					Search
 				</CommonButton>
