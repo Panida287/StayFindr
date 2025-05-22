@@ -5,16 +5,16 @@ import EditAvatarModal from '../../../components/accounts/EditAvatarModal.tsx';
 import ProfileHeader from '../../../components/accounts/Profile.tsx';
 
 export default function UserAccountPage() {
-	const {profile} = useFetchProfile();
+	const { profile, fetchProfile } = useFetchProfile(); // ✅ Make sure this returns `fetchProfile`
+
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	if (!profile) return <p>Loading profile...</p>;
 
-	const {bookings} = profile;
+	const { bookings } = profile;
 
 	return (
 		<div className="max-w-4xl mx-auto p-4 space-y-6">
-
 			<ProfileHeader profile={profile} />
 
 			<div className="my-bookings">
@@ -23,8 +23,8 @@ export default function UserAccountPage() {
 					<p className="text-gray-500">You have no upcoming bookings.</p>
 				) : (
 					<div className="grid gap-4">
-						{bookings.map((booking) => (
-							<MyBookingCard key={booking.id} booking={booking} />
+						{bookings.map((b) => (
+							<MyBookingCard key={b.id} booking={b} refreshBookings={fetchProfile} />
 						))}
 					</div>
 				)}

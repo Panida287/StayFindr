@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { logout } from '../../utilities/logout';
+import {SplitButton} from '../commons/Buttons.tsx';
 
 type Props = {
 	dropdownRef: React.RefObject<HTMLDivElement | null>;
@@ -21,22 +22,26 @@ export default function DesktopNavLinks({
 	const isAdmin = localStorage.getItem('SFRole') === 'true';
 
 	return (
-		<nav className="flex items-center space-x-6 text-lg font-alt ml-auto">
+		<nav className="flex items-center space-x-4 ml-auto">
 			<NavLink
-				to="/"
-				className={({ isActive }) =>
-					isActive ? 'text-primary font-bold' : 'text-gray-dark'
+				to="/about"
+				className={({isActive}) =>
+					`text-primary font-heading font-medium rounded-full py-1 px-4 transition-colors duration-300 hover:bg-primary hover:text-secondary ${
+						isActive ? 'font-bold' : ''
+					}`
 				}
 			>
-				Home
+				About us
 			</NavLink>
 			<NavLink
-				to="/contact"
-				className={({ isActive }) =>
-					isActive ? 'text-primary font-bold' : 'text-gray-dark'
+				to="/about"
+				className={({isActive}) =>
+					`text-primary font-heading font-medium rounded-full py-1 px-4 transition-colors duration-300 hover:bg-primary hover:text-secondary ${
+						isActive ? 'font-bold' : ''
+					}`
 				}
 			>
-				Contact
+				Contact Us
 			</NavLink>
 
 			{isLoggedIn ? (
@@ -48,43 +53,54 @@ export default function DesktopNavLinks({
 						<img
 							src={avatarUrl}
 							alt="User Avatar"
-							className="w-8 h-8 rounded-full object-cover"
+							className="w-10 h-10 rounded-full object-cover"
 						/>
-						<ChevronDown />
+						<ChevronDown className="text-primary" />
 					</button>
 
 					{showDropdown && (
-						<div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg z-50 animate-slideDownFast">
+						<div
+							className="absolute right-0 mt-4 w-40 p-[4px] bg-white rounded-lg shadow-lg z-50 animate-slideDownFast">
 							<NavLink
 								to={`/user/${user}`}
 								onClick={() => setShowDropdown(false)}
-								className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-black"
+								className="relative block w-full text-left px-4 py-2 hover:bg-secondary hover:rounded-t-lg text-primary font-body font-light text-sm"
 							>
 								My Bookings
+								<span
+									className="absolute bottom-0 left-1/2 w-[60%] h-[1px] bg-background -translate-x-1/2" />
 							</NavLink>
 
 							{isAdmin && (
 								<NavLink
 									to={`/admin/${user}`}
 									onClick={() => setShowDropdown(false)}
-									className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-black"
+									className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-body font-light text-sm"
 								>
 									Dashboard
+									<span
+										className="absolute bottom-0 left-1/2 w-[60%] h-[1px] bg-background -translate-x-1/2" />
 								</NavLink>
 							)}
 
-							<button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+							<button
+								className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-body font-light text-sm">
 								Inbox
+								<span
+									className="absolute bottom-0 left-1/2 w-[60%] h-[1px] bg-background -translate-x-1/2" />
 							</button>
-							<button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+							<button
+								className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-body font-light text-sm">
 								Notification
+								<span
+									className="absolute bottom-0 left-1/2 w-[60%] h-[1px] bg-background -translate-x-1/2" />
 							</button>
 							<button
 								onClick={() => {
 									setShowDropdown(false);
 									logout();
 								}}
-								className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+								className="relative block w-full text-left px-4 py-2 text-red-600 hover:bg-secondary hover:rounded-b-lg font-body font-light text-sm"
 							>
 								Logout
 							</button>
@@ -92,8 +108,15 @@ export default function DesktopNavLinks({
 					)}
 				</div>
 			) : (
-				<NavLink to="/login" className="btn-base text-white bg-primary">
-					Login / Sign up
+				<NavLink to="/login">
+					<SplitButton
+						text="Login/Sign up"
+						bgColor="bg-primary"
+						textColor="text-primary"
+						arrowColor="text-white"
+						borderColor="border-primary"
+						className="font-heading pr-1"
+					/>
 				</NavLink>
 			)}
 		</nav>
