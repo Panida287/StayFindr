@@ -1,33 +1,33 @@
+import { FC } from 'react';
+import { Link } from 'react-router-dom';
 import { Venue } from '../../types/venues';
-import { VenueCard } from './VenueCard';
+import {VenueCard} from './VenueCard';
+import { SearchParams } from '../../App';
 
 interface VenueListProps {
-	venues: Venue[];
-	isLoading: boolean;
-	error: string | null;
+  venues: Venue[];
+  isLoading: boolean;
+  error: string | null;
+  filters?: SearchParams;    // ← receive them
 }
 
-export default function VenueList({
-	                                  venues,
-	                                  isLoading,
-	                                  error,
-                                  }: VenueListProps) {
-	if (isLoading) {
-		return (
-			<div className="flex justify-center items-center mt-8">
-				<div className="h-12 w-12 border-4 border-t-transparent border-yellow-500 rounded-full animate-spin"></div>
-			</div>
-		);
-	}
-	if (error) return <p className="text-red-500">{error}</p>;
-	if (venues.length === 0)
-		return <p className="text-center text-gray-500">No venues match your search.</p>;
+const VenueList: FC<VenueListProps> = ({ venues, isLoading, error, filters }) => {
+  if (isLoading) return <p>Loading venues…</p>;
+  if (error)     return <p className="text-red-600">{error}</p>;
 
-	return (
-		<div className="grid gap-6 w-[calc(100%-2rem)] max-w-5xl mx-auto ">
-			{venues.map((v) => (
-				<VenueCard key={v.id} venue={v} />
-			))}
-		</div>
-	);
-}
+  return (
+    <div className="grid gap-6">
+      {venues.map(v => (
+        <Link
+          key={v.id}
+          to={`/venue/${v.id}`}
+          state={{ params: filters }}   // ← forward them
+        >
+          <VenueCard venue={v} />
+        </Link>
+      ))}
+    </div>
+  );
+};
+
+export default VenueList;

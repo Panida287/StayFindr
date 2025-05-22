@@ -88,7 +88,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 		}));
 
 		return (
-			<div className="relative z-20 mx-auto">
+			<div className="relative z-50 mx-auto">
 				<div className="bg-white rounded-lg shadow-md w-[calc(100%-2rem)] max-w-5xl mx-auto flex flex-col items-start gap-4 px-4 py-3 md:flex-row md:flex-wrap">
 					{/* Destination */}
 					<input

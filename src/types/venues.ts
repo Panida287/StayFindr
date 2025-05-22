@@ -47,6 +47,8 @@ export type Booking = {
 	venue: Venue;
 };
 
+export type VenueMeta = Venue['meta'];
+
 export type Owner = {
 	name: string;
 	email: string;
@@ -56,17 +58,6 @@ export type Owner = {
 		alt: string;
 	};
 };
-
-export type Meta = {
-	isFirstPage: boolean;
-	isLastPage: boolean;
-	currentPage: number;
-	previousPage: number | null;
-	nextPage: number | null;
-	pageCount: number;
-	totalCount: number;
-};
-
 
 export type VenueListResponse = {
 	data: Venue[];

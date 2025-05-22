@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BookingCalendar from './BookingCalendar';
 import { calculateNights } from '../../utilities/calculateNights';
 
-type Props = {
+export interface BookingFormProps {
 	price: number;
 	maxGuests: number;
 	bookedDateRanges: { start: Date; end: Date }[];
@@ -11,7 +11,13 @@ type Props = {
 	isBookingLoading: boolean;
 	bookingError: string | null;
 	success: boolean;
-};
+
+	/** seed the calendar */
+	initialStartDate?: Date | null;
+	initialEndDate?: Date | null;
+	/** seed the guest count */
+	initialGuests?: number;
+}
 
 export default function BookingForm({
 	                                    price,
@@ -21,25 +27,37 @@ export default function BookingForm({
 	                                    isBookingLoading,
 	                                    bookingError,
 	                                    success,
-                                    }: Props) {
-	const [startDate, setStartDate] = useState<Date | null>(null);
-	const [endDate, setEndDate] = useState<Date | null>(null);
-	const [guests, setGuests] = useState<number>(1);
+	                                    initialStartDate = null,
+	                                    initialEndDate   = null,
+	                                    initialGuests    = 1,
+                                    }: BookingFormProps) {
+	const [startDate, setStartDate] = useState<Date | null>(initialStartDate);
+	const [endDate, setEndDate]     = useState<Date | null>(initialEndDate);
+	const [guests, setGuests]       = useState<number>(initialGuests);
+
+	// keep state in sync if props change
+	useEffect(() => { setStartDate(initialStartDate); }, [initialStartDate]);
+	useEffect(() => { setEndDate(initialEndDate);   }, [initialEndDate]);
+	useEffect(() => { setGuests(initialGuests);     }, [initialGuests]);
 
 	const navigate = useNavigate();
 	const token = localStorage.getItem('SFToken');
 	const isLoggedIn = Boolean(token);
 
-	const totalPrice = startDate && endDate ? calculateNights(startDate, endDate) * price : 0;
+	const totalPrice =
+		startDate && endDate
+			? calculateNights(startDate, endDate) * price
+			: 0;
 
 	return (
-		<div className="mt-8">
+		<div>
 			<BookingCalendar
-				onDateChange={(start, end) => {
-					setStartDate(start);
-					setEndDate(end);
+				onDateChange={(s, e) => {
+					setStartDate(s);
+					setEndDate(e);
 				}}
 				bookedRanges={bookedDateRanges}
+				initialRange={[initialStartDate, initialEndDate]}
 			/>
 
 			{startDate && endDate && (
@@ -48,11 +66,11 @@ export default function BookingForm({
 						<b>Booking from:</b> {startDate.toDateString()} to {endDate.toDateString()}
 					</p>
 					<p>
-						<b>Total:</b> {calculateNights(startDate, endDate)}{' '}
+						<b>Total nights:</b> {calculateNights(startDate, endDate)}{' '}
 						{calculateNights(startDate, endDate) === 1 ? 'night' : 'nights'}
 					</p>
 					<p>
-						<b>{guests}</b> {guests === 1 ? 'adult' : 'adults'}
+						<b>{guests}</b> {guests === 1 ? 'guest' : 'guests'}
 					</p>
 				</div>
 			)}
@@ -64,10 +82,10 @@ export default function BookingForm({
 				<select
 					id="guests"
 					value={guests}
-					onChange={(e) => setGuests(Number(e.target.value))}
+					onChange={e => setGuests(Number(e.target.value))}
 					className="border rounded px-3 py-2 w-32 text-sm"
 				>
-					{Array.from({length: maxGuests}, (_, i) => i + 1).map((num) => (
+					{Array.from({ length: maxGuests }, (_, i) => i + 1).map(num => (
 						<option key={num} value={num}>
 							{num} {num === 1 ? 'guest' : 'guests'}
 						</option>
