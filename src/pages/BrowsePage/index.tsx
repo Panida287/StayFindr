@@ -2,13 +2,16 @@ import { useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { useFetchVenues } from '../../hooks/useFetchVenues';
 import { SortDropdown, SortValue } from '../../components/venues/SearchAndFilters/SortDropdown.tsx';
-import VenueAvailabilitySearch, { VenueAvailabilitySearchRef } from '../../components/venues/SearchAndFilters/VenueAvailabilitySearch.tsx';
+import VenueAvailabilitySearch, {
+	VenueAvailabilitySearchRef
+} from '../../components/venues/SearchAndFilters/VenueAvailabilitySearch.tsx';
 import { VenueCard } from '../../components/venues/VenueCard';
 import Pagination from '../../components/commons/Pagination.tsx';
 import { format, differenceInCalendarDays } from 'date-fns';
 import { SearchParams } from '../../App';
 import AmenitiesFilter from '../../components/venues/SearchAndFilters/AmenitiesFilter.tsx';
 import AdBanner from '../../components/commons/AdBanner.tsx';
+import { CommonButton } from '../../components/commons/Buttons.tsx';
 
 function BrowsePage() {
 	const location = useLocation();
@@ -21,7 +24,7 @@ function BrowsePage() {
 		guests: 1,
 		dateFrom: '',
 		dateTo: '',
-		amenities: { wifi: false, parking: false, breakfast: false, pets: false },
+		amenities: {wifi: false, parking: false, breakfast: false, pets: false},
 	};
 
 	const {
@@ -43,13 +46,13 @@ function BrowsePage() {
 
 	useEffect(() => {
 		if (initialParams) {
-			applyFilters({ ...initialParams, query: initialParams.city, page: 1 });
+			applyFilters({...initialParams, query: initialParams.city, page: 1});
 		}
 	}, []);
 
 	useEffect(() => {
 		if (resultRef.current) {
-			resultRef.current.scrollIntoView({ behavior: 'smooth' });
+			resultRef.current.scrollIntoView({behavior: 'smooth'});
 		}
 	}, [currentPage]);
 
@@ -64,7 +67,7 @@ function BrowsePage() {
 
 	const scrollToResults = () => {
 		if (resultRef.current) {
-			resultRef.current.scrollIntoView({ behavior: 'smooth' });
+			resultRef.current.scrollIntoView({behavior: 'smooth'});
 		}
 	};
 
@@ -105,11 +108,11 @@ function BrowsePage() {
 	};
 
 	const handleClearSearch = () => {
-		const reset = { ...defaultParams, query: '' };
+		const reset = {...defaultParams, query: ''};
 		setPendingSearch(reset);
 		setPendingAmenities(reset.amenities);
 		setActiveFilters(reset);
-		applyFilters({ ...reset, page: 1 });
+		applyFilters({...reset, page: 1});
 		searchRef.current?.clearForm();
 		scrollToResults();
 	};
@@ -154,7 +157,7 @@ function BrowsePage() {
 			<AdBanner />
 			<VenueAvailabilitySearch
 				ref={searchRef}
-				onInputChange={(params) => setPendingSearch({ ...params, amenities: pendingAmenities })}
+				onInputChange={(params) => setPendingSearch({...params, amenities: pendingAmenities})}
 				onSearchClick={handleSearchClick}
 				initialCity={activeFilters.city}
 				initialGuests={activeFilters.guests}
@@ -163,43 +166,51 @@ function BrowsePage() {
 				initialAmenities={activeFilters.amenities}
 			/>
 
-			<button
-				onClick={handleClearSearch}
-				className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-			>
-				Clear Search
-			</button>
-
-			<div className="bg-white p-4 rounded shadow space-y-4">
-				<h2 className="text-lg font-semibold">Filter by Amenities</h2>
-				<AmenitiesFilter
-					amenities={pendingAmenities}
-					onChange={(newAmenities) => setPendingAmenities(newAmenities)}
-				/>
-				<button
-					onClick={handleApplyAmenities}
-					className="mt-2 bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark"
+			<div className="flex justify-end w-[calc(100%-2rem)] max-w-5xl mx-auto">
+				<CommonButton
+					onClick={handleClearSearch}
+					bgColor="bg-red-500"
+					hoverColor="hover:bg-red-400"
+					textColor="text-white"
 				>
-					Apply Filter
-				</button>
+					Clear Search
+				</CommonButton>
 			</div>
 
-			<div ref={resultRef} className="bg-gray-100 px-4 py-3 rounded text-sm text-gray-700">
-				Showing results for <strong>{activeFilters.city || 'all cities'}</strong>{' '}
-				{activeFilters.dateFrom && `from ${formattedFrom}`} {activeFilters.dateTo && `to ${formattedTo}`} —{' '}
-				{nights > 0 && `${nights} night${nights > 1 ? 's' : ''}, `}
-				{activeFilters.guests} guest{activeFilters.guests > 1 ? 's' : ''}
+			<AmenitiesFilter
+				amenities={pendingAmenities}
+				onChange={(newAmenities) => setPendingAmenities(newAmenities)}
+				onApply={handleApplyAmenities}
+			/>
+
+			<div ref={resultRef} className="bg-background px-4 py-3 rounded text-sm text-primary max-w-5xl mx-auto leading-loose">
+				Showing results for <strong className="capitalize">{activeFilters.city || 'all cities'}</strong>
+				{activeFilters.dateFrom && (
+					<> from <strong>{formattedFrom}</strong></>
+				)}
+				{activeFilters.dateTo && (
+					<> to <strong>{formattedTo}</strong></>
+				)}
+				{' — '}
+				{nights > 0 && (
+					<strong>{nights} night{nights > 1 ? 's' : ''}, </strong>
+				)}
+				<strong>{activeFilters.guests} guest{activeFilters.guests > 1 ? 's' : ''}</strong>
 				{activeAmenities.length > 0 && (
 					<span>
-            {' '}—{' '}
+                        {' '}—{' '}
 						{activeAmenities.map((a) => (
-							<span key={a} className="bg-olive text-white px-2 py-0.5 rounded ml-1">
-                {a}
-              </span>
+							<span
+								key={a}
+								className="inline-block bg-yellow-500 text-white text-xs px-3 py-1 rounded-full ml-2 shadow-sm capitalize font-semibold"
+							>
+                            {a}
+                            </span>
 						))}
-          </span>
+                     </span>
 				)}
 			</div>
+
 
 			<SortDropdown onChange={handleSortChange} currentSort={currentSortValue} />
 
@@ -221,7 +232,7 @@ function BrowsePage() {
 					pageCount={meta.pageCount}
 					onPageChange={(page) => {
 						setPage(page);
-						applyFilters({ ...activeFilters, query: activeFilters.city, page });
+						applyFilters({...activeFilters, query: activeFilters.city, page});
 						scrollToResults();
 					}}
 				/>
