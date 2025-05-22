@@ -51,7 +51,7 @@ function App() {
 	const handleSearchClick = () => {
 		const paramsWithQuery = {
 			...searchParams,
-			query: searchParams.city, // Ensure `query` is included
+			query: searchParams.city,
 		};
 		navigate('/browse', { state: { params: paramsWithQuery } });
 	};

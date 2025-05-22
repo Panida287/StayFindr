@@ -15,9 +15,11 @@ export const FALLBACK = {
 	name: 'John Smith',
 	email: 'johnsmith@gmail.com',
 	bio: 'I love warm hugs',
-	avatar: 'assets/images/fallback/fallbackAvatar.jpg',
-	banner: 'assets/images/fallback/fallbackBanner.jpg',
-	venue: 'assets/images/fallback/fallbackVenue.jpg',
+	avatar: 'assets/images/fallbackImages/fallbackAvatar.jpg',
+	banner: 'assets/images/fallbackImages/fallbackBanner.jpg',
+	venue: 'assets/images/fallbackImages/fallbackVenue.jpg',
+	city: 'Unknown City',
+	Country: 'Unknown Country',
 }
 
 export const API_KEY = "83d13e66-565f-4321-9216-c12e9fa8f030"
