@@ -102,7 +102,6 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 					<span className="hidden h-10 w-[1px] bg-secondary md:block" />
 
 					{/* Check-in / out */}
-					{/* Check-in / out */}
 					<DatePicker
 						selectsRange
 						startDate={startDate}
@@ -111,7 +110,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 						placeholderText="Check-in → Check-out"
 						minDate={new Date()}
 						className="w-full px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm text-primary"
-						wrapperClassName="w-full flex-2 flex md:w-48"
+						wrapperClassName="w-full flex-2 flex md:w-[215px] border-xl"
 					/>
 
 					{/* Clear Dates button, only when either date is set */}
@@ -119,7 +118,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 						<CommonButton
 							onClick={() => setDateRange([null, null])}
 							borderClass="border border-gray-300"
-							bgColor="bg-background"
+							bgColor="bg-none"
 							textColor="text-gray-800"
 							hoverColor="hover:bg-gray-100"
 							className=" px-4 py-2 text-sm ms:ml-2"

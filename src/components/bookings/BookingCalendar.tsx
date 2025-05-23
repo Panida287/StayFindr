@@ -174,7 +174,7 @@ export default function BookingCalendar({onDateChange, bookedRanges}: BookingCal
 			)}
 
 			{showCalendar && (
-				<div className="flex flex-col p-2 w-fit rounded-3xl border-gray-300 border shadow-xl">
+				<div className="flex flex-col p-2 w-fit rounded-3xl bg-white border-gray-300 border shadow-xl">
 					<div className="relative w-full">
 						<DatePicker
 							ref={pickerRef}
@@ -204,7 +204,7 @@ export default function BookingCalendar({onDateChange, bookedRanges}: BookingCal
 						</CommonButton>
 						<CommonButton
 							onClick={handleClearDates}
-							borderClass="border border-primary"
+							borderClass="border border-primary/50"
 							bgColor="bg-secondary"
 							textColor="text-primary"
 							hoverColor="hover:bg-background"
