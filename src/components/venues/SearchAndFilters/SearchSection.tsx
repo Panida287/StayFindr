@@ -31,6 +31,7 @@ export default forwardRef<VenueAvailabilitySearchRef, SearchSectionProps>(
 				/>
 
 				<div className="flex justify-end w-[calc(100%-2rem)] max-w-5xl mx-auto mt-4">
+
 					<CommonButton
 						onClick={onClear}
 						bgColor="bg-red-500"
