@@ -192,16 +192,7 @@ export default function BookingCalendar({onDateChange, bookedRanges}: BookingCal
 							dayClassName={(date: Date) => isDateBooked(date, bookedRanges) ? 'booked-day' : ''}
 						/>
 					</div>
-					<div className="flex justify-between items-center m-2">
-						<CommonButton
-							bgColor="bg-primary"
-							textColor="text-white"
-							hoverColor="hover:bg-background"
-							className="px-4 py-2 text-sm font-medium shadow"
-							hoverTextColor="hover:text-primary"
-						>
-							Apply
-						</CommonButton>
+					<div className="flex justify-end items-center m-2">
 						<CommonButton
 							onClick={handleClearDates}
 							borderClass="border border-primary/50"
