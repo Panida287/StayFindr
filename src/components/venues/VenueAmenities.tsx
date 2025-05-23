@@ -14,7 +14,7 @@ type Props = {
 export default function VenueAmenities({ meta }: Props) {
 	return (
 		<>
-			<div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm text-gray-700">
+			<div className="mt-4 flex flex-col gap-4 text-sm text-gray-700 md:flex-row md:justify-evenly">
 				{meta?.wifi && (
 					<div className="flex items-center gap-2">
 						<Wifi className="w-4 h-4" /> WiFi
@@ -27,7 +27,7 @@ export default function VenueAmenities({ meta }: Props) {
 				)}
 				{meta?.breakfast && (
 					<div className="flex items-center gap-2">
-						<Coffee className="w-4 h-4" /> Breakfast
+						<Coffee className="w-4 h-4" /> Breakfast included
 					</div>
 				)}
 				{meta?.pets && (
