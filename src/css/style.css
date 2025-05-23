@@ -11,47 +11,92 @@ body,
     padding: 0;
 }
 
-/* Body text styling */
-body {
-    @apply text-gray-1 bg-secondary font-body;
+/* Body text styling and typography (unchanged) */
+body { @apply text-gray-1 bg-secondary font-body; }
+h1 { @apply text-[47px] leading-[61.6px] font-heading; }
+h2 { @apply text-[40px] leading-[52.8px] font-heading; }
+h3 { @apply text-[33px] leading-[44px] font-heading; }
+h4 { @apply text-[27px] leading-[35.2px] font-heading; }
+h5 { @apply text-[24px] leading-[26.4px] font-heading; }
+h6 { @apply text-[20px] leading-[22px] font-heading; }
+
+/* Base day style */
+.react-datepicker__day,
+.react-datepicker__day-name {
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    margin: 0 !important;
+    font-size: 1em !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    position: relative !important;
+    z-index: 1;
+    background: transparent;
+    transition: background 0.2s, color 0.2s, border-radius 0.2s !important;
 }
 
-/* Typography based on your style guide */
-h1 {
-    @apply text-[47px] leading-[61.6px] font-heading;
+/* In-range rectangle (not start or end, and NOT outside month) */
+.react-datepicker__day--in-range:not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end):not(.react-datepicker__day--outside-month),
+.react-datepicker__day--in-selecting-range:not(.react-datepicker__day--selecting-range-start):not(.react-datepicker__day--selecting-range-end):not(.react-datepicker__day--outside-month) {
+    background: #DEECD7 !important;
+    color: #222 !important;
+    border-radius: 0 !important;
 }
 
-h2 {
-    @apply text-[40px] leading-[52.8px] font-heading;
+/* Start date: round left, square right (selected and hover) */
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-start:hover,
+.react-datepicker__day--selecting-range-start,
+.react-datepicker__day--selecting-range-start:hover {
+    background: #DEECD7 !important;
+    border-radius: 18px 0 0 18px !important; /* round left, square right */
+    font-weight: bold !important;
+    z-index: 2 !important;
 }
 
-h3 {
-    @apply text-[33px] leading-[44px] font-heading;
+/* End date: square left, round right (selected and hover) */
+.react-datepicker__day--range-end,
+.react-datepicker__day--range-end:hover,
+.react-datepicker__day--selecting-range-end,
+.react-datepicker__day--selecting-range-end:hover {
+    background: #DEECD7 !important;
+    color: #222 !important;        /* <--- Add or change this line */
+    border-radius: 0 18px 18px 0 !important; /* square left, round right */
+    font-weight: bold !important;
+    z-index: 2 !important;
 }
 
-h4 {
-    @apply text-[27px] leading-[35.2px] font-heading;
-}
 
-h5 {
-    @apply text-[24px] leading-[26.4px] font-heading;
-}
-
-h6 {
-    @apply text-[20px] leading-[22px] font-heading;
-}
-
-/* Booked calendar day */
+/* Booked and disabled days */
+.react-datepicker__day--disabled,
 .booked-day {
-    text-decoration: line-through;
-    pointer-events: none;
+    color: #b0b0b0 !important;
+    text-decoration: line-through !important;
+    background: none !important;
+    pointer-events: none !important;
 }
 
-.swiper-slide {
-    pointer-events: none;
-}
-.swiper-slide-active {
-    pointer-events: auto;
+/* Keyboard-selected: match in-range style */
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__day--keyboard-selected:hover {
+
+    background: #DEECD7 !important;
+    color: #222 !important;
+    border-radius: 18px 0 0 18px !important;
+    z-index: 1 !important;
 }
 
-
+.react-datepicker__day--outside-month,
+.react-datepicker__day--outside-month:hover,
+.react-datepicker__day--outside-month:focus,
+.react-datepicker__day--outside-month:active {
+    background: none !important;
+    color: transparent !important;
+    pointer-events: none !important;
+    cursor: none !important;
+    box-shadow: none !important;
+    font-weight: normal !important;
+    text-decoration: none !important;
+}
