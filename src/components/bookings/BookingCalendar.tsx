@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
+import { CommonButton, SplitButton } from '../commons/Buttons';
+import ReactDatePicker from 'react-datepicker';
 
 /**
  * Props for the BookingCalendar component.
@@ -19,7 +21,7 @@ type BookingCalendarProps = {
  * @returns {boolean} - Returns true if the date is booked, false otherwise.
  */
 function isDateBooked(date: Date, bookedRanges: { start: Date; end: Date }[]): boolean {
-	return bookedRanges.some(({ start, end }) => date >= start && date <= end);
+	return bookedRanges.some(({start, end}) => date >= start && date <= end);
 }
 
 /**
@@ -42,7 +44,7 @@ function overlaps(start: Date, end: Date, ranges: { start: Date; end: Date }[]):
  * @param {BookingCalendarProps} props - The component props.
  * @returns {JSX.Element} - Rendered calendar component.
  */
-export default function BookingCalendar({ onDateChange, bookedRanges }: BookingCalendarProps) {
+export default function BookingCalendar({onDateChange, bookedRanges}: BookingCalendarProps) {
 	const [showCalendar, setShowCalendar] = useState(false);
 	const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
 	const [error, setError] = useState<string | null>(null);
@@ -131,75 +133,92 @@ export default function BookingCalendar({ onDateChange, bookedRanges }: BookingC
 		return true;
 	};
 
-	/**
-	 * Shows the calendar when user clicks on date summary box.
-	 */
-	const handleDateBoxClick = () => {
-		setShowCalendar(true);
-	};
+	const pickerRef = useRef<ReactDatePicker>(null);
 
 	const handleClearDates = () => {
 		setDateRange([null, null]);
 		setError(null);
 		onDateChange(null, null);
+		pickerRef.current?.setPreSelection(null);
 	};
 
 	return (
 		<div className="mt-8 flex flex-col gap-4" ref={calendarRef}>
-			<button
+			<SplitButton
+				text="Check available date"
+				bgColor="bg-yellow-600"
+				textColor="text-yellow-600"
+				arrowColor="text-white"
+				borderColor="border-yellow-600"
+				hoverTextColor="hover:text-yellow-600"
+				arrowHoverColor="group-hover:text-yellow-600"
 				onClick={() => setShowCalendar(prev => !prev)}
-				className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700 w-fit"
-			>
-				Check available date
-			</button>
+				className="font-heading w-[200px] py-1"
+			/>
 
 			{start && (
 				<div className="flex gap-4">
 					<div
-						className="bg-gray-100 px-3 py-1 rounded text-sm cursor-pointer"
-						onClick={handleDateBoxClick}
+						className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary"
 					>
-						Check-in: {format(start, 'EEE, dd/MM/yyyy')}
+						Check-in: {format(start, 'EEE, dd-MMM-yyyy')}
 					</div>
 					{end && (
 						<div
-							className="bg-gray-100 px-3 py-1 rounded text-sm cursor-pointer"
-							onClick={handleDateBoxClick}
+							className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary"
 						>
-							Check-out: {format(end, 'EEE, dd/MM/yyyy')}
+							Check-out: {format(end, 'EEE, dd-MMM-yyyy')}
 						</div>
 					)}
 				</div>
 			)}
 
 			{showCalendar && (
-				<div className="relative">
-					<DatePicker
-						selectsRange
-						startDate={start}
-						endDate={end}
-						onChange={handleChange}
-						minDate={new Date()}
-						filterDate={filterDate}
-						placeholderText="Select a date range"
-						className="border p-2 rounded w-full"
-						inline
-						monthsShown={2}
-						calendarClassName="!p-0"
-						dayClassName={(date: Date) => isDateBooked(date, bookedRanges) ? "booked-day" : ""}
-					/>
+				<div className="flex flex-col p-2 w-fit rounded-3xl border-gray-300 border shadow-xl">
+					<div className="relative w-full">
+						<DatePicker
+							ref={pickerRef}
+							selectsRange
+							startDate={start}
+							endDate={end}
+							onChange={handleChange}
+							minDate={new Date()}
+							filterDate={filterDate}
+							placeholderText="Select a date range"
+							className="border p-2 rounded w-full"
+							inline
+							monthsShown={2}
+							calendarClassName="!p-0"
+							dayClassName={(date: Date) => isDateBooked(date, bookedRanges) ? 'booked-day' : ''}
+						/>
+					</div>
+					<div className="flex justify-between items-center m-2">
+						<CommonButton
+							bgColor="bg-primary"
+							textColor="text-white"
+							hoverColor="hover:bg-background"
+							className="px-4 py-2 text-sm font-medium shadow"
+							hoverTextColor="hover:text-primary"
+						>
+							Apply
+						</CommonButton>
+						<CommonButton
+							onClick={handleClearDates}
+							borderClass="border border-primary"
+							bgColor="bg-secondary"
+							textColor="text-primary"
+							hoverColor="hover:bg-background"
+							className="px-4 py-2 text-sm font-medium shadow"
+						>
+							Clear Dates
+						</CommonButton>
 
-					<button
-						onClick={handleClearDates}
-						className="absolute right-4 bottom-4 px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 text-sm font-medium shadow"
-						type="button"
-					>
-						Clear Dates
-					</button>
+					</div>
 
 					{error && (
 						<p className="text-red-600 text-sm mt-2">{error}</p>
 					)}
+
 				</div>
 			)}
 		</div>

@@ -37,6 +37,11 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
     transition: background 0.2s, color 0.2s, border-radius 0.2s !important;
 }
 
+.react-datepicker__day:hover {
+    background: #DEECD7 !important;
+    border-radius: 99px !important;
+}
+
 /* In-range rectangle (not start or end, and NOT outside month) */
 .react-datepicker__day--in-range:not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end):not(.react-datepicker__day--outside-month),
 .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--selecting-range-start):not(.react-datepicker__day--selecting-range-end):not(.react-datepicker__day--outside-month) {
@@ -61,8 +66,8 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
 .react-datepicker__day--range-end:hover,
 .react-datepicker__day--selecting-range-end,
 .react-datepicker__day--selecting-range-end:hover {
-    background: #DEECD7 !important;
-    color: #222 !important;        /* <--- Add or change this line */
+    background: #4A5A3E !important;
+    color: #fff !important;        /* <--- Add or change this line */
     border-radius: 0 18px 18px 0 !important; /* square left, round right */
     font-weight: bold !important;
     z-index: 2 !important;
@@ -82,8 +87,8 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
 .react-datepicker__day--keyboard-selected,
 .react-datepicker__day--keyboard-selected:hover {
 
-    background: #DEECD7 !important;
-    color: #222 !important;
+    background: #4A5A3E !important;
+    color: #fff !important;
     border-radius: 18px 0 0 18px !important;
     z-index: 1 !important;
 }
@@ -100,3 +105,15 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
     font-weight: normal !important;
     text-decoration: none !important;
 }
+
+.react-datepicker {
+    background: #F7F1E6 !important;
+    border: none !important;
+    font-family: "Plus Jakarta Sans", "sans-serif" !important;
+}
+
+.react-datepicker__header:not(.react-datepicker__header--has-time-select) {
+    background: none !important;
+}
+
+
