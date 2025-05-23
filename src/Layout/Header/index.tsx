@@ -26,7 +26,7 @@ export default function Header() {
 
 	return (
 		<div
-			className="w-full fixed z-50">
+			className="w-full fixed z-[9999]">
 			<header className="mx-auto w-[calc(100%-2rem)] max-w-5xl bg-white/80 bg-blur-3xl backdrop-blur-sm shadow-md flex items-center justify-between px-4 my-4 rounded-full md:px-8">
 				<img src="/assets/images/logos/logo-horiz.png" alt="Logo" className="h-10 m-2" />
 				{isMobile ? (

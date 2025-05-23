@@ -1,6 +1,6 @@
 import React from 'react';
 
-type CommonButtonProps = {
+export interface CommonButtonProps {
 	onClick?: () => void;
 	className?: string;
 	children: React.ReactNode;
@@ -10,9 +10,10 @@ type CommonButtonProps = {
 	textColor?: string;
 	hoverColor?: string;
 	fullWidth?: boolean;
-};
+	borderClass?: string;
+	hoverTextColor?: string;
+}
 
-/** Common utility button with color control */
 export function CommonButton({
 	                             onClick,
 	                             className = '',
@@ -22,7 +23,9 @@ export function CommonButton({
 	                             bgColor = 'bg-primary',
 	                             textColor = 'text-white',
 	                             hoverColor = 'hover:bg-primary-dark',
+	                             hoverTextColor = 'hover:text-primary',
 	                             fullWidth = false,
+	                             borderClass = '',
                              }: CommonButtonProps) {
 	return (
 		<button
@@ -30,17 +33,22 @@ export function CommonButton({
 			onClick={onClick}
 			disabled={disabled}
 			className={`
-				${bgColor} ${textColor} ${hoverColor}
-				px-6 py-2 rounded-full text-sm transition
-				${fullWidth ? 'w-full' : ''}
-				${className}
-				${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-			`}
+        ${bgColor} ${textColor} ${hoverColor}
+        px-6 py-2 rounded-full text-sm transition
+        ${fullWidth ? 'w-full' : ''}
+        ${borderClass}
+        ${hoverColor}
+        ${hoverTextColor}
+        ${className}
+       
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+      `}
 		>
 			{children}
 		</button>
 	);
 }
+
 
 type SplitButtonProps = {
 	text: string;

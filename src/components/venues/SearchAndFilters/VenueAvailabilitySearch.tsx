@@ -88,7 +88,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 		}));
 
 		return (
-			<div className="relative z-20 mx-auto">
+			<div className="relative z-50 mx-auto">
 				<div className="bg-white rounded-lg shadow-md w-[calc(100%-2rem)] max-w-5xl mx-auto flex flex-col items-start gap-4 px-4 py-3 md:flex-row md:flex-wrap">
 					{/* Destination */}
 					<input
@@ -109,9 +109,24 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 						onChange={(dates) => setDateRange(dates)}
 						placeholderText="Check-in → Check-out"
 						minDate={new Date()}
-						className="w-full px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm"
-						wrapperClassName="w-full flex-2 flex md:w-48"
+						className="w-full px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-sm text-primary"
+						wrapperClassName="w-full flex-2 flex md:w-[215px] border-xl"
 					/>
+
+					{/* Clear Dates button, only when either date is set */}
+					{(startDate || endDate) && (
+						<CommonButton
+							onClick={() => setDateRange([null, null])}
+							borderClass="border border-gray-300"
+							bgColor="bg-none"
+							textColor="text-gray-800"
+							hoverColor="hover:bg-gray-100"
+							className=" px-4 py-2 text-sm ms:ml-2"
+							type="button"
+						>
+							Clear Dates
+						</CommonButton>
+					)}
 
 					<span className="hidden h-10 w-[1px] bg-secondary md:block" />
 
