@@ -65,7 +65,7 @@ function App() {
 					onInputChange={handleInputChange}
 					onSearchClick={handleSearchClick}
 					initialCity=""
-					initialGuests={1}
+					initialGuests={2}
 					initialDateFrom=""
 					initialDateTo=""
 					initialAmenities={{

@@ -6,7 +6,15 @@ export default function ManageVenuePage() {
 	const { venues, isLoading, error } = useFetchVenuesByProfile();
 	const username = localStorage.getItem('SFUsername');
 
-	if (isLoading) return <p>Loading venues...</p>;
+	if (isLoading) {
+		return (
+			<div className="flex justify-center items-center mt-8">
+				{/* spinner */}
+				<div className="h-12 w-12 border-4 border-t-transparent border-pink-600 rounded-full animate-spin"></div>
+			</div>
+		);
+	}
+
 	if (error) return <p>Error: {error}</p>;
 
 	if (venues.length === 0) {

@@ -1,3 +1,5 @@
+import { CommonButton } from './Buttons';
+
 type Props = {
 	currentPage: number;
 	pageCount: number;
@@ -7,100 +9,135 @@ type Props = {
 export default function Pagination({ currentPage, pageCount, onPageChange }: Props) {
 	if (pageCount <= 1) return null;
 
-	const renderPageNumbers = () => {
-		const pages: number[] = [];
+	const goFirst = () => onPageChange(1);
+	const goPrev  = () => onPageChange(currentPage - 1);
+	const goNext  = () => onPageChange(currentPage + 1);
+	const goLast  = () => onPageChange(pageCount);
 
-		if (pageCount <= 5) {
-			for (let i = 1; i <= pageCount; i++) pages.push(i);
-		} else {
-			if (currentPage <= 3) {
-				pages.push(1, 2, 3, 4);
-			} else if (currentPage >= pageCount - 2) {
-				pages.push(pageCount - 3, pageCount - 2, pageCount - 1, pageCount);
-			} else {
-				pages.push(currentPage - 1, currentPage, currentPage + 1);
-			}
-		}
-
-		const hasLeftEllipsis = pages[0] > 2;
-		const hasRightEllipsis = pages[pages.length - 1] < pageCount - 1;
-
-		return (
-			<>
-				{pages[0] > 1 && (
-					<>
-						<button
-							onClick={() => onPageChange(1)}
-							className="px-3 py-1 rounded text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
-						>
-							1
-						</button>
-						{hasLeftEllipsis && <span className="px-2">...</span>}
-					</>
-				)}
-
-				{pages.map((p) => (
-					<button
-						key={p}
-						onClick={() => onPageChange(p)}
-						className={`px-3 py-1 rounded text-sm ${
-							p === currentPage
-								? 'bg-pink-600 text-white'
-								: 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-						}`}
-					>
-						{p}
-					</button>
-				))}
-
-				{hasRightEllipsis && (
-					<>
-						<span className="px-2">...</span>
-						<button
-							onClick={() => onPageChange(pageCount)}
-							className="px-3 py-1 rounded text-sm bg-gray-200 text-gray-700 hover:bg-gray-300"
-						>
-							{pageCount}
-						</button>
-					</>
-				)}
-			</>
-		);
+	// for desktop: only show up to 3 page buttons
+	const getPages = () => {
+		if (pageCount <= 3) return Array.from({ length: pageCount }, (_, i) => i + 1);
+		if (currentPage === 1)      return [1, 2, 3];
+		if (currentPage === pageCount) return [pageCount - 2, pageCount - 1, pageCount];
+		return [currentPage - 1, currentPage, currentPage + 1];
 	};
+	const pages = getPages();
 
 	return (
-		<div className="flex justify-center items-center gap-1 mt-6 flex-wrap">
-			<button
-				onClick={() => onPageChange(1)}
-				disabled={currentPage === 1}
-				className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-			>
-				First page
-			</button>
-			<button
-				onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
-				disabled={currentPage === 1}
-				className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-			>
-				&lt;
-			</button>
+		<nav className="mt-6">
+			{/* Mobile: << < current/total > >> */}
+			<div className="flex items-center justify-center space-x-2 sm:hidden">
+				<CommonButton
+					onClick={goFirst}
+					disabled={currentPage === 1}
+					bgColor="bg-white"
+					hoverColor="hover:bg-background"
+					textColor="text-primary"
+					className="p-2 rounded-full border border-gray-300 disabled:opacity-50"
+				>
+					{'<<'}
+				</CommonButton>
 
-			{renderPageNumbers()}
+				<CommonButton
+					onClick={goPrev}
+					disabled={currentPage === 1}
+					bgColor="bg-white"
+					hoverColor="hover:bg-background"
+					textColor="text-primary"
+					className="p-2 rounded-full border border-gray-300 disabled:opacity-50"
+				>
+					{'<'}
+				</CommonButton>
 
-			<button
-				onClick={() => currentPage < pageCount && onPageChange(currentPage + 1)}
-				disabled={currentPage === pageCount}
-				className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-			>
-				&gt;
-			</button>
-			<button
-				onClick={() => onPageChange(pageCount)}
-				disabled={currentPage === pageCount}
-				className="px-2 py-1 text-sm rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-			>
-				Last page
-			</button>
-		</div>
+				<span className="text-sm font-medium text-primary">
+          {currentPage}/{pageCount}
+        </span>
+
+				<CommonButton
+					onClick={goNext}
+					disabled={currentPage === pageCount}
+					bgColor="bg-white"
+					hoverColor="hover:bg-background"
+					textColor="text-primary"
+					className="p-2 rounded-full border border-gray-300 disabled:opacity-50"
+				>
+					{'>'}
+				</CommonButton>
+
+				<CommonButton
+					onClick={goLast}
+					disabled={currentPage === pageCount}
+					bgColor="bg-white"
+					hoverColor="hover:bg-background"
+					textColor="text-primary"
+					className="p-2 rounded-full border border-gray-300 disabled:opacity-50"
+				>
+					{'>>'}
+				</CommonButton>
+			</div>
+
+			{/* Tablet+ & desktop: full pagination with 3 page buttons */}
+			<div className="hidden sm:flex flex-wrap justify-center items-center gap-2">
+				<CommonButton
+					onClick={goFirst}
+					disabled={currentPage === 1}
+					bgColor="bg-white"
+					hoverColor="hover:bg-background"
+					textColor="text-primary"
+					className="px-4 py-2 rounded-full border border-gray-300 disabled:opacity-50"
+				>
+					First
+				</CommonButton>
+
+				<CommonButton
+					onClick={goPrev}
+					disabled={currentPage === 1}
+					bgColor="bg-white"
+					hoverColor="hover:bg-background"
+					textColor="text-primary"
+					className="px-4 py-2 rounded-full border border-gray-300 disabled:opacity-50"
+				>
+					Previous
+				</CommonButton>
+
+				{pages.map((page) => {
+					const isActive = page === currentPage;
+					return (
+						<CommonButton
+							key={page}
+							onClick={() => onPageChange(page)}
+							bgColor={isActive ? 'bg-primary' : 'bg-white'}
+							hoverColor={isActive ? undefined : 'hover:bg-background'}
+							textColor={isActive ? 'text-white' : 'text-primary'}
+							className="px-2 py-1 rounded-full text-sm font-medium border border-gray-300"
+						>
+							{page}
+						</CommonButton>
+					);
+				})}
+
+				<CommonButton
+					onClick={goNext}
+					disabled={currentPage === pageCount}
+					bgColor="bg-white"
+					hoverColor="hover:bg-background"
+					textColor="text-primary"
+					className="px-4 py-2 rounded-full border border-gray-300 disabled:opacity-50"
+				>
+					Next
+				</CommonButton>
+
+				<CommonButton
+					onClick={goLast}
+					disabled={currentPage === pageCount}
+					bgColor="bg-white"
+					hoverColor="hover:bg-background"
+					textColor="text-primary"
+					className="px-4 py-2 rounded-full border border-gray-300 disabled:opacity-50"
+				>
+					Last
+				</CommonButton>
+			</div>
+		</nav>
 	);
 }
