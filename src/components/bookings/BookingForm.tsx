@@ -65,7 +65,7 @@ export default function BookingForm({
 	};
 
 	return (
-		<div>
+		<div className="flex flex-col items-center sm:block">
 			<div className="mt-4 flex items-center gap-2">
 				<label
 					htmlFor="guests"

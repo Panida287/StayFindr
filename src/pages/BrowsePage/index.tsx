@@ -9,6 +9,7 @@ import { SortDropdown, SortValue } from '../../components/venues/SearchAndFilter
 import VenueCard from '../../components/venues/VenueCard';
 import { CommonButton } from '../../components/commons/Buttons';
 import { SearchParams } from '../../App';
+import AdBanner from '../../components/commons/AdBanner.tsx';
 
 export default function BrowsePage(): JSX.Element {
   const location    = useLocation();
@@ -76,7 +77,9 @@ export default function BrowsePage(): JSX.Element {
 
   return (
     <div className="mt-24 px-4 max-w-7xl mx-auto space-y-6">
-      {/* 1. Search header */}
+
+      <AdBanner />
+
       <SearchSection
         filters={pendingFilters}
         setFilters={setPendingFilters}
