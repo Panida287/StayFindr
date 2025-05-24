@@ -19,7 +19,7 @@ export default function LayoutUser() {
 				<ProfileHeader profile={profile} />
 			</div>
 			<div
-				className="flex flex-col justify-center items-center md:grid md:grid-cols-[1fr_2fr] md:items-start md:gap-4">
+				className="flex flex-col justify-center items-center sm:grid sm:grid-cols-[1fr_2fr] sm:items-start sm:gap-4">
 				<UserProfileTabs/>
 				<Outlet />
 			</div>
