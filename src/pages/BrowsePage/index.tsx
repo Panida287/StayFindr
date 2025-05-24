@@ -124,7 +124,7 @@ export default function BrowsePage(): JSX.Element {
           {/* 4. Banner + Sort + Results */}
           <div
             ref={resultRef}
-            className="space-y-6 scroll-mt-24"                // ← extra scroll margin
+            className="!mt-0 space-y-6"
           >
             <ResultsBanner filters={activeFilters} />
 

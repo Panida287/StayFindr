@@ -16,75 +16,59 @@ type BookingCalendarProps = {
 
 /**
  * Checks if a specific date falls within any booked range.
- *
- * @param {Date} date - The date to check.
- * @param {{ start: Date; end: Date }[]} bookedRanges - The array of booked date ranges.
- * @returns {boolean} - Returns true if the date is booked, false otherwise.
  */
 function isDateBooked(date: Date, bookedRanges: { start: Date; end: Date }[]): boolean {
-	return bookedRanges.some(({start, end}) => date >= start && date <= end);
+	return bookedRanges.some(({ start, end }) => date >= start && date <= end);
 }
 
-/**
- * Checks whether a selected range overlaps with any booked ranges.
- *
- * @param {Date} start - Start of selected date range.
- * @param {Date} end - End of selected date range.
- * @param {{ start: Date; end: Date }[]} ranges - The array of booked date ranges.
- * @returns {boolean} - True if overlap is found, otherwise false.
- */
-function overlaps(start: Date, end: Date, ranges: { start: Date; end: Date }[]): boolean {
-	return ranges.some(range => start <= range.end && end >= range.start);
-}
-
-/**
- * A calendar component for selecting a booking date range, with booked dates blocked out.
- * Includes toggling, outside click detection, and inline double-calendar view.
- *
- * @component
- * @param {BookingCalendarProps} props - The component props.
- * @returns {JSX.Element} - Rendered calendar component.
- */
 export default function BookingCalendar({
 	                                        onDateChange,
 	                                        bookedRanges,
-	                                        initialRange = [null, null]
+	                                        initialRange = [null, null],
                                         }: BookingCalendarProps) {
 	const [showCalendar, setShowCalendar] = useState(false);
 	const [dateRange, setDateRange] = useState<[Date | null, Date | null]>(initialRange);
 	const [error, setError] = useState<string | null>(null);
-
+	const [unavailable, setUnavailable] = useState(false);
+	const [initStart, initEnd] = initialRange;
 	const [start, end] = dateRange;
 	const calendarRef = useRef<HTMLDivElement>(null);
+	const pickerRef = useRef<ReactDatePicker>(null);
+	const didCheckInitial = useRef(false);
 
-	// Close calendar on outside click
+	// 1️⃣ Only once: if initialRange overlaps booked, clear & show unavailable
 	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) {
+		if (didCheckInitial.current) return;
+		didCheckInitial.current = true;
+
+		const [s, e] = initialRange;
+		const overlapsBook = (d: Date | null) =>
+			!!d && bookedRanges.some(({ start, end }) => d >= start && d <= end);
+
+		if (overlapsBook(s) || overlapsBook(e)) {
+			setDateRange([null, null]);
+			setUnavailable(true);
+			onDateChange(null, null);
+		}
+	}, [initialRange, bookedRanges, onDateChange]);
+
+	// 2️⃣ Close on outside click
+	useEffect(() => {
+		const handleClickOutside = (ev: MouseEvent) => {
+			if (calendarRef.current && !calendarRef.current.contains(ev.target as Node)) {
 				setShowCalendar(false);
 			}
 		};
-
-		if (showCalendar) {
-			document.addEventListener('mousedown', handleClickOutside);
-		}
-
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
-		};
+		if (showCalendar) document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [showCalendar]);
 
-	/**
-	 * Handles changes in date selection.
-	 *
-	 * - Re-clicking the same check-in date will reset the calendar.
-	 * - If both start and end are selected and overlap a booked range, selection is invalid.
-	 *
-	 * @param {[Date | null, Date | null]} dates - Selected start and end dates.
-	 */
+	// 3️⃣ User interacts: clear the "unavailable" banner
 	const handleChange = (dates: [Date | null, Date | null]) => {
+		setUnavailable(false);
 		const [startDate, endDate] = dates;
 
+		// reset on same-start click
 		if (start && startDate && !endDate && start.getTime() === startDate.getTime()) {
 			setDateRange([null, null]);
 			setError(null);
@@ -97,37 +81,22 @@ export default function BookingCalendar({
 		setError(null);
 
 		if (startDate && endDate) {
-			// Minimum stay 1 night (endDate must be AFTER startDate)
+			// 1-night minimum
 			if (startDate.getTime() === endDate.getTime()) {
 				setError('Minimum stay 1 night');
 				setDateRange([startDate, null]);
 				onDateChange(startDate, null);
 				return;
 			}
-
-			if (overlaps(startDate, endDate, bookedRanges)) {
-				setError('Selected range overlaps with a booked date.');
-				setDateRange([startDate, null]);
-				onDateChange(startDate, null);
-				return;
-			}
-
+			// valid range
 			onDateChange(startDate, endDate);
 			setShowCalendar(false);
 		}
 	};
 
-	/**
-	 * Filters out dates that should not be selectable.
-	 * - Disables already booked dates.
-	 * - If a check-in date is selected, disables dates after a future booked range.
-	 *
-	 * @param {Date} date - The date to evaluate.
-	 * @returns {boolean} - Whether the date is selectable.
-	 */
-	const filterDate = (date: Date): boolean => {
+	// 4️⃣ Disable booked + block past next booked date
+	const filterDate = (date: Date) => {
 		if (isDateBooked(date, bookedRanges)) return false;
-
 		if (start) {
 			for (const range of bookedRanges) {
 				if (start < range.start && date > range.start) {
@@ -138,40 +107,44 @@ export default function BookingCalendar({
 		return true;
 	};
 
-	const pickerRef = useRef<ReactDatePicker>(null);
-
 	const handleClearDates = () => {
 		setDateRange([null, null]);
 		setError(null);
+		setUnavailable(false);
 		onDateChange(null, null);
 		pickerRef.current?.setPreSelection(null);
 	};
 
 	return (
 		<div className="mt-8 flex flex-col gap-4" ref={calendarRef}>
+			{unavailable && (
+				<div className="text-red-600 text-sm font-medium">
+					This property is unavailable from{' '}
+					{initStart ? format(initStart, 'EEE, dd-MMM-yyyy') : '––'}{' '}
+					to{' '}
+					{initEnd ? format(initEnd, 'EEE, dd-MMM-yyyy') : '––'}.
+				</div>
+			)}
+
 			<SplitButton
-				text="Check available date"
+				text="Check available dates"
 				bgColor="bg-yellow-600"
 				textColor="text-yellow-600"
 				arrowColor="text-white"
 				borderColor="border-yellow-600"
 				hoverTextColor="hover:text-yellow-600"
 				arrowHoverColor="group-hover:text-yellow-600"
-				onClick={() => setShowCalendar(prev => !prev)}
+				onClick={() => setShowCalendar((v) => !v)}
 				className="font-heading w-[200px] py-1"
 			/>
 
 			{start && (
 				<div className="flex gap-4">
-					<div
-						className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary"
-					>
+					<div className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
 						Check-in: {format(start, 'EEE, dd-MMM-yyyy')}
 					</div>
 					{end && (
-						<div
-							className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary"
-						>
+						<div className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
 							Check-out: {format(end, 'EEE, dd-MMM-yyyy')}
 						</div>
 					)}
@@ -179,16 +152,7 @@ export default function BookingCalendar({
 			)}
 
 			{showCalendar && (
-				<div className="flex flex-col p-2 w-fit">
-					<div className="flex justify-end items-center mr-2 mb-2">
-						<button
-							type="button"
-							onClick={() => setShowCalendar(false)}
-							className="flex justify-center items-center h-8 w-8 rounded-full bg-primary text-white hover:bg-background hover:text-primary transition-colors duration-200 ease-in-out"
-						>
-							<i className="fa-solid fa-xmark-large"></i>
-						</button>
-					</div>
+				<div className="flex flex-col p-2 w-fit rounded-3xl bg-white border-gray-300 border shadow-xl">
 					<div className="relative w-full">
 						<DatePicker
 							ref={pickerRef}
@@ -202,11 +166,9 @@ export default function BookingCalendar({
 							className="border p-2 rounded w-full"
 							inline
 							monthsShown={2}
-							calendarClassName="!p-0"
 						/>
-
-
 					</div>
+
 					<div className="flex justify-end items-center m-2">
 						<CommonButton
 							onClick={handleClearDates}
@@ -218,13 +180,9 @@ export default function BookingCalendar({
 						>
 							Clear Dates
 						</CommonButton>
-
 					</div>
 
-					{error && (
-						<p className="text-red-600 text-sm mt-2">{error}</p>
-					)}
-
+					{error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 				</div>
 			)}
 		</div>
