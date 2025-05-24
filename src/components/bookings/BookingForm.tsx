@@ -13,11 +13,8 @@ export interface BookingFormProps {
 	isBookingLoading: boolean;
 	bookingError: string | null;
 	success: boolean;
-
-	/** seed the calendar */
 	initialStartDate?: Date | null;
 	initialEndDate?: Date | null;
-	/** seed the guest count */
 	initialGuests?: number;
 }
 
@@ -36,7 +33,6 @@ export default function BookingForm({
 	const [guests, setGuests] = useState<number>(initialGuests);
 	const [showModal, setShowModal] = useState(false);
 
-	// keep state in sync if props change
 	useEffect(() => {
 		setStartDate(initialStartDate);
 	}, [initialStartDate]);
@@ -64,8 +60,23 @@ export default function BookingForm({
 		navigate(`/user/${userId}`);
 	};
 
+	// --- SAFE RANGE CHECK ---
+	function isRangeAvailable(
+		start: Date | null,
+		end: Date | null,
+		booked: { start: Date; end: Date }[]
+	) {
+		if (!start || !end) return false;
+		return !booked.some(
+			({ start: bookStart, end: bookEnd }) =>
+				start <= bookEnd && end >= bookStart
+		);
+	}
+
+	const isAvailable = isRangeAvailable(startDate, endDate, bookedDateRanges);
+
 	return (
-		<div>
+		<div className="flex flex-col items-center sm:block">
 			<div className="mt-4 flex items-center gap-2">
 				<label
 					htmlFor="guests"
@@ -73,25 +84,22 @@ export default function BookingForm({
 				>
 					Number of Guests
 				</label>
-
-				{/* ← wrap in a relative container */}
 				<div className="relative inline-block">
 					<select
 						id="guests"
 						value={guests}
 						onChange={e => setGuests(Number(e.target.value))}
 						className="appearance-none rounded-full border border-gray-300
-							        bg-white pl-4 pr-10 py-2 text-sm text-gray-700
-							        shadow-sm focus:outline-none focus:ring-2 focus:ring-primary
-							        focus:border-transparent transition"
+                        bg-white pl-4 pr-10 py-2 text-sm text-gray-700
+                        shadow-sm focus:outline-none focus:ring-2 focus:ring-primary
+                        focus:border-transparent transition"
 					>
-						{Array.from({length: maxGuests}, (_, i) => i + 1).map(num => (
+						{Array.from({ length: maxGuests }, (_, i) => i + 1).map(num => (
 							<option key={num} value={num}>
 								{num} {num === 1 ? 'guest' : 'guests'}
 							</option>
 						))}
 					</select>
-
 					<div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
 						<svg
 							className="w-4 h-4"
@@ -108,7 +116,6 @@ export default function BookingForm({
 						</svg>
 					</div>
 				</div>
-
 				<p className="text-xs text-gray-500 mt-1">
 					Max {maxGuests} guests allowed
 				</p>
@@ -123,52 +130,36 @@ export default function BookingForm({
 				initialRange={[initialStartDate, initialEndDate]}
 			/>
 
-			{startDate && endDate && (
+			{startDate && endDate && isAvailable && (
 				<div>
 					<h4 className="mt-6 text-primary font-medium">Booking Summary</h4>
 					<div className="text-sm rounded-xl text-gray-700 bg-gray-50 mt-4 p-3 space-y-1">
 						<div className="flex items-center justify-between gap-2">
-							<div>
-								<b>Check-in Date:</b>
-							</div>
-							<div>
-								{startDate.toDateString()}
-							</div>
+							<div><b>Check-in Date:</b></div>
+							<div>{startDate.toDateString()}</div>
 						</div>
-
 						<div className="flex items-center justify-between gap-2">
-							<div>
-								<b>Check-out Date:</b>
-							</div>
-							<div>
-								{endDate.toDateString()}
-							</div>
+							<div><b>Check-out Date:</b></div>
+							<div>{endDate.toDateString()}</div>
 						</div>
-
 						<div className="flex items-center justify-between gap-2">
-							<div>
-								<b>Total nights:</b>
-							</div>
+							<div><b>Total nights:</b></div>
 							<div>
 								{calculateNights(startDate, endDate)}{' '}
 								{calculateNights(startDate, endDate) === 1 ? 'night' : 'nights'}
 							</div>
 						</div>
-
 						<div className="flex items-center justify-between gap-2">
-							<div>
-								<b>Guests</b>
-							</div>
+							<div><b>Guests</b></div>
 							<div>
 								{guests} {guests === 1 ? 'guest' : 'guests'}
 							</div>
 						</div>
 					</div>
-
 				</div>
 			)}
 
-			{startDate && endDate && (
+			{startDate && endDate && isAvailable && (
 				<div className="text-primary text-heading font-semibold text-lg mt-2">
 					<p>
 						Total price: {totalPrice} NOK
@@ -183,9 +174,7 @@ export default function BookingForm({
 				</div>
 			)}
 
-			{/* … earlier parts of your JSX … */}
-
-			{startDate && endDate && (
+			{startDate && endDate && isAvailable && (
 				isLoggedIn ? (
 					<SplitButton
 						text="Book now"
@@ -218,7 +207,7 @@ export default function BookingForm({
 				)
 			)}
 
-			{showModal && startDate && endDate && (
+			{showModal && startDate && endDate && isAvailable && (
 				<BookingModal
 					startDate={startDate}
 					endDate={endDate}
@@ -230,7 +219,6 @@ export default function BookingForm({
 					}}
 				/>
 			)}
-
 
 			{bookingError && <p className="text-sm text-red-600 mt-2">{bookingError}</p>}
 		</div>
