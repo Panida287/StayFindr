@@ -58,7 +58,7 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
     background: #DEECD7 !important;
     border-radius: 18px 0 0 18px !important; /* round left, square right */
     font-weight: bold !important;
-    z-index: 2 !important;
+    z-index: 10 !important;
 }
 
 /* End date: square left, round right (selected and hover) */
@@ -73,6 +73,18 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
     z-index: 2 !important;
 }
 
+/* End date: square left, round right (selected and hover) */
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-start:hover,
+.react-datepicker__day--selecting-range-start,
+.react-datepicker__day--selecting-range-start:hover {
+    background: #4A5A3E !important;
+    color: #fff !important;
+    border-radius: 18px 0 0 18px !important;
+    font-weight: bold !important;
+    z-index: 2 !important;
+}
+
 
 /* Booked and disabled days */
 .react-datepicker__day--disabled,
@@ -81,16 +93,6 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
     text-decoration: line-through !important;
     background: none !important;
     pointer-events: none !important;
-}
-
-/* Keyboard-selected: match in-range style */
-.react-datepicker__day--keyboard-selected,
-.react-datepicker__day--keyboard-selected:hover {
-
-    background: #4A5A3E !important;
-    color: #fff !important;
-    border-radius: 18px 0 0 18px !important;
-    z-index: 1 !important;
 }
 
 .react-datepicker__day--outside-month,
@@ -107,16 +109,20 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
 }
 
 .react-datepicker {
-    background: #fff !important;
+    background: #FBF6EC !important;
     border: none !important;
     border-radius: 16px !important;
+    padding: 10px !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
     font-family: "Plus Jakarta Sans", "sans-serif" !important;
 }
 
 .react-datepicker__header:not(.react-datepicker__header--has-time-select) {
-    background: rgba(247, 241, 230, 0.5) !important;
-    border-top-left-radius: 16px !important ;
-    border-top-right-radius: 16px !important ;
+    background: none !important;
 }
 
+.react-datepicker__day--keyboard-selected {
+    background: #4A5A3E !important;
+    color: white !important;
+}
 
