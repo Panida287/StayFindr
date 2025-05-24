@@ -18,7 +18,7 @@ type BookingCalendarProps = {
  * Checks if a specific date falls within any booked range.
  */
 function isDateBooked(date: Date, bookedRanges: { start: Date; end: Date }[]): boolean {
-	return bookedRanges.some(({start, end}) => date >= start && date <= end);
+	return bookedRanges.some(({ start, end }) => date >= start && date <= end);
 }
 
 export default function BookingCalendar({
@@ -36,13 +36,14 @@ export default function BookingCalendar({
 	const pickerRef = useRef<ReactDatePicker>(null);
 	const didCheckInitial = useRef(false);
 
+	// 1️⃣ Only once: if initialRange overlaps booked, clear & show unavailable
 	useEffect(() => {
 		if (didCheckInitial.current) return;
 		didCheckInitial.current = true;
 
 		const [s, e] = initialRange;
 		const overlapsBook = (d: Date | null) =>
-			!!d && bookedRanges.some(({start, end}) => d >= start && d <= end);
+			!!d && bookedRanges.some(({ start, end }) => d >= start && d <= end);
 
 		if (overlapsBook(s) || overlapsBook(e)) {
 			setDateRange([null, null]);
@@ -51,6 +52,7 @@ export default function BookingCalendar({
 		}
 	}, [initialRange, bookedRanges, onDateChange]);
 
+	// 2️⃣ Close on outside click
 	useEffect(() => {
 		const handleClickOutside = (ev: MouseEvent) => {
 			if (calendarRef.current && !calendarRef.current.contains(ev.target as Node)) {
@@ -61,6 +63,7 @@ export default function BookingCalendar({
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [showCalendar]);
 
+	// 3️⃣ User interacts: clear the "unavailable" banner
 	const handleChange = (dates: [Date | null, Date | null]) => {
 		setUnavailable(false);
 		const [startDate, endDate] = dates;
@@ -116,14 +119,10 @@ export default function BookingCalendar({
 		<div className="mt-8 flex flex-col gap-4" ref={calendarRef}>
 			{unavailable && (
 				<div className="text-red-600 text-sm font-medium">
-					This property is unavailable during{' '}
-					<span className="font-bold">
-                        {initStart ? format(initStart, 'EEE, dd-MMM-yyyy') : '––'}
-                    </span>{' '}
-						to{' '}
-					<span className="font-bold">
-                        {initEnd ? format(initEnd, 'EEE, dd-MMM-yyyy') : '––'}
-                    </span>.
+					This property is unavailable from{' '}
+					{initStart ? format(initStart, 'EEE, dd-MMM-yyyy') : '––'}{' '}
+					to{' '}
+					{initEnd ? format(initEnd, 'EEE, dd-MMM-yyyy') : '––'}.
 				</div>
 			)}
 
@@ -141,13 +140,11 @@ export default function BookingCalendar({
 
 			{start && (
 				<div className="flex gap-4">
-					<div
-						className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
+					<div className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
 						Check-in: {format(start, 'EEE, dd-MMM-yyyy')}
 					</div>
 					{end && (
-						<div
-							className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
+						<div className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
 							Check-out: {format(end, 'EEE, dd-MMM-yyyy')}
 						</div>
 					)}
