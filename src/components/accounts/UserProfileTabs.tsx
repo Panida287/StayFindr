@@ -13,7 +13,7 @@ export default function UserProfileTabs() {
 		}`;
 
 	return (
-		<div className="flex flex-col items-center p-2 justify-center w-full bg-white/60 rounded-lg mx-auto mb-4 md:mt-14 md:mb-0 md:items-start">
+		<div className="flex flex-col items-center p-2 justify-center w-full bg-white/60 rounded-lg mx-auto mb-4 sm:mt-14">
 			<NavLink
 				to={`${basePath}/user-profile`} className={linkClass}>
 				<i className="fa-light fa-address-card pr-2" />

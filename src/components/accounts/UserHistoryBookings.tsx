@@ -21,7 +21,6 @@ export default function UserHistoryBookings({
 
 	return (
 		<div className="my-bookings">
-			<h2 className="text-4xl mb-4">Booking History</h2>
 
 			{historyBookings.length === 0 ? (
 				<p className="text-gray-500">No past or ongoing bookings.</p>

@@ -54,9 +54,9 @@ export default function UserProfilePage() {
 	}
 
 	return (
-		<div className="space-y-8">
-			<div className="max-w-3xl mx-auto p-4 space-y-6">
-				{/* Header */}
+		<div>
+			<h2 className="text-4xl mb-4">About Me</h2>
+			<div className="max-w-3xl mx-auto space-y-4">
 				<div className="flex items-center gap-4 relative bg-white/60 rounded-lg p-4 shadow">
 					{/* Name, role & email */}
 					<div>
