@@ -15,7 +15,7 @@ export default function AdminTabs() {
 	return (
 		<div className="w-full bg-white/50 justify-between items-center flex my-6 shadow-md rounded-xl p-2">
 			<NavLink to={basePath} end className={linkClass}>
-				Dashboard
+				Overview
 			</NavLink>
 
 			<span className="h-10 w-[1px] bg-primary/20 mx-1"></span>
