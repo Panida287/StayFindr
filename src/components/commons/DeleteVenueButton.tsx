@@ -13,14 +13,14 @@ export default function DeleteVenueButton({ venueId }: { venueId: string }) {
 
 		const success = await deleteVenue(venueId);
 		if (success) {
-			await refreshVenues(); // ✅ now from ProfileStore
+			await refreshVenues();
 		}
 	};
 
 	return (
 		<button
 			onClick={handleDelete}
-			className="text-sm px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+			className="text-sm px-2 w-full py-1 bg-red-500 text-white rounded hover:bg-red-600"
 		>
 			{isDeleting ? 'Deleting...' : 'Delete'}
 		</button>
