@@ -1,5 +1,4 @@
 import React, { forwardRef } from 'react';
-import AdBanner from '../../commons/AdBanner';
 import VenueAvailabilitySearch, {
 	VenueAvailabilitySearchRef,
 } from './VenueAvailabilitySearch';
@@ -17,8 +16,6 @@ export default forwardRef<VenueAvailabilitySearchRef, SearchSectionProps>(
 	function SearchSection({ filters, setFilters, onSearchClick, onClear }, ref) {
 		return (
 			<>
-				<AdBanner />
-
 				<VenueAvailabilitySearch
 					ref={ref}
 					initialCity={filters.city}
