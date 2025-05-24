@@ -153,6 +153,18 @@ export default function BookingCalendar({
 
 			{showCalendar && (
 				<div className="flex flex-col p-2 w-fit rounded-3xl bg-white border-gray-300 border shadow-xl">
+					{/* 1. Close button at top right */}
+					<div className="flex justify-end mb-2 mr-2">
+						<button
+							type="button"
+							onClick={() => setShowCalendar(false)}
+							className="h-8 w-8 bg-background flex justify-center items-center rounded-full hover:bg-primary hover:text-white transition-colors"
+						>
+							<i className="fa-regular fa-xmark-large"></i>
+						</button>
+					</div>
+
+					{/* 2. Your existing date picker */}
 					<div className="relative w-full">
 						<DatePicker
 							ref={pickerRef}
@@ -169,6 +181,7 @@ export default function BookingCalendar({
 						/>
 					</div>
 
+					{/* 3. Clear button */}
 					<div className="flex justify-end items-center m-2">
 						<CommonButton
 							onClick={handleClearDates}
@@ -182,9 +195,11 @@ export default function BookingCalendar({
 						</CommonButton>
 					</div>
 
+					{/* 4. Error message */}
 					{error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 				</div>
 			)}
+
 		</div>
 	);
 }
