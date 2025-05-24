@@ -20,14 +20,14 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 				/>
 				<button
 					onClick={() => setIsModalOpen(true)}
-					className="text-xs px-2 py-1 bg-primary text-white rounded hover:bg-primary-dark"
+					className="text-md h-7 w-7 border border-gray-300 rounded-full flex justify-center items-center relative top-4 -mt-8 text-primary bg-gray-300/70 hover:scale-110 transition duration-200 ease-in-out"
 				>
-					Edit Avatar
+					<i className="fa-regular fa-camera"></i>
 				</button>
 			</div>
 
 			<div>
-				<h2 className="text-2xl font-bold">{name}</h2>
+			<h2 className="text-2xl font-bold">{name}</h2>
 				<p className="text-gray-600">{venueManager ? 'Venue Manager' : 'Traveler'}</p>
 				{bio && <p className="text-sm mt-1 text-gray-500">{bio}</p>}
 			</div>

@@ -6,14 +6,15 @@ import useUpdateGuests from '../../hooks/useUpdateGuests.ts';
 import Modal from '../commons/Modal.tsx';
 import useDeleteBooking from '../../hooks/useDeleteBooking.ts';
 import toast from 'react-hot-toast';
+import { CommonButton } from '../commons/Buttons.tsx';
 
 type MyBookingCardProps = {
 	booking: Profile['bookings'][0];
 	refreshBookings: () => void;
 };
 
-export default function MyBookingCard({ booking, refreshBookings }: MyBookingCardProps) {
-	const { dateFrom, dateTo, guests, venue, id } = booking;
+export default function MyBookingCard({booking, refreshBookings}: MyBookingCardProps) {
+	const {dateFrom, dateTo, guests, venue, id} = booking;
 
 	const nights = differenceInDays(new Date(dateTo), new Date(dateFrom));
 	const formattedFrom = format(new Date(dateFrom), 'MMM d, yyyy');
@@ -26,8 +27,8 @@ export default function MyBookingCard({ booking, refreshBookings }: MyBookingCar
 
 	const maxGuests = venue.maxGuests;
 
-	const { updateGuests, loading: updating } = useUpdateGuests();
-	const { deleteBooking, loading: deleting } = useDeleteBooking();
+	const {updateGuests, loading: updating} = useUpdateGuests();
+	const {deleteBooking, loading: deleting} = useDeleteBooking();
 
 	const handleGuestUpdate = async () => {
 		const updatePromise = updateGuests(id, newGuests);
@@ -72,42 +73,49 @@ export default function MyBookingCard({ booking, refreshBookings }: MyBookingCar
 	};
 
 	return (
-		<div className="border rounded-lg shadow-md overflow-hidden">
-			<ImageGallery images={venue.media} altFallback={venue.name} heightClass="h-56" />
+		<div
+			className="flex flex-col rounded-lg overflow-hidden shadow-md bg-white/50 hover:shadow-lg transition">
+			<a
+				href={`/venue/${venue.id}`}
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<ImageGallery images={venue.media} altFallback={venue.name} heightClass="h-56" />
 
-			<div className="p-4 space-y-2">
-				<h3 className="text-xl font-semibold">{venue.name}</h3>
-				<p className="text-sm text-gray-600">
-					{venue.location.city}, {venue.location.country}
-				</p>
-				<p className="text-sm text-gray-600">
-					{formattedFrom} → {formattedTo} ({nights} night{nights > 1 ? 's' : ''})
-				</p>
-				<p className="text-sm text-gray-600">Guests: {guests}</p>
+				<div className="space-y-2 p-4">
+					<h3 className="text-xl font-semibold">{venue.name}</h3>
+					<p className="text-sm text-gray-600">
+						{venue.location.city}, {venue.location.country}
+					</p>
+					<p className="text-sm text-gray-600">
+						{formattedFrom} → {formattedTo} ({nights} night{nights > 1 ? 's' : ''})
+					</p>
+					<p className="text-sm text-gray-600">Guests: {guests}</p>
 
-				<div className="flex justify-between mt-3">
-					<a
-						href={`/venue/${venue.id}`}
-						target="_blank"
-						rel="noopener noreferrer"
-						className="px-4 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-					>
-						View Venue
-					</a>
-					<button
-						onClick={() => setIsModalOpen(true)}
-						className="px-4 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300"
-					>
-						Edit Guests
-					</button>
-					<button
-						onClick={() => setIsDeleting(true)}
-						className="px-4 py-1 text-sm text-red-600 border border-red-500 rounded hover:bg-red-50"
-					>
-						Cancel Booking
-					</button>
 				</div>
+			</a>
+			<div className="flex justify-between mt-3 p-4 pt-0">
+				<CommonButton
+					onClick={() => setIsModalOpen(true)}
+					bgColor="bg-yellow-500"
+					hoverColor="hover:bg-yellow-600"
+					textColor="text-white"
+					className="p-2 rounded-full border  disabled:opacity-50"
+				>
+					<i className="fa-light fa-user-pen pr-2"></i>
+					Edit Guests
+				</CommonButton>
+				<CommonButton
+					onClick={() => setIsDeleting(true)}
+					bgColor="bg-red-500"
+					hoverColor="hover:bg-red-600"
+					textColor="text-white"
+					className="p-2 rounded-full disabled:opacity-50"
+				>
+					<i className="fa-regular fa-trash"></i>
+				</CommonButton>
 			</div>
+
 
 			{/* Edit Guests Modal */}
 			<Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
