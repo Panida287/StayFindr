@@ -25,7 +25,6 @@ import ManageBookingsPage from './pages/Accounts/AdminAccountPage/ManageBookings
 import ProtectedRoute from './components/commons/ProtectedRoute.tsx';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import BrowsePage from './pages/BrowsePage';
-import PaymentPage from './pages/PaymentPage';
 
 const router = createBrowserRouter([
 	{
@@ -47,10 +46,6 @@ const router = createBrowserRouter([
 			{
 				path: 'booking-success',
 				element: <BookingSuccessPage />,
-			},
-			{
-				path: 'payment',
-				element: <PaymentPage />,
 			},
 			{
 				path: 'user/:userId',
