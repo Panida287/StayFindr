@@ -85,7 +85,7 @@ export function SplitButton({
 		>
 			{/* Expanding highlight */}
 			<span
-				className="absolute top-[1px] bottom-[1px] left-[1px] z-0 bg-white w-[80%] group-hover:w-[calc(100%-3px)] transition-all duration-500 ease-in-out rounded-full"
+				className="absolute top-[1px] bottom-[1px] left-[1px] z-0 bg-white w-[85%] group-hover:w-[calc(100%-3px)] transition-all duration-500 ease-in-out rounded-full"
 			/>
 			{/* Text and arrow */}
 			<span className="relative z-10 flex items-center whitespace-nowrap">
