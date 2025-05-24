@@ -20,8 +20,3 @@ export type Profile = {
 		bookings: number;
 	};
 };
-
-export type ProfileResponse = {
-	data: Profile;
-	meta: Record<string, unknown>;
-};

@@ -16,7 +16,6 @@ export default function UserAccountPage() {
 					bookings={profile.bookings}
 					refreshBookings={fetchProfile}
 			/>
-
 			{isModalOpen && <EditAvatarModal onClose={() => setIsModalOpen(false)} />}
 		</div>
 	);
