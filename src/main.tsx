@@ -25,6 +25,9 @@ import ManageBookingsPage from './pages/Accounts/AdminAccountPage/ManageBookings
 import ProtectedRoute from './components/commons/ProtectedRoute.tsx';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import BrowsePage from './pages/BrowsePage';
+import LayoutUser from './pages/Accounts/UserAccountPage/LayoutUser';
+import UserProfilePage from './pages/Accounts/UserAccountPage/UserProfilePage';
+import UserBookingHistoryPage from './pages/Accounts/UserAccountPage/UserBookingHistoryPage';
 
 const router = createBrowserRouter([
 	{
@@ -49,7 +52,21 @@ const router = createBrowserRouter([
 			},
 			{
 				path: 'user/:userId',
-				element: <UserAccountPage />,
+				element: <LayoutUser />,
+				children: [
+					{
+						path: '',
+						element: <UserAccountPage />,
+					},
+					{
+						path: 'user-profile',
+						element: <UserProfilePage />
+					},
+					{
+						path: 'user-booking-history',
+						element: <UserBookingHistoryPage />
+					}
+				]
 			},
 			{
 				path: 'admin/:adminId',
