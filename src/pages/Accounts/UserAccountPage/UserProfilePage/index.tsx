@@ -13,7 +13,6 @@ type Review = {
 export default function UserProfilePage() {
 	const { profile, isLoading, error } = useFetchProfile();
 
-	// Mock reviews to fill out the page
 	const reviews: Review[] = [
 		{
 			id: 1,
@@ -58,45 +57,35 @@ export default function UserProfilePage() {
 		<div className="space-y-8">
 			<div className="max-w-3xl mx-auto p-4 space-y-6">
 				{/* Header */}
-				<div className="flex items-center gap-4 relative">
-					{/* Avatar & camera button */}
-					<div className="relative">
-						<img
-							src={profile.avatar.url || '/assets/avatar-placeholder.png'}
-							alt={profile.name}
-							className="w-20 h-20 rounded-full object-cover"
-						/>
-						<button
-							className="absolute bottom-0 right-0 text-md h-7 w-7 border border-gray-300 rounded-full flex justify-center items-center text-primary bg-gray-300/70 hover:scale-110 transition duration-200 ease-in-out"
-						>
-							<i className="fa-regular fa-camera"></i>
-						</button>
-					</div>
-
+				<div className="flex items-center gap-4 relative bg-white/60 rounded-lg p-4 shadow">
 					{/* Name, role & email */}
 					<div>
-						<h1 className="text-3xl font-bold">{profile.name}</h1>
+						<p className="font-bold ">
+							<i className="fa-solid fa-circle-user pr-2"></i>
+							{profile.name}</p>
 						<p className="text-gray-600">
-							{profile.venueManager ? 'Venue Manager' : 'Traveler'}
+							<i className="fa-solid fa-briefcase pr-2 "></i>{profile.venueManager ? 'Venue Manager' : 'Traveler'}
 						</p>
-						<p className="text-sm text-gray-500">{profile.email}</p>
+						<p className="text-sm text-gray-500">
+							<i className="fa-solid fa-envelope pr-2"></i>
+							{profile.email}</p>
 					</div>
 				</div>
 
 				{/* Stats */}
 				<div className="grid grid-cols-2 gap-4">
 					<div className="p-4 bg-white rounded-lg shadow">
-						<p className="text-sm text-gray-500">Venues Listed</p>
-						<p className="text-2xl font-bold">{profile._count.venues}</p>
-					</div>
-					<div className="p-4 bg-white rounded-lg shadow">
 						<p className="text-sm text-gray-500">Bookings Made</p>
 						<p className="text-2xl font-bold">{profile._count.bookings}</p>
+					</div>
+					<div className="p-4 bg-white rounded-lg shadow">
+						<p className="text-sm text-gray-500">Reviews Given</p>
+						<p className="text-2xl font-bold">5</p>
 					</div>
 				</div>
 
 				{/* About Me */}
-				<section>
+				<section className="bg-white/60 rounded-lg p-4 shadow">
 					<h2 className="text-2xl font-semibold mb-2">About Me</h2>
 					<p className="text-gray-700 leading-relaxed">
 						{profile.bio || 'No bio provided.'}
@@ -111,7 +100,7 @@ export default function UserProfilePage() {
 							<div key={r.id} className="bg-white rounded-lg p-4 shadow">
 								<div className="flex justify-between items-center mb-2">
 									<div>
-										<h3 className="font-semibold">{r.venueName}</h3>
+										<h6 className="font-semibold">{r.venueName}</h6>
 										<p className="text-xs text-gray-500">
 											{format(new Date(r.date), 'MMM d, yyyy')}
 										</p>
@@ -128,7 +117,7 @@ export default function UserProfilePage() {
 										))}
 									</div>
 								</div>
-								<p className="text-gray-700">{r.text}</p>
+								<p className="text-gray-700 text-xs">{r.text}</p>
 							</div>
 						))}
 					</div>
