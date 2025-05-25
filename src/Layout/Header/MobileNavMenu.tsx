@@ -61,7 +61,7 @@ export default function MobileNavMenu({ menuRef, open, setOpen, isLoggedIn }: Pr
 											}
 											onClick={() => setOpen(false)}
 										>
-											My Bookings
+											My Profile
 										</NavLink>
 									</li>
 									{isAdmin && (
@@ -73,7 +73,7 @@ export default function MobileNavMenu({ menuRef, open, setOpen, isLoggedIn }: Pr
 												}
 												onClick={() => setOpen(false)}
 											>
-												Dashboard
+												Admin Dashboard
 											</NavLink>
 										</li>
 									)}

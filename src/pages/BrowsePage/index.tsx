@@ -47,7 +47,6 @@ export default function BrowsePage(): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 2️⃣ Reapply on page | filter | sort change + smooth scroll
   useEffect(() => {
     setPage(currentPage);
     applyFilters({

@@ -1,7 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade } from 'swiper/modules';
 import { SplitButton } from '../commons/Buttons.tsx';
-import { Link } from 'react-router-dom';
 import { useVenueStore } from '../../store/VenueStore.ts';
 import 'swiper/css';
 
@@ -12,10 +11,12 @@ export default function TopVenuesCarousel() {
 	return (
 		<section className="relative h-[500px] overflow-hidden max-w-6xl mx-auto">
 			{/* Left white fade overlay */}
-			<div className="absolute w-1/2 h-full left-0 z-20 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
+			<div
+				className="absolute w-1/2 h-full left-0 z-20 bg-gradient-to-r from-black/80 via-black/60 to-transparent" />
 
 			{/* Text content in top-left */}
-			<div className="absolute top-48 left-10 z-30 flex flex-col text-secondary w-1/2 space-y-3 sm:top-40 md:top-52">
+			<div
+				className="absolute top-48 left-10 z-30 flex flex-col text-secondary w-1/2 space-y-3 sm:top-40 md:top-52">
 
 				<h2 className="text-4xl font-bold leading-tight font-heading">
 					Find Your Perfect Stay
@@ -56,18 +57,17 @@ export default function TopVenuesCarousel() {
 									<p className="text-lg font-semibold drop-shadow">
 										{venue.location?.city}, {venue.location?.country}
 									</p>
-									<Link to={`/venue/${venue.id}`} className="mt-2 inline-block">
-										<SplitButton
-											text="Book now"
-											textColor="text-yellow-500"
-											hoverTextColor="group-hover:text-yellow-500"
-											arrowColor="text-white"
-											arrowHoverColor="group-hover:text-yellow-500"
-											bgColor="bg-yellow-500"
-											borderColor="border-yellow-500"
-											className="font-heading "
-										/>
-									</Link>
+									<SplitButton
+										text="Book now"
+										to={`/venue/${venue.id}`}
+										textColor="text-yellow-500"
+										hoverTextColor="group-hover:text-yellow-500"
+										arrowColor="text-white"
+										arrowHoverColor="group-hover:text-yellow-500"
+										bgColor="bg-yellow-500"
+										borderColor="border-yellow-500"
+										className="font-heading mt-2"
+									/>
 								</div>
 							</div>
 						</SwiperSlide>

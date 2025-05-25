@@ -14,7 +14,6 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 	const goNext  = () => onPageChange(currentPage + 1);
 	const goLast  = () => onPageChange(pageCount);
 
-	// for desktop: only show up to 3 page buttons
 	const getPages = () => {
 		if (pageCount <= 3) return Array.from({ length: pageCount }, (_, i) => i + 1);
 		if (currentPage === 1)      return [1, 2, 3];
@@ -26,7 +25,7 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 	return (
 		<nav className="mt-6">
 			{/* Mobile: << < current/total > >> */}
-			<div className="flex items-center justify-center space-x-2 sm:hidden">
+			<div className="flex items-center justify-center space-x-2 md:hidden">
 				<CommonButton
 					onClick={goFirst}
 					disabled={currentPage === 1}
@@ -49,7 +48,7 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 					{'<'}
 				</CommonButton>
 
-				<span className="text-sm font-medium text-primary">
+				<span className="text-xs font-medium text-primary">
           {currentPage}/{pageCount}
         </span>
 
@@ -77,14 +76,14 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 			</div>
 
 			{/* Tablet+ & desktop: full pagination with 3 page buttons */}
-			<div className="hidden sm:flex flex-wrap justify-center items-center gap-2">
+			<div className="hidden md:flex flex-wrap justify-center items-center gap-2">
 				<CommonButton
 					onClick={goFirst}
 					disabled={currentPage === 1}
 					bgColor="bg-white"
 					hoverColor="hover:bg-background"
 					textColor="text-primary"
-					className="px-4 py-2 rounded-full border border-gray-300 disabled:opacity-50"
+					className="px-2 py-2 rounded-full text-xs border border-gray-300 disabled:opacity-50"
 				>
 					First
 				</CommonButton>
@@ -95,7 +94,7 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 					bgColor="bg-white"
 					hoverColor="hover:bg-background"
 					textColor="text-primary"
-					className="px-4 py-2 rounded-full border border-gray-300 disabled:opacity-50"
+					className="px-2 py-2 rounded-full border text-xs border-gray-300 disabled:opacity-50"
 				>
 					Previous
 				</CommonButton>
@@ -109,7 +108,7 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 							bgColor={isActive ? 'bg-primary' : 'bg-white'}
 							hoverColor={isActive ? undefined : 'hover:bg-background'}
 							textColor={isActive ? 'text-white' : 'text-primary'}
-							className="px-2 py-1 rounded-full text-sm font-medium border border-gray-300"
+							className="px-[13px] py-1 rounded-full text-xs font-medium border border-gray-300"
 						>
 							{page}
 						</CommonButton>
@@ -122,7 +121,7 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 					bgColor="bg-white"
 					hoverColor="hover:bg-background"
 					textColor="text-primary"
-					className="px-4 py-2 rounded-full border border-gray-300 disabled:opacity-50"
+					className="px-4 py-2 rounded-full text-xs border border-gray-300 disabled:opacity-50"
 				>
 					Next
 				</CommonButton>
@@ -133,7 +132,7 @@ export default function Pagination({ currentPage, pageCount, onPageChange }: Pro
 					bgColor="bg-white"
 					hoverColor="hover:bg-background"
 					textColor="text-primary"
-					className="px-4 py-2 rounded-full border border-gray-300 disabled:opacity-50"
+					className="px-4 py-2 rounded-full border text-xs border-gray-300 disabled:opacity-50"
 				>
 					Last
 				</CommonButton>

@@ -1,45 +1,154 @@
-import { Venue } from "../../types/venues.ts";
-import { FALLBACK } from "../../constants.ts";
+import { useState } from 'react';
+import { Venue } from '../../types/venues.ts';
+import { FALLBACK } from '../../constants.ts';
+import { useDeleteVenue } from '../../hooks/useDeleteVenue';
+import { useProfileStore } from '../../store/ProfileStore';
+import RatingBadge from '../commons/RatingBadge';
+import Modal from '../commons/Modal';
+import toast from 'react-hot-toast';
+import DropdownMenu from '../commons/DropdownMenu';
 import { Link } from 'react-router-dom';
-import DeleteVenueButton from '../commons/DeleteVenueButton.tsx';
+import { format } from 'date-fns';
 
-type Props = {
-	venue: Venue;
-};
+type Props = { venue: Venue };
 
-export default function ManageVenueCard({ venue }: Props) {
-	const user = localStorage.getItem("SFUsername");
+export default function ManageVenueCard({venue}: Props) {
+	const user = localStorage.getItem('SFUsername')!;
+	const [confirmOpen, setConfirmOpen] = useState(false);
+
+	const {deleteVenue} = useDeleteVenue({
+		onError: (msg) => toast.error(msg),
+	});
+	const refreshVenues = useProfileStore((s) => s.fetchVenuesByProfile);
+
+	const handleDeleteConfirm = async () => {
+		const success = await deleteVenue(venue.id);
+		if (success) {
+			await refreshVenues();
+			toast.success('Venue has been deleted');
+			setConfirmOpen(false);
+		}
+	};
+
+	const createdTs = new Date(venue.created).getTime();
+	const updatedTs = venue.updated ? new Date(venue.updated).getTime() : null;
+
 	return (
-		<div className="bg-white rounded-xl shadow-sm p-4 flex items-start gap-4">
+		<div className="flex flex-col h-full bg-white rounded-xl shadow-sm p-4 items-start gap-4 sm:flex-row">
+			{/* Venue image */}
 			<img
 				src={venue.media[0]?.url || FALLBACK.venue}
-				alt={venue.media[0]?.alt || "Venue image"}
-				className="w-24 h-24 object-cover rounded-md"
+				alt={venue.media[0]?.alt || 'Venue image'}
+				onError={(e) => {
+					e.currentTarget.src = FALLBACK.venue;
+				}}
+				className="w-full h-72 object-cover rounded-md sm:w-52 sm:h-56"
 			/>
 
-			<div className="flex-1">
-				<div className="flex justify-between items-start">
-					<div>
-						<h3 className="text-lg font-semibold">{venue.name}</h3>
-						<p className="text-gray-500 text-sm mb-2">
-							{venue.location.city}, {venue.location.country}
-						</p>
-						<p className="text-sm text-gray-600">
-							Bookings: <span className="font-medium">{venue.bookings?.length || 0}</span>
-						</p>
-					</div>
+			{/* Details */}
+			<div className="relative flex-1 h-full w-full">
+				<div className="absolute top-0 right-0">
+					<DropdownMenu
+						items={[
+							{
+								icon: <i className="fa-light fa-pen pr-2" />,
+								label: 'Edit',
+								to: `/admin/${user}/edit-venue/${venue.id}`,
+								className: 'text-gray-600',
+								hoverClassName: 'hover:bg-blue-50',
+							},
+							{
+								icon: <i className="fa-light fa-trash pr-2" />,
+								label: 'Delete',
+								onClick: () => setConfirmOpen(true),
+								className: 'text-red-600',
+								hoverClassName: 'hover:bg-red-50',
+							},
+						]}
+					>
+						<button className="p-2 rounded-full hover:bg-gray-100 focus:outline-none">
+							<i className="fa-solid fa-ellipsis-vertical text-gray-600"></i>
+						</button>
+					</DropdownMenu>
+				</div>
 
-					<div className="flex gap-2">
-						<Link
-							to={`/admin/${user}/edit-venue/${venue.id}`}
-							className="text-sm px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
-						>
-							Edit
-						</Link>
-						<DeleteVenueButton venueId={venue.id} />
+				<div className="flex h-full justify-between items-start">
+					<div className="flex flex-col h-full justify-between">
+						<div>
+							<h3 className="text-xl font-semibold">{venue.name}</h3>
+							<p className="text-gray-500 text-sm mb-2">
+								{venue.location.city}, {venue.location.country}
+							</p>
+							<p className="text-gray-500 text-sm mb-2">
+								{venue.price} NOK / night
+							</p>
+							<p className="text-sm text-gray-600">
+								Bookings:{' '}
+								<span className="font-medium">
+                                    {venue.bookings?.length || 0}
+                                </span>
+							</p>
+							<p className="text-sm text-gray-600 my-4">
+								Created:{' '}
+								<span className="font-medium">
+                                    {format(new Date(venue.created), 'dd - MMMM - yyyy')}
+                                </span>
+								{updatedTs !== null && updatedTs !== createdTs && (
+									<p className="text-sm text-blue-500 font-thin italic">
+										Updated:{' '}
+										<span className="font-thin">
+                                            {format(new Date(venue.updated!), 'dd - MMMM - yyyy')}
+                                        </span>
+									</p>
+								)}
+							</p>
+
+
+						</div>
+						<RatingBadge rating={venue.rating} />
 					</div>
 				</div>
+
+				<Link
+					key={venue.id}
+					to={`/venue/${venue.id}`}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="absolute bottom-0 px-2 py-1 rounded-full right-0 hover:bg-gray-100 transition-colors ease-in-out"
+				>
+					<i className="fa-light fa-arrow-up-right-from-square"></i>
+				</Link>
 			</div>
+
+			{/* Confirmation Modal */}
+			{confirmOpen && (
+				<Modal
+					isOpen={confirmOpen}
+					onClose={() => setConfirmOpen(false)}
+					title="Delete Venue?"
+					footer={
+						<>
+							<button
+								onClick={() => setConfirmOpen(false)}
+								className="btn-base bg-gray-400"
+							>
+								Cancel
+							</button>
+							<button
+								onClick={handleDeleteConfirm}
+								className="btn-base bg-red-600 text-white"
+							>
+								Yes, delete
+							</button>
+						</>
+					}
+				>
+					<p>
+						This action cannot be undone. Are you sure you want to delete this
+						venue?
+					</p>
+				</Modal>
+			)}
 		</div>
 	);
 }
