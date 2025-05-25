@@ -19,7 +19,7 @@ export const FALLBACK = {
 	banner: 'assets/images/fallbackImages/fallbackBanner.jpg',
 	venue: 'assets/images/fallbackImages/fallbackVenue.jpg',
 	city: 'Unknown City',
-	Country: 'Unknown Country',
+	country: 'Unknown Country',
 }
 
 export const API_KEY = "83d13e66-565f-4321-9216-c12e9fa8f030"
