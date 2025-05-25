@@ -3,10 +3,18 @@ import { ReactNode } from "react";
 type ModalProps = {
 	isOpen: boolean;
 	onClose: () => void;
+	title?: ReactNode;
+	footer?: ReactNode;
 	children: ReactNode;
 };
 
-export default function Modal({ isOpen, onClose, children }: ModalProps) {
+export default function Modal({
+	                              isOpen,
+	                              onClose,
+	                              title,
+	                              footer,
+	                              children,
+                              }: ModalProps) {
 	if (!isOpen) return null;
 
 	return (
@@ -16,8 +24,9 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
 		>
 			<div
 				className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full relative"
-				onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+				onClick={(e) => e.stopPropagation()}
 			>
+				{/* Close button */}
 				<button
 					onClick={onClose}
 					className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold"
@@ -26,7 +35,22 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
 					&times;
 				</button>
 
-				{children}
+				{/* Optional header */}
+				{title && (
+					<div className="mb-4 border-b pb-2">
+						{typeof title === "string" ? (
+							<h2 className="text-xl font-semibold">{title}</h2>
+						) : (
+							title
+						)}
+					</div>
+				)}
+
+				{/* Body */}
+				<div className="mb-4">{children}</div>
+
+				{/* Optional footer */}
+				{footer && <div className="flex justify-end gap-2">{footer}</div>}
 			</div>
 		</div>
 	);

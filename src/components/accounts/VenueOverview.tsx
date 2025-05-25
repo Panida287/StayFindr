@@ -20,14 +20,15 @@ export default function VenueOverview({ venues }: Props) {
 				>
 					Add your first venue
 				</Link>
+
 			</div>
 		);
 	}
 
 	return (
 		<div className="mt-8">
-			<div className="flex justify-between items-center mb-4">
-				<h2 className="text-xl font-semibold">Your Venues</h2>
+			<div className="flex justify-between items-end mb-4">
+				<h2 className="text-3xl text-start">Your Venues</h2>
 				<Link
 					to={`/admin/${adminId}/manage-venues`}
 					className="text-sm text-primary font-medium hover:underline"

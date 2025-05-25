@@ -6,20 +6,26 @@ export default function AdminTabs() {
 	const basePath = `/admin/${adminId}`;
 
 	const linkClass = ({ isActive }: { isActive: boolean }) =>
-		`px-4 py-2 rounded-md text-sm font-medium ${
+		`text-xs font-medium flex justify-center items-center py-3 px-2 rounded-md w-full sm:text-sm ${
 			isActive
-				? "bg-pink-600 text-white"
-				: "text-pink-600 hover:bg-pink-100"
+				? "bg-primary text-white"
+				: "text-primary hover:bg-background font-thin"
 		}`;
 
 	return (
-		<div className="w-full justify-around flex my-6 py-3 shadow-md">
+		<div className="w-full bg-white/50 justify-between items-center text-center flex shadow-md rounded-xl p-2">
 			<NavLink to={basePath} end className={linkClass}>
-				Dashboard
+				Overview
 			</NavLink>
+
+			<span className="h-10 w-[1px] bg-primary/20 mx-1"></span>
+
 			<NavLink to={`${basePath}/manage-venues`} className={linkClass}>
-				Manage Venues
+				Manage Properties
 			</NavLink>
+
+			<span className="h-10 w-[1px] bg-primary/20 mx-1"></span>
+
 			<NavLink to={`${basePath}/manage-bookings`} className={linkClass}>
 				View Bookings
 			</NavLink>

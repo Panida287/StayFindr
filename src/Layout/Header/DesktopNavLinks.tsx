@@ -76,7 +76,7 @@ export default function DesktopNavLinks({
 								onClick={() => setShowDropdown(false)}
 								className="relative block w-full text-left px-4 py-2 hover:bg-secondary hover:rounded-t-lg text-primary font-heading font-light text-md"
 							>
-								My Bookings
+								My Profile
 								<span
 									className="absolute bottom-0 left-1/2 w-[60%] h-[1px] bg-background -translate-x-1/2" />
 							</NavLink>
@@ -87,7 +87,7 @@ export default function DesktopNavLinks({
 									onClick={() => setShowDropdown(false)}
 									className="relative block w-full text-left px-4 py-2 hover:bg-secondary text-primary font-heading font-light text-md"
 								>
-									Dashboard
+									Admin Dashboard
 									<span
 										className="absolute bottom-0 left-1/2 w-[60%] h-[1px] bg-background -translate-x-1/2" />
 								</NavLink>

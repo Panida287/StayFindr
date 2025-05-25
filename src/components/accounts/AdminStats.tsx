@@ -10,7 +10,7 @@ export default function AdminStats({ venues }: Props) {
 
 	const allBookings = venues.flatMap(venue => venue.bookings || []);
 
-	const activeBookings = allBookings.length;
+	const totalBookings = allBookings.length;
 
 	const avgRating = venues.length
 		? (venues.reduce((acc, venue) => acc + venue.rating, 0) / venues.length).toFixed(1)
@@ -22,23 +22,23 @@ export default function AdminStats({ venues }: Props) {
 	}, 0);
 
 	return (
-		<div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
-			<StatCard icon={<Building className="text-pink-600" />} label="Total Venues" value={totalVenues} />
-			<StatCard icon={<CalendarCheck className="text-pink-600" />} label="Active Bookings" value={activeBookings} />
-			<StatCard icon={<Star className="text-pink-600" />} label="Avg Rating" value={avgRating} />
-			<StatCard icon={<DollarSign className="text-pink-600" />} label="Revenue" value={`$${(totalRevenue / 1000).toFixed(1)}k`} />
+		<div className="grid grid-cols-2 md:grid-cols-4 gap-6 my-6">
+			<StatCard icon={<Building className="text-pink-500" />} label="Total Venues" value={totalVenues} />
+			<StatCard icon={<CalendarCheck className="text-blue-500" />} label="Total Bookings" value={totalBookings} />
+			<StatCard icon={<Star className="text-yellow-500" />} label="Average Rating" value={avgRating} />
+			<StatCard icon={<DollarSign className="text-green-600" />} label="Revenue" value={`$${(totalRevenue / 1000).toFixed(1)}k`} />
 		</div>
 	);
 }
 
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) {
 	return (
-		<div className="bg-gray-100 p-4 rounded-xl shadow-sm">
-			<div className="flex items-center gap-2 mb-1 text-gray-600 text-sm font-medium">
+		<div className="p-4 bg-white rounded-lg shadow">
+			<div className="flex items-center justify-between mb-1 text-gray-600 text-sm font-medium">
 				{icon}
-				<span>{label}</span>
+				<span className="text-end">{label}</span>
 			</div>
-			<div className="text-2xl font-bold text-black">{value}</div>
+			<div className="text-2xl font-bold flex justify-end items-center text-black">{value}</div>
 		</div>
 	);
 }
