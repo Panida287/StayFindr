@@ -25,7 +25,12 @@ export default function ManageVenueCard({venue}: Props) {
 		const success = await deleteVenue(venue.id);
 		if (success) {
 			await refreshVenues();
-			toast.success('Venue has been deleted');
+			toast.success('Venue has been deleted', {
+				duration: 6000,
+				style: {
+					marginTop: '64px',
+				},
+			});
 			setConfirmOpen(false);
 		}
 	};
