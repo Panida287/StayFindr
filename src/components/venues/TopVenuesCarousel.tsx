@@ -53,14 +53,14 @@ export default function TopVenuesCarousel() {
 					return (
 						<SwiperSlide key={venue.id}>
 							<div
-								className="relative h-full w-full"
+								className="relative h-full w-full flex justify-center"
 								style={{
 									backgroundImage: `url(${image})`,
 									backgroundSize: 'cover',
 									backgroundPosition: 'center',
 								}}
 							>
-								<div className="absolute bottom-20 right-10 z-50 text-right text-white">
+								<div className="absolute w-[calc(100%-2rem)] mx-auto max-w-5xl bottom-20 z-50 text-right text-white">
 									<p className="text-lg font-semibold drop-shadow">
 										{venue.location?.city || FALLBACK.city}, {venue.location?.country || FALLBACK.country}
 									</p>
