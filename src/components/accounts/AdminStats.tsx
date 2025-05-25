@@ -22,7 +22,7 @@ export default function AdminStats({ venues }: Props) {
 	}, 0);
 
 	return (
-		<div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-6">
+		<div className="grid grid-cols-2 md:grid-cols-4 gap-6 my-6">
 			<StatCard icon={<Building className="text-pink-500" />} label="Total Venues" value={totalVenues} />
 			<StatCard icon={<CalendarCheck className="text-blue-500" />} label="Active Bookings" value={activeBookings} />
 			<StatCard icon={<Star className="text-yellow-500" />} label="Avg Rating" value={avgRating} />
@@ -34,11 +34,11 @@ export default function AdminStats({ venues }: Props) {
 function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) {
 	return (
 		<div className="p-4 bg-white rounded-lg shadow">
-			<div className="flex items-center gap-2 mb-1 text-gray-600 text-sm font-medium">
+			<div className="flex items-center justify-between mb-1 text-gray-600 text-sm font-medium">
 				{icon}
-				<span>{label}</span>
+				<span className="text-end">{label}</span>
 			</div>
-			<div className="text-2xl font-bold text-black">{value}</div>
+			<div className="text-2xl font-bold flex justify-end items-center text-black">{value}</div>
 		</div>
 	);
 }
