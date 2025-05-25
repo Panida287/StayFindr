@@ -1,6 +1,10 @@
 import React from 'react';
+import { Link, LinkProps } from 'react-router-dom';
+import clsx from 'clsx';
 
 export interface CommonButtonProps {
+	/** Optional URL; if provided and not disabled, renders as <Link> */
+	to?: string;
 	onClick?: () => void;
 	className?: string;
 	children: React.ReactNode;
@@ -9,12 +13,14 @@ export interface CommonButtonProps {
 	bgColor?: string;
 	textColor?: string;
 	hoverColor?: string;
+	hoverTextColor?: string;
 	fullWidth?: boolean;
 	borderClass?: string;
-	hoverTextColor?: string;
 }
 
+/** Button that optionally renders as a React-Router Link when `to` is set */
 export function CommonButton({
+	                             to,
 	                             onClick,
 	                             className = '',
 	                             children,
@@ -27,45 +33,57 @@ export function CommonButton({
 	                             fullWidth = false,
 	                             borderClass = '',
                              }: CommonButtonProps) {
+	const isLink = !disabled && Boolean(to);
+
+	// If it's a link, use LinkProps; otherwise button props
+	type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'onClick'> & {
+		type: CommonButtonProps['type'];
+		onClick?: () => void;
+	};
+	type AnchorProps = LinkProps;
+
+	const componentProps: ButtonProps | AnchorProps = isLink
+		? { to: to! }
+		: { onClick, type, disabled };
+
+	const Component = (isLink ? Link : 'button') as React.ElementType;
+
 	return (
-		<button
-			type={type}
-			onClick={onClick}
-			disabled={disabled}
+		<Component
+			{...componentProps}
 			className={`
-        ${bgColor} ${textColor} ${hoverColor}
+        ${bgColor} ${textColor} ${hoverColor} ${hoverTextColor}
         px-6 py-2 rounded-full text-sm transition
         ${fullWidth ? 'w-full' : ''}
         ${borderClass}
-        ${hoverColor}
-        ${hoverTextColor}
         ${className}
-       
         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
       `}
 		>
 			{children}
-		</button>
+		</Component>
 	);
 }
 
-
-type SplitButtonProps = {
-	text: string;
+export interface SplitButtonProps {
+	/** Optional URL; if provided, renders as <Link> */
+	to?: string;
 	onClick?: () => void;
+	text: string;
 	textColor?: string;
-	hoverTextColor?: string; // Tailwind class name, e.g., group-hover:text-yellow-500
+	hoverTextColor?: string;
 	arrowColor?: string;
-	arrowHoverColor?: string; // Tailwind class name, e.g., group-hover:text-white
+	arrowHoverColor?: string;
 	bgColor?: string;
 	borderColor?: string;
 	className?: string;
-};
+}
 
-/** Fancy split-style animated CTA button */
+/** A “split” button that either links or fires onClick */
 export function SplitButton({
-	                            text,
+	                            to,
 	                            onClick,
+	                            text,
 	                            textColor = 'text-primary',
 	                            hoverTextColor = 'group-hover:text-primary',
 	                            arrowColor = 'text-[#A97C50]',
@@ -74,30 +92,57 @@ export function SplitButton({
 	                            borderColor = 'border-[#A97C50]',
 	                            className = '',
                             }: SplitButtonProps) {
+	const isLink = Boolean(to);
+
+	type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+		onClick?: () => void;
+	};
+	type AnchorProps = LinkProps;
+
+	const componentProps: ButtonProps | AnchorProps = isLink
+		? { to: to! }
+		: { onClick };
+
+	const Component = (isLink ? Link : 'button') as React.ElementType;
+
 	return (
-		<button
-			onClick={onClick}
-			className={`
-				relative group overflow-hidden inline-flex items-center rounded-full 
-				border ${borderColor} border-r-0
-				${bgColor} text-md font-bold flex-shrink-0 ${className}
-			`}
+		<Component
+			{...componentProps}
+			className={clsx(
+				'relative group overflow-hidden inline-flex items-center rounded-full border border-r-0',
+				borderColor,
+				bgColor,
+				className
+			)}
 		>
-			{/* Expanding highlight */}
+			{/* Animated highlight */}
 			<span
-				className="absolute top-[1px] bottom-[1px] left-[1px] z-0 bg-white w-[85%] group-hover:w-[calc(100%-3px)] transition-all duration-500 ease-in-out rounded-full"
+				className="absolute top-[1px] bottom-[1px] left-[1px] z-0
+                   bg-white w-[85%] group-hover:w-[calc(100%-3px)]
+                   transition-all duration-500 ease-in-out rounded-full"
 			/>
-			{/* Text and arrow */}
+
+			{/* Text + arrow */}
 			<span className="relative z-10 flex items-center whitespace-nowrap">
-				<span className={`px-6 py-1 transition-colors duration-500 ${textColor} ${hoverTextColor}`}>
-					{text}
-				</span>
-				<span
-					className={`pr-[10px] transition-colors duration-500 ${arrowColor} ${arrowHoverColor}`}
-				>
-					›
-				</span>
-			</span>
-		</button>
+        <span
+	        className={clsx(
+		        'px-6 py-1 transition-colors duration-500',
+		        textColor,
+		        hoverTextColor
+	        )}
+        >
+          {text}
+        </span>
+        <span
+	        className={clsx(
+		        'pr-[10px] transition-colors duration-500',
+		        arrowColor,
+		        arrowHoverColor
+	        )}
+        >
+          ›
+        </span>
+      </span>
+		</Component>
 	);
 }
