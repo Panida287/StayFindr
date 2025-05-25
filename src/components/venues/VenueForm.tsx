@@ -13,7 +13,7 @@ const markerIcon = new L.Icon({
 	iconAnchor: [12, 41],
 });
 
-function LocationPicker({ onSelect }: { onSelect: (coords: { lat: number; lng: number }) => void }) {
+function LocationPicker({onSelect}: { onSelect: (coords: { lat: number; lng: number }) => void }) {
 	useMapEvents({
 		click(e) {
 			onSelect(e.latlng);
@@ -30,10 +30,17 @@ type Props = {
 	apiError?: string;
 };
 
-export default function VenueForm({ initialValues, isEdit = false, onSubmitHandler, isLoading, apiError }: Props) {
+export default function VenueForm({
+	                                  initialValues,
+	                                  isEdit = false,
+	                                  onSubmitHandler,
+	                                  isLoading,
+	                                  apiError,
+                                  }: Props) {
 	const [marker, setMarker] = useState<{ lat: number; lng: number }>(
-		initialValues?.location || { lat: 0, lng: 0 }
+		initialValues?.location || {lat: 0, lng: 0}
 	);
+	const [hoverRating, setHoverRating] = useState<number>(0);
 
 	const {
 		register,
@@ -41,14 +48,12 @@ export default function VenueForm({ initialValues, isEdit = false, onSubmitHandl
 		control,
 		setValue,
 		watch,
-		formState: { errors },
+		formState: {errors},
 	} = useForm<VenueFormValues>({
-		defaultValues: initialValues || {
-			media: [{ url: '', alt: '' }],
-		},
+		defaultValues: initialValues || {media: [{url: '', alt: ''}]},
 	});
 
-	const { fields, append, remove } = useFieldArray({ control, name: 'media' });
+	const {fields, append, remove} = useFieldArray({control, name: 'media'});
 
 	useEffect(() => {
 		if (initialValues?.location) {
@@ -68,105 +73,329 @@ export default function VenueForm({ initialValues, isEdit = false, onSubmitHandl
 	const user = localStorage.getItem('SFUsername');
 
 	return (
-		<form onSubmit={handleSubmit(onSubmitHandler)} className="space-y-8 p-4 max-w-4xl mx-auto">
-			<h2 className="text-2xl font-bold">
-				{isEdit ? `Edit ${initialValues?.name ?? 'Venue'}` : 'Add New Venue'}
+		<form
+			onSubmit={handleSubmit(onSubmitHandler)}
+			className="space-y-8 p-4 max-w-4xl mx-auto"
+		>
+			<h2 className="text-3xl font-bold">
+				{isEdit ? `Edit ${initialValues?.name ?? 'Property'}` : 'Add New Property'}
 			</h2>
 
+			{/* === BASIC INFORMATION === */}
 			<div className="grid md:grid-cols-2 gap-6">
-				<div className="space-y-4">
-					<h3 className="font-semibold text-lg">Basic Information</h3>
-					<input {...register('name', { required: 'Name is required' })} placeholder="Venue Name" className="input" />
-					{errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+				<div className="space-y-4 flex flex-col rounded-xl border border-gray-300 p-4 shadow-md">
+					<h3 className="font-semibold text-xl text-black">Basic Information</h3>
 
-					<textarea {...register('description', { required: 'Description is required' })} placeholder="Description" className="input" />
-					{errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+					<div>
+						<label htmlFor="name" className="form-label">
+							Property Name
+						</label>
+						<input
+							id="name"
+							{...register('name', {required: 'Name is required'})}
+							placeholder="Property Name"
+							className="input"
+						/>
+						{errors.name && (
+							<p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+						)}
+					</div>
 
-					<input type="number" {...register('maxGuests', { required: true, valueAsNumber: true })} placeholder="Max Guests" className="input" />
+					<div>
+						<label htmlFor="description" className="form-label">
+							Description
+						</label>
+						<textarea
+							id="description"
+							{...register('description', {required: 'Description is required'})}
+							placeholder="Description"
+							className="input h-40"
+						/>
+						{errors.description && (
+							<p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+						)}
+					</div>
+
+					<div>
+						<label htmlFor="maxGuests" className="form-label mr-2">
+							Max Guests
+						</label>
+						<input
+							id="maxGuests"
+							type="number"
+							{...register('maxGuests', {required: true, valueAsNumber: true})}
+							placeholder="Max Guests"
+							className="input"
+						/>
+						{errors.maxGuests && (
+							<p className="text-red-500 text-sm mt-1">This field is required</p>
+						)}
+					</div>
 				</div>
 
-				<div className="space-y-4">
-					<h3 className="font-semibold text-lg">Pricing</h3>
-					<input type="number" {...register('price', { required: true, valueAsNumber: true })} placeholder="Base Price" className="input" />
+				{/* === PRICING, RATING and amenities === */}
+				<div className="space-y-4 flex flex-col rounded-xl border border-gray-300 p-4 shadow-md h-fit">
+					<h3 className="font-semibold text-xl text-black">Pricing & Rating</h3>
+
 					<div>
-						<h4 className="font-medium mb-1">Rating</h4>
+						<label htmlFor="price" className="form-label">
+							Base Price
+						</label>
+						<input
+							id="price"
+							type="number"
+							{...register('price', {required: true, valueAsNumber: true})}
+							placeholder="Base Price"
+							className="input mt-1"
+						/>
+						{errors.price && (
+							<p className="text-red-500 text-sm mt-1">This field is required</p>
+						)}
+					</div>
+
+					<fieldset>
+						<legend className="form-label">Rating</legend>
 						<div className="flex space-x-1">
-							{[1, 2, 3, 4, 5].map((value) => (
-								<label key={value} className="cursor-pointer">
-									<input
-										type="radio"
-										value={value}
-										{...register('rating', { valueAsNumber: true, max: 5 })}
-										className="hidden"
-									/>
-									<span className={`text-2xl ${value <= ratingValue ? 'text-yellow-400' : 'text-gray-300'}`}>
-										★
-									</span>
-								</label>
-							))}
+							{[1, 2, 3, 4, 5].map((value) => {
+								const filled = hoverRating
+									? value <= hoverRating
+									: value <= ratingValue;
+								return (
+									<label
+										key={value}
+										className="cursor-pointer"
+										onMouseEnter={() => setHoverRating(value)}
+										onMouseLeave={() => setHoverRating(0)}
+									>
+										<input
+											type="radio"
+											value={value}
+											{...register('rating', {valueAsNumber: true, max: 5})}
+											className="hidden"
+										/>
+										<span
+											className={`text-2xl ${
+												filled ? 'text-yellow-400' : 'text-gray-300'
+											}`}
+										>
+                                            ★
+                                        </span>
+									</label>
+								);
+							})}
+						</div>
+						{errors.rating && (
+							<p className="text-red-500 text-sm mt-1">{errors.rating.message}</p>
+						)}
+					</fieldset>
+
+					<h3 className="font-semibold text-xl text-black">Amenities</h3>
+
+					<div className="flex flex-col space-y-2">
+						<div className="flex items-center w-full space-x-2">
+							<input
+								type="checkbox"
+								{...register('meta.wifi')}
+								className="w-fit mr-2"
+								aria-label="Wifi Available"
+							/>
+							<span className="w-full">Wifi Available</span>
+						</div>
+
+						<div className="flex items-center w-full space-x-2">
+							<input
+								type="checkbox"
+								{...register('meta.parking')}
+								className="w-fit mr-2"
+								aria-label="Parking Available"
+							/>
+							<span className="w-full">Parking Available</span>
+						</div>
+
+						<div className="flex items-center w-full space-x-2">
+							<input
+								type="checkbox"
+								{...register('meta.breakfast')}
+								className="w-fit mr-2"
+								aria-label="Breakfast Included"
+							/>
+							<span className="w-full">Breakfast Included</span>
+						</div>
+
+						<div className="flex items-center w-full space-x-2">
+							<input
+								type="checkbox"
+								{...register('meta.pets')}
+								className="w-fit mr-2"
+								aria-label="Pets Allowed"
+							/>
+							<span className="w-full">Pets Allowed</span>
 						</div>
 					</div>
+
 				</div>
 			</div>
 
-			<div className="grid md:grid-cols-2 gap-6">
-				<div className="space-y-4">
-					<h3 className="font-semibold text-lg">Location</h3>
-					<input {...register('location.address')} placeholder="Street Address" className="input" />
-					<input {...register('location.city')} placeholder="City" className="input" />
-					<input {...register('location.zip')} placeholder="ZIP" className="input" />
-					<input {...register('location.country')} placeholder="Country" className="input" />
-					<input {...register('location.continent')} placeholder="Continent" className="input" />
 
-					<div className="h-64">
-						<MapContainer center={[marker.lat, marker.lng]} zoom={2} className="h-full w-full rounded-md">
+			{/* === LOCATION === */}
+			<div className="grid space-y-4 rounded-xl border border-gray-300 p-4 shadow-md">
+				<div className="space-y-4">
+					<h3 className="font-semibold text-xl text-black">Location</h3>
+
+					<div>
+						<label htmlFor="address" className="block text-sm font-medium text-gray-700">
+							Street Address
+						</label>
+						<input
+							id="address"
+							{...register('location.address')}
+							placeholder="Street Address"
+							className="input mt-1"
+						/>
+					</div>
+
+					<div className="flex gap-4">
+						<div>
+							<label htmlFor="city" className="block text-sm font-medium text-gray-700">
+								City
+							</label>
+							<input
+								id="city"
+								{...register('location.city')}
+								placeholder="City"
+								className="input mt-1"
+							/>
+						</div>
+
+						<div>
+							<label htmlFor="zip" className="block text-sm font-medium text-gray-700">
+								ZIP
+							</label>
+							<input
+								id="zip"
+								{...register('location.zip')}
+								placeholder="ZIP"
+								className="input mt-1"
+							/>
+						</div>
+					</div>
+
+					<div className="flex flex-col sm:flex-row sm:gap-4">
+						<div>
+							<label htmlFor="country" className="block text-sm font-medium text-gray-700">
+								Country
+							</label>
+							<input
+								id="country"
+								{...register('location.country')}
+								placeholder="Country"
+								className="input mt-1"
+							/>
+						</div>
+
+						<div>
+							<label htmlFor="continent" className="block text-sm font-medium text-gray-700">
+								Continent
+							</label>
+							<input
+								id="continent"
+								{...register('location.continent')}
+								placeholder="Continent"
+								className="input mt-1"
+							/>
+						</div>
+					</div>
+
+					<div className="h-64 rounded-md overflow-hidden">
+						<MapContainer center={[marker.lat, marker.lng]} zoom={2} className="h-full w-full">
 							<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 							<LocationPicker onSelect={handleMapClick} />
 							<Marker position={marker} icon={markerIcon} />
 						</MapContainer>
 					</div>
 				</div>
-
-				<div className="space-y-4">
-					<h3 className="font-semibold text-lg">Amenities</h3>
-					<label><input type="checkbox" {...register('meta.wifi')} /> Wifi</label><br />
-					<label><input type="checkbox" {...register('meta.parking')} /> Parking</label><br />
-					<label><input type="checkbox" {...register('meta.breakfast')} /> Breakfast</label><br />
-					<label><input type="checkbox" {...register('meta.pets')} /> Pets</label>
-				</div>
 			</div>
 
-			<div>
-				<h3 className="font-semibold text-lg mb-2">Photos</h3>
+			{/* === PHOTOS === */}
+			<div className="space-y-4 flex flex-col rounded-xl border border-gray-300 p-4 shadow-md">
+				<h3 className="font-semibold text-xl text-black">Add Images</h3>
+
 				{fields.map((field, index) => (
-					<div key={field.id} className="flex gap-2 items-center mb-2">
-						<div className="w-24 h-24">
-							<MediaPreview url={mediaWatch?.[index]?.url} />
-						</div>
-						<input placeholder="Image URL" {...register(`media.${index}.url`)} className="input flex-1" />
-						<input placeholder="Alt text" {...register(`media.${index}.alt`)} className="input flex-1" />
-						<button type="button" onClick={() => remove(index)} className="text-red-500 text-sm">Remove</button>
+					<div key={field.id} className="flex items-center gap-2 mt-2">
+						<input
+							{...register(`media.${index}.url` as const)}
+							defaultValue={field.url}
+							placeholder="Image URL"
+							className="w-full border p-2 rounded-md"
+						/>
+						<input
+							{...register(`media.${index}.alt` as const)}
+							defaultValue={field.alt}
+							placeholder="Image Alt Text"
+							className="w-full border p-2 rounded-md"
+						/>
+						<button
+							type="button"
+							onClick={() => remove(index)}
+							className="text-red-500"
+						>
+							✕
+						</button>
 					</div>
 				))}
-				<button type="button" onClick={() => append({ url: '', alt: '' })} className="text-sm text-pink-600 hover:underline">
-					+ Add Photo
+
+				<button
+					type="button"
+					onClick={() => append({url: '', alt: ''})}
+					className="mt-2 text-blue-500"
+				>
+					+ Add More Images
 				</button>
+
+				{/* previews with close overlay */}
+					<div className="flex flex-wrap gap-4 justify-center sm:justify-start">
+						{mediaWatch.map((m, i) =>
+							m.url ? (
+								<div key={i} className="relative">
+									<MediaPreview url={m.url} width="w-52" height="h-52" />
+									<button
+										type="button"
+										onClick={() => remove(i)}
+										className="absolute flex justify-center items-center h-6 w-6 text-md font-thin bg-gray-100/80 top-2 right-2 border rounded-full text-red-500 hover:bg-gray-100"
+									>
+										✕
+									</button>
+								</div>
+							) : null
+						)}
+					</div>
 			</div>
 
-			<input type="hidden" {...register('location.lat', { valueAsNumber: true })} />
-			<input type="hidden" {...register('location.lng', { valueAsNumber: true })} />
+
+			{/* hidden coords */}
+			<input type="hidden" {...register('location.lat', {valueAsNumber: true})} />
+			<input type="hidden" {...register('location.lng', {valueAsNumber: true})} />
 
 			{apiError && (
-				<div className="bg-red-100 text-red-600 p-3 rounded-md text-sm mt-4">{apiError}</div>
+				<div className="bg-red-100 text-red-600 p-3 rounded-md text-sm mt-4">
+					{apiError}
+				</div>
 			)}
 
-			<Link to={`/admin/${user}/manage-venues`} className="btn-base bg-gray-500 text-white mt-4">
-				Cancel
-			</Link>
-
-			<button type="submit" className="btn-base bg-pink-600 text-white mt-4" disabled={isLoading}>
-				{isLoading ? (isEdit ? 'Updating...' : 'Creating...') : isEdit ? 'Update Venue' : 'Create Venue'}
-			</button>
+			<div className="flex justify-end gap-4 mt-4">
+				<Link to={`/admin/${user}/manage-venues`} className="btn-base bg-gray-500 text-white">
+					Cancel
+				</Link>
+				<button type="submit" className="btn-base bg-pink-600 text-white" disabled={isLoading}>
+					{isLoading
+						? isEdit
+							? 'Updating...'
+							: 'Creating...'
+						: isEdit
+							? 'Update Venue'
+							: 'Create Venue'}
+				</button>
+			</div>
 		</form>
 	);
 }

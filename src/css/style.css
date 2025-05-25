@@ -126,3 +126,29 @@ h6 { @apply text-[20px] leading-[22px] font-heading; }
     color: white !important;
 }
 
+input,
+textarea {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #DEECD7;
+    padding: 10px;
+    width: 100%;
+    margin-top: 0.25rem;
+}
+
+.form-label {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    --tw-text-opacity: 1;
+    color: rgb(107 114 128 / var(--tw-text-opacity, 1))
+}
+
+.input::placeholder,
+textarea::placeholder {
+    color: #a0aec0;
+    opacity: 0.6;
+    font-style: italic;
+    font-size: 14px;
+}
