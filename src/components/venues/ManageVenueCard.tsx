@@ -8,6 +8,7 @@ import Modal from '../commons/Modal';
 import toast from 'react-hot-toast';
 import DropdownMenu from '../commons/DropdownMenu';
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 
 type Props = { venue: Venue };
 
@@ -29,8 +30,11 @@ export default function ManageVenueCard({venue}: Props) {
 		}
 	};
 
+	const createdTs = new Date(venue.created).getTime();
+	const updatedTs = venue.updated ? new Date(venue.updated).getTime() : null;
+
 	return (
-		<div className="flex flex-col bg-white rounded-xl shadow-sm p-4 items-start gap-4 sm:flex-row">
+		<div className="flex flex-col h-full bg-white rounded-xl shadow-sm p-4 items-start gap-4 sm:flex-row">
 			{/* Venue image */}
 			<img
 				src={venue.media[0]?.url || FALLBACK.venue}
@@ -84,6 +88,22 @@ export default function ManageVenueCard({venue}: Props) {
                                     {venue.bookings?.length || 0}
                                 </span>
 							</p>
+							<p className="text-sm text-gray-600 my-4">
+								Created:{' '}
+								<span className="font-medium">
+                                    {format(new Date(venue.created), 'dd - MMMM - yyyy')}
+                                </span>
+								{updatedTs !== null && updatedTs !== createdTs && (
+									<p className="text-sm text-blue-500 font-thin italic">
+										Updated:{' '}
+										<span className="font-thin">
+                                            {format(new Date(venue.updated!), 'dd - MMMM - yyyy')}
+                                        </span>
+									</p>
+								)}
+							</p>
+
+
 						</div>
 						<RatingBadge rating={venue.rating} />
 					</div>
