@@ -20,6 +20,7 @@ export default function VenueOverview({ venues }: Props) {
 				>
 					Add your first venue
 				</Link>
+
 			</div>
 		);
 	}

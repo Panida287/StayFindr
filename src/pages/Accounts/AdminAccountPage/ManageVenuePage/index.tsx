@@ -1,16 +1,17 @@
-import { Link } from 'react-router-dom';
 import { useFetchVenuesByProfile } from '../../../../hooks/useFetchVenuesByProfile.ts';
 import ManageVenueCard from '../../../../components/venues/ManageVenueCard.tsx';
+import { SplitButton } from '../../../../components/commons/Buttons.tsx';
 
 export default function ManageVenuePage() {
-	const { venues, isLoading, error } = useFetchVenuesByProfile();
+	const {venues, isLoading, error} = useFetchVenuesByProfile();
 	const username = localStorage.getItem('SFUsername');
 
 	if (isLoading) {
 		return (
 			<div className="flex justify-center items-center mt-8">
 				{/* spinner */}
-				<div className="h-12 w-12 border-4 border-t-transparent border-pink-600 rounded-full animate-spin"></div>
+				<div
+					className="h-12 w-12 border-4 border-t-transparent border-primary rounded-full animate-spin"></div>
 			</div>
 		);
 	}
@@ -29,15 +30,23 @@ export default function ManageVenuePage() {
 	}
 
 	return (
-		<div className="mt-8 max-w-4xl mx-auto">
-			<div className="flex justify-between items-center mb-4">
-				<h1 className="text-2xl font-bold">Manage Venues</h1>
-				<Link
+		<div className="max-w-4xl mt-12 mx-auto">
+			<div className="flex flex-col justify-between items-center mb-4 sm:flex-row">
+				<h1 className="text-3xl text-start w-full">Manage Venues</h1>
+				<div className="w-full flex justify-end">
+				<SplitButton
 					to={`/admin/${username}/new-venue`}
-					className="text-sm bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700"
-				>
-					Add New Venue
-				</Link>
+					text="+ Add New"
+					textColor="text-yellow-600"
+					hoverTextColor="group-hover:text-yellow-600"
+					arrowColor="text-white"
+					arrowHoverColor="group-hover:text-yellow-600"
+					bgColor="bg-yellow-600"
+					borderColor="border-yellow-600"
+					className="font-medium"
+				/>
+				</div>
+
 			</div>
 
 			<div className="grid gap-4">

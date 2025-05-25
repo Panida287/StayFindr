@@ -11,7 +11,7 @@ export default function LayoutAdmin() {
 	if (!profile) return <p>No profile found</p>;
 
 	return (
-		<div className="max-w-4xl mx-auto p-4 space-y-6 mt-20">
+		<div className="max-w-4xl mx-auto p-4 mt-20">
 			<ProfileHeader profile={profile} />
 			<div className="w-full justify-between">
 				<AdminTabs />

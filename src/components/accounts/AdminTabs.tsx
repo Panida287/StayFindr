@@ -13,7 +13,7 @@ export default function AdminTabs() {
 		}`;
 
 	return (
-		<div className="w-full bg-white/50 justify-between items-center flex my-6 shadow-md rounded-xl p-2">
+		<div className="w-full bg-white/50 justify-between items-center text-center flex my-12 mb-4 shadow-md rounded-xl p-2">
 			<NavLink to={basePath} end className={linkClass}>
 				Overview
 			</NavLink>
@@ -21,7 +21,7 @@ export default function AdminTabs() {
 			<span className="h-10 w-[1px] bg-primary/20 mx-1"></span>
 
 			<NavLink to={`${basePath}/manage-venues`} className={linkClass}>
-				Manage Venues
+				Manage Properties
 			</NavLink>
 
 			<span className="h-10 w-[1px] bg-primary/20 mx-1"></span>

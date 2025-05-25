@@ -10,7 +10,7 @@ export default function AdminStats({ venues }: Props) {
 
 	const allBookings = venues.flatMap(venue => venue.bookings || []);
 
-	const activeBookings = allBookings.length;
+	const totalBookings = allBookings.length;
 
 	const avgRating = venues.length
 		? (venues.reduce((acc, venue) => acc + venue.rating, 0) / venues.length).toFixed(1)
@@ -24,8 +24,8 @@ export default function AdminStats({ venues }: Props) {
 	return (
 		<div className="grid grid-cols-2 md:grid-cols-4 gap-6 my-6">
 			<StatCard icon={<Building className="text-pink-500" />} label="Total Venues" value={totalVenues} />
-			<StatCard icon={<CalendarCheck className="text-blue-500" />} label="Active Bookings" value={activeBookings} />
-			<StatCard icon={<Star className="text-yellow-500" />} label="Avg Rating" value={avgRating} />
+			<StatCard icon={<CalendarCheck className="text-blue-500" />} label="Total Bookings" value={totalBookings} />
+			<StatCard icon={<Star className="text-yellow-500" />} label="Average Rating" value={avgRating} />
 			<StatCard icon={<DollarSign className="text-green-600" />} label="Revenue" value={`$${(totalRevenue / 1000).toFixed(1)}k`} />
 		</div>
 	);

@@ -11,7 +11,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 	const { name, bio, avatar, venueManager } = profile;
 
 	return (
-		<div className="flex items-center gap-4 relative">
+		<div className="flex mt-4 items-center gap-4 relative">
 			<div>
 				<img
 					src={avatar?.url || '/assets/avatar-placeholder.png'}
