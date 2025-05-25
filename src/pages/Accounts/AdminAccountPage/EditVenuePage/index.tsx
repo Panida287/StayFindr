@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import VenueForm from '../../../../components/venues/VenueForm.tsx';
+import VenueForm from '../../../../components/venues/AddVenueForm/VenueForm.tsx';
 import { useFetchSingleVenue } from '../../../../hooks/useFetchSingleVenue.ts';
 import { useUpdateVenue } from '../../../../hooks/useUpdateVenue.ts';
 import { VenueFormValues } from '../../../../types/forms.ts';
