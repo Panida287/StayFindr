@@ -22,9 +22,9 @@ export default function RecentBookings({ venues }: Props) {
 	const username = localStorage.getItem("SFUsername");
 
 	return (
-		<div className="mt-8 p-4">
-			<div className="flex justify-between items-center mb-4">
-				<h2 className="text-xl font-semibold">Recent Bookings</h2>
+		<div className="mt-8">
+			<div className="flex justify-between items-end mb-4">
+				<h2 className="text-3xl text-start">Recent Bookings</h2>
 				<Link
 					to={`/admin/${username}/manage-bookings`}
 					className="text-sm text-primary hover:underline"

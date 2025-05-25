@@ -6,7 +6,7 @@ import { Venue } from '../../../../types/venues.ts';
 
 export default function ManageBookingsPage() {
 	// Always call hooks in the same order
-	const { venues = [], isLoading, error } = useFetchVenuesByProfile();
+	const {venues = [], isLoading, error} = useFetchVenuesByProfile();
 	const [currentPage, setCurrentPage] = useState(1);
 	const ITEMS_PER_PAGE = 3;
 
@@ -52,26 +52,28 @@ export default function ManageBookingsPage() {
 	}
 
 	return (
-		<div className="mt-8 max-w-4xl mx-auto">
-			<h1 className="text-2xl font-bold mb-4">All Bookings</h1>
+		<>
+			<div className="mt-8 max-w-4xl mx-auto">
+				<h1 className="text-3xl text-start w-full mb-4">All Bookings</h1>
 
-			{sortedBookings.length === 0 ? (
-				<p className="text-center text-gray-500">No upcoming bookings</p>
-			) : (
-				<>
-					<div className="space-y-4">
-						{paginatedBookings.map((booking) => (
-							<BookingCard key={booking.id} booking={booking} />
-						))}
-					</div>
+				{sortedBookings.length === 0 ? (
+					<p className="text-center text-gray-500">No upcoming bookings</p>
+				) : (
+					<>
+						<div className="space-y-4">
+							{paginatedBookings.map((booking) => (
+								<BookingCard key={booking.id} booking={booking} />
+							))}
+						</div>
 
-					<Pagination
-						currentPage={currentPage}
-						pageCount={pageCount}
-						onPageChange={setCurrentPage}
-					/>
-				</>
-			)}
-		</div>
+						<Pagination
+							currentPage={currentPage}
+							pageCount={pageCount}
+							onPageChange={setCurrentPage}
+						/>
+					</>
+				)}
+			</div>
+		</>
 	);
 }

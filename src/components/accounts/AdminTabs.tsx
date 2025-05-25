@@ -6,14 +6,14 @@ export default function AdminTabs() {
 	const basePath = `/admin/${adminId}`;
 
 	const linkClass = ({ isActive }: { isActive: boolean }) =>
-		`text-xs font-medium flex justify-center items-center py-2 px-2 rounded-md w-full sm:text-sm ${
+		`text-xs font-medium flex justify-center items-center py-3 px-2 rounded-md w-full sm:text-sm ${
 			isActive
 				? "bg-primary text-white"
 				: "text-primary hover:bg-background font-thin"
 		}`;
 
 	return (
-		<div className="w-full bg-white/50 justify-between items-center text-center flex my-12 mb-4 shadow-md rounded-xl p-2">
+		<div className="w-full bg-white/50 justify-between items-center text-center flex shadow-md rounded-xl p-2">
 			<NavLink to={basePath} end className={linkClass}>
 				Overview
 			</NavLink>
