@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import VenueForm from '../../../../components/venues/VenueForm.tsx';
+import { useNavigate } from 'react-router-dom';
+import VenueForm from '../../../../components/venues/AddVenueForm/VenueForm.tsx';
 import { useCreateVenue } from '../../../../hooks/useCreateVenue.ts';
 import { VenueFormValues } from '../../../../types/forms.ts';
 import toast from 'react-hot-toast';
@@ -43,14 +43,6 @@ export default function AddNewVenuePage() {
 					apiError={apiError}
 				/>
 
-				<div className="mt-6 flex justify-end">
-					<Link
-						to={`/admin/${localStorage.getItem('SFUsername')}/manage-venues`}
-						className="inline-block text-gray-600 hover:underline"
-					>
-						Cancel
-					</Link>
-				</div>
 			</div>
 		</div>
 	);
