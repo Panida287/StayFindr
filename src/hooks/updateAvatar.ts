@@ -18,6 +18,5 @@ export async function updateAvatar(name: string, avatar: { url: string; alt: str
 		return response.data;
 	} catch (error) {
 		console.error('Failed to update avatar:', error);
-		throw error;
 	}
 }

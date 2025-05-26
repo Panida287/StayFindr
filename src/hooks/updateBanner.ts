@@ -21,6 +21,5 @@ export async function updateBanner(
 		return response.data;
 	} catch (error) {
 		console.error('Failed to update banner:', error);
-		throw error;
 	}
 }
