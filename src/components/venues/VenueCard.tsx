@@ -31,7 +31,7 @@ export default function VenueCard({ venue }: Props) {
 		<div className="flex flex-col rounded-xl overflow-hidden shadow-md relative bg-white hover:shadow-lg transition md:flex-row md:h-60">
 			{isUnavailable && (
 				<div className="absolute top-2 left-2 z-10 bg-red-600 text-white text-xs px-2 py-1 rounded">
-					Not available during your selected dates
+					Unvailable during your selected dates
 				</div>
 			)}
 
