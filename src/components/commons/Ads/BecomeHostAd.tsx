@@ -20,7 +20,7 @@ export default function BecomeHostAd() {
 				<div>
 					<Link
 						to="/register?type=manager"
-						className="inline-block text-sm px-4 py-2 bg-primary rounded-full hover:text-primary hover:bg-background transition"
+						className="inline-block text-center text-sm px-4 py-2 bg-primary rounded-full hover:text-primary hover:bg-background transition"
 					>
 						Start Hosting
 					</Link>

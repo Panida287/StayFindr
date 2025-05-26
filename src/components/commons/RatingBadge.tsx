@@ -20,7 +20,7 @@ export default function RatingBadge({ rating }: RatingBadgeProps) {
 						: 'Very Poor';
 
 	return (
-		<div className="flex flex-col items-center">
+		<div className="flex flex-col items-start">
 			<div className="flex items-center gap-1">
 				{Array.from({ length: fullStars }).map((_, i) => (
 					<i key={`full-${i}`} className="fa-solid fa-star text-yellow-500" />

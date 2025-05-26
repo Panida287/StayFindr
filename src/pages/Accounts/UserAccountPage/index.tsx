@@ -1,5 +1,3 @@
-// src/pages/Accounts/UserAccountPage/index.tsx
-
 import { useState, useMemo } from 'react';
 import { useFetchProfile } from '../../../hooks/useFetchProfile.ts';
 import EditAvatarModal from '../../../components/accounts/EditAvatarModal.tsx';
@@ -33,7 +31,7 @@ export default function UserAccountPage() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	if (!profile) {
-		return <p className="p-8 text-center">Loading profile…</p>;
+		return <p className="p-8 text-center">No profile found</p>;
 	}
 
 	return (

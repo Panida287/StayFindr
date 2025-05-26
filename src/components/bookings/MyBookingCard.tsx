@@ -94,7 +94,8 @@ export default function MyBookingCard({
 
 	return (
 		<div
-			className="relative flex flex-col rounded-lg overflow-hidden shadow-md bg-white transition hover:shadow-lg">
+			className="relative flex flex-col md:flex-row rounded-lg overflow-hidden shadow-md bg-white transition hover:shadow-lg">
+
 			{isOngoing && (
 				<span
 					className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
@@ -105,10 +106,10 @@ export default function MyBookingCard({
 			<ImageGallery
 				images={venue.media}
 				altFallback={venue.name}
-				heightClass="h-56"
+				heightClass="h-56 md:h-full md:max-w-[250px]"
 			/>
 
-			<div className="relative p-4 space-y-2">
+			<div className="relative p-4 space-y-2 w-full md:flex-1">
 				<h3 className="text-xl font-semibold">{venue.name}</h3>
 				<p className="text-sm text-gray-600">
 					{venue.location.city}, {venue.location.country}

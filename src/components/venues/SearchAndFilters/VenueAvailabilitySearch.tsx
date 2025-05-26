@@ -142,7 +142,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 					{/* Search Button */}
 					<CommonButton
 						onClick={onSearchClick}
-						className="bg-primary flex-1 text-white hover:bg-background hover:text-primary w-full md:w-fit"
+						className="bg-primary h-full flex-1 text-white hover:bg-background hover:text-primary w-full md:w-fit"
 					>
 						Search
 					</CommonButton>
