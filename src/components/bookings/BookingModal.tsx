@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, JSX } from 'react';
 import { FaCreditCard } from 'react-icons/fa';
 import { SiApple, SiKlarna } from 'react-icons/si';
 import { CommonButton, SplitButton } from '../commons/Buttons';
-
-//TODO: prohibit user from scrolling while modal appears
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 type BookingModalProps = {
 	startDate: Date;
@@ -14,6 +14,8 @@ type BookingModalProps = {
 	onConfirmBooking: (paymentMethod: string) => void;
 };
 
+type PaymentMethod = 'credit' | 'apple' | 'klarna';
+
 export function BookingModal({
 	                             startDate,
 	                             endDate,
@@ -23,39 +25,56 @@ export function BookingModal({
 	                             onConfirmBooking,
                              }: BookingModalProps) {
 	const [step, setStep] = useState<1 | 2>(1);
-	const [paymentMethod, setPaymentMethod] = useState<string>('credit');
-	const [bookingRef, setBookingRef] = useState<string>('');
-	const [userEmail, setUserEmail] = useState<string>('');
+	const [paymentMethod, setPaymentMethod] = useState<'credit' | 'apple' | 'klarna'>('credit');
+	const [bookingRef, setBookingRef] = useState('');
+	const [userEmail, setUserEmail] = useState('');
+	const navigate = useNavigate();
+	const user = localStorage.getItem('SFUsername');
 
 	const nights = Math.ceil(
 		(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
 	);
 	const total = nights * pricePerNight;
 
+	const handleCancel = () => {
+		onClose();
+	};
+
+	const handleFinalClose = () => {
+		onClose();
+		navigate(`/user/${user}`);
+	};
+
 	useEffect(() => {
 		const email = localStorage.getItem('SFUserEmail') || '';
 		setUserEmail(email);
-		setBookingRef(
-			'REF-' + Math.random().toString(36).slice(2, 10).toUpperCase()
-		);
+		setBookingRef('REF-' + Math.random().toString(36).slice(2, 10).toUpperCase());
 	}, []);
 
 	const handleConfirm = () => {
+		toast.success('Booking confirmed!', {
+			duration: 6000,
+			style: { marginTop: '64px' },
+		});
 		setStep(2);
 		onConfirmBooking(paymentMethod);
 	};
 
-	const paymentOptions = [
+	const paymentOptions: {
+		value: PaymentMethod;
+		label: string;
+		icon: JSX.Element;
+	}[] = [
 		{ value: 'credit', label: 'Credit Card', icon: <FaCreditCard /> },
-		{ value: 'apple', label: 'Apple Pay', icon: <SiApple /> },
-		{ value: 'klarna', label: 'Klarna', icon: <SiKlarna /> },
+		{ value: 'apple',  label: 'Apple Pay',    icon: <SiApple />     },
+		{ value: 'klarna', label: 'Klarna',       icon: <SiKlarna />    },
 	];
 
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-			<div className="bg-white rounded-lg w-[90%] max-w-md p-6 relative">
+			<div className="modal bg-white rounded-lg w-[90%] max-w-md p-6 relative">
 				<button
-					onClick={onClose}
+					onClick={step === 1 ? handleCancel : handleFinalClose}
 					className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
 				>
 					✕
@@ -63,19 +82,11 @@ export function BookingModal({
 
 				{/* Progress bar */}
 				<div className="flex items-center mb-6">
-					<div
-						className={`flex-1 text-center ${
-							step === 1 ? 'font-bold' : 'text-gray-400'
-						}`}
-					>
+					<div className={`flex-1 text-center ${step === 1 ? 'font-bold' : 'text-gray-400'}`}>
 						1. Review
 					</div>
 					<div className="w-8 h-px bg-gray-300 mx-2" />
-					<div
-						className={`flex-1 text-center ${
-							step === 2 ? 'font-bold' : 'text-gray-400'
-						}`}
-					>
+					<div className={`flex-1 text-center ${step === 2 ? 'font-bold' : 'text-gray-400'}`}>
 						2. Confirmed
 					</div>
 				</div>
@@ -109,10 +120,7 @@ export function BookingModal({
 						{/* Payment options */}
 						<div className="mb-6">
 							{paymentOptions.map((opt) => (
-								<label
-									key={opt.value}
-									className="flex items-center mb-3 cursor-pointer"
-								>
+								<label key={opt.value} className="flex items-center mb-3 cursor-pointer">
 									<input
 										type="radio"
 										name="payment"
@@ -130,12 +138,11 @@ export function BookingModal({
 						{/* Cancel & Confirm buttons */}
 						<div className="flex gap-3 justify-between">
 							<CommonButton
-								onClick={onClose}
+								onClick={handleCancel}
 								bgColor="bg-white"
 								textColor="text-gray-700"
 								hoverColor="hover:bg-gray-100"
 								borderClass="border border-gray-300"
-								className=""
 							>
 								Cancel
 							</CommonButton>
@@ -166,7 +173,7 @@ export function BookingModal({
 								</p>
 							)}
 							<CommonButton
-								onClick={onClose}
+								onClick={handleFinalClose}
 								bgColor="bg-secondary"
 								textColor="text-primary"
 								hoverColor="hover:bg-background"

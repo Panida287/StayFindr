@@ -77,6 +77,8 @@ export interface SplitButtonProps {
 	bgColor?: string;
 	borderColor?: string;
 	className?: string;
+	target?: React.HTMLAttributeAnchorTarget;
+	rel?: string;
 }
 
 /** A “split” button that either links or fires onClick */
@@ -91,16 +93,21 @@ export function SplitButton({
 	                            bgColor = 'bg-secondary',
 	                            borderColor = 'border-[#A97C50]',
 	                            className = '',
+	                            target,
+	                            rel,
                             }: SplitButtonProps) {
 	const isLink = Boolean(to);
 
 	type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 		onClick?: () => void;
 	};
-	type AnchorProps = LinkProps;
+	type AnchorProps = LinkProps & {
+		target?: React.HTMLAttributeAnchorTarget;
+		rel?: string;
+	};
 
 	const componentProps: ButtonProps | AnchorProps = isLink
-		? { to: to! }
+		? { to: to!, target, rel }
 		: { onClick };
 
 	const Component = (isLink ? Link : 'button') as React.ElementType;

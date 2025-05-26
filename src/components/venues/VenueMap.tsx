@@ -7,7 +7,7 @@ type VenueMapProps = {
 	name: string;
 };
 
-const VenueMap = ({ lat, lng, name }: VenueMapProps) => {
+export default function VenueMap({ lat, lng, name }: VenueMapProps) {
 	const position: LatLngExpression = [lat, lng];
 
 	const customIcon: Icon = new L.Icon({
@@ -24,7 +24,7 @@ const VenueMap = ({ lat, lng, name }: VenueMapProps) => {
 			center={position}
 			zoom={13}
 			scrollWheelZoom={false}
-			className='h-64 rounded-lg'
+			className="h-64 rounded-lg z-10"
 		>
 			<TileLayer
 				attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
@@ -35,6 +35,4 @@ const VenueMap = ({ lat, lng, name }: VenueMapProps) => {
 			</Marker>
 		</MapContainer>
 	);
-};
-
-export default VenueMap;
+}

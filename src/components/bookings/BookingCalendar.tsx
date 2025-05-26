@@ -18,7 +18,7 @@ type BookingCalendarProps = {
  * Checks if a specific date falls within any booked range.
  */
 function isDateBooked(date: Date, bookedRanges: { start: Date; end: Date }[]): boolean {
-	return bookedRanges.some(({ start, end }) => date >= start && date <= end);
+	return bookedRanges.some(({start, end}) => date >= start && date <= end);
 }
 
 export default function BookingCalendar({
@@ -43,7 +43,7 @@ export default function BookingCalendar({
 
 		const [s, e] = initialRange;
 		const overlapsBook = (d: Date | null) =>
-			!!d && bookedRanges.some(({ start, end }) => d >= start && d <= end);
+			!!d && bookedRanges.some(({start, end}) => d >= start && d <= end);
 
 		if (overlapsBook(s) || overlapsBook(e)) {
 			setDateRange([null, null]);
@@ -119,15 +119,19 @@ export default function BookingCalendar({
 		<div className="mt-8 flex flex-col gap-4" ref={calendarRef}>
 			{unavailable && (
 				<div className="text-red-600 text-sm font-medium">
-					This property is unavailable from{' '}
-					{initStart ? format(initStart, 'EEE, dd-MMM-yyyy') : '––'}{' '}
-					to{' '}
-					{initEnd ? format(initEnd, 'EEE, dd-MMM-yyyy') : '––'}.
+					This property is unavailable during{' '}
+					<span className="px-2 py-1 rounded-full bg-yellow-200/50 mx-1">
+						{initStart ? format(initStart, 'EEE, dd MMM yyyy') : '––'}{' '}
+					</span>
+					-{' '}
+					<span className="px-2 py-1 rounded-full bg-yellow-200/50 mx-1">
+						{initEnd ? format(initEnd, 'EEE, dd MMM yyyy') : '––'}.
+					</span>
 				</div>
 			)}
 
 			<SplitButton
-				text="Check available dates"
+				text="Check Available Dates"
 				bgColor="bg-yellow-600"
 				textColor="text-yellow-600"
 				arrowColor="text-white"
@@ -135,16 +139,18 @@ export default function BookingCalendar({
 				hoverTextColor="hover:text-yellow-600"
 				arrowHoverColor="group-hover:text-yellow-600"
 				onClick={() => setShowCalendar((v) => !v)}
-				className="font-heading w-[200px] py-1"
+				className="font-heading font-medium w-[210px] py-1"
 			/>
 
 			{start && (
 				<div className="flex gap-4">
-					<div className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
+					<div
+						className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
 						Check-in: {format(start, 'EEE, dd-MMM-yyyy')}
 					</div>
 					{end && (
-						<div className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
+						<div
+							className="px-3 py-2 rounded-full text-xs border border-primary/50 drop-shadow-md text-primary">
 							Check-out: {format(end, 'EEE, dd-MMM-yyyy')}
 						</div>
 					)}
