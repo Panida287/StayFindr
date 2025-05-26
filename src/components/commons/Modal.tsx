@@ -37,7 +37,7 @@ export default function Modal({
 
 				{/* Optional header */}
 				{title && (
-					<div className="mb-4 border-b pb-2">
+					<div className="mb-4 border-b pb-2 flex w-full text-center items-center justify-center">
 						{typeof title === "string" ? (
 							<h2 className="text-xl font-semibold">{title}</h2>
 						) : (
@@ -47,7 +47,7 @@ export default function Modal({
 				)}
 
 				{/* Body */}
-				<div className="mb-4">{children}</div>
+				<div className="mb-4 flex justify-center w-full">{children}</div>
 
 				{/* Optional footer */}
 				{footer && <div className="flex justify-end gap-2">{footer}</div>}

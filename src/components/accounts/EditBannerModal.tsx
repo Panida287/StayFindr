@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { updateAvatar } from '../../hooks/updateAvatar';
+import { updateBanner } from '../../hooks/updateBanner';
 import { useFetchProfile } from '../../hooks/useFetchProfile';
 import type { AxiosError } from 'axios';
 import { CommonButton } from '../commons/Buttons';
@@ -9,7 +9,7 @@ type Props = {
 	onClose: () => void;
 };
 
-export default function EditAvatarModal({ onClose }: Props) {
+export default function EditBannerModal({ onClose }: Props) {
 	const { profile, fetchProfile } = useFetchProfile();
 	const [url, setUrl] = useState('');
 	const [alt, setAlt] = useState('');
@@ -22,7 +22,7 @@ export default function EditAvatarModal({ onClose }: Props) {
 		setLoading(true);
 		setErrorMessage('');
 		try {
-			await updateAvatar(profile.name, { url, alt });
+			await updateBanner(profile.name, { url, alt });
 			await fetchProfile();
 			onClose();
 		} catch (err) {
@@ -30,7 +30,7 @@ export default function EditAvatarModal({ onClose }: Props) {
 			setErrorMessage(
 				error.response?.data?.errors?.[0]?.message || 'Something went wrong.'
 			);
-			console.error('Avatar update error:', error.response?.data || error);
+			console.error('Banner update error:', error.response?.data || error);
 		} finally {
 			setLoading(false);
 		}
@@ -38,9 +38,9 @@ export default function EditAvatarModal({ onClose }: Props) {
 
 	return (
 		<Modal isOpen={true} onClose={onClose}>
-			<div className="space-y-4 w-full max-w-sm mx-auto">
+			<div className="space-y-4 w-full max-w-lg mx-auto">
 				<h2 className="text-xl flex justify-center font-semibold">
-					Edit Avatar
+					Edit Banner
 				</h2>
 
 				{errorMessage && (
@@ -49,13 +49,13 @@ export default function EditAvatarModal({ onClose }: Props) {
 					</div>
 				)}
 
-				<label className="block text-sm font-medium">Image URL</label>
+				<label className="block text-sm font-medium">Banner URL</label>
 				<input
 					type="text"
 					value={url}
 					onChange={(e) => setUrl(e.target.value)}
 					className="w-full p-2 border rounded"
-					placeholder="https://example.com/image.jpg"
+					placeholder="https://example.com/banner.jpg"
 					disabled={loading}
 				/>
 
@@ -65,7 +65,7 @@ export default function EditAvatarModal({ onClose }: Props) {
 					value={alt}
 					onChange={(e) => setAlt(e.target.value)}
 					className="w-full p-2 border rounded"
-					placeholder="Your avatar description"
+					placeholder="Your banner description"
 					disabled={loading}
 				/>
 
@@ -73,8 +73,8 @@ export default function EditAvatarModal({ onClose }: Props) {
 					<div className="flex justify-center mt-2">
 						<img
 							src={url}
-							alt={alt || 'Avatar preview'}
-							className="w-20 h-20 rounded-full object-cover border"
+							alt={alt || 'Banner preview'}
+							className="w-full h-40 rounded object-cover border"
 						/>
 					</div>
 				)}
@@ -90,6 +90,7 @@ export default function EditAvatarModal({ onClose }: Props) {
 					>
 						Cancel
 					</CommonButton>
+
 					<CommonButton
 						onClick={handleSave}
 						bgColor="bg-primary"

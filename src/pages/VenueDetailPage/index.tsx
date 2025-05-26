@@ -10,6 +10,7 @@ import { Booking } from '../../types/venues';
 import BookingForm from '../../components/bookings/BookingForm';
 import ImageGalleryAlternative from '../../components/venues/ImageGalleryAlternative';
 import RatingBadge from '../../components/commons/RatingBadge';
+import LoadingSpinner from '../../components/commons/LoadingSpinner.tsx';
 
 export default function VenueDetailPage() {
 	const { venueId } = useParams<{ venueId: string }>();
@@ -26,12 +27,19 @@ export default function VenueDetailPage() {
 	const { handleBooking, isBookingLoading, bookingError, success } =
 		useHandleBooking(venue?.id);
 
-	if (isLoading) return <p>Loading…</p>;
+	if (isLoading) {
+		return (
+			<div className="flex justify-center items-center h-[500px] w-full">
+				<LoadingSpinner size={64} colorClass="text-primary" />
+			</div>
+		);
+	}
+
 	if (error || !venue) return <p>{error || 'Venue not found.'}</p>;
 
 	const fallbackImage   = FALLBACK.venue;
 	const fallbackCity    = FALLBACK.city;
-	const fallbackCountry = FALLBACK.Country;
+	const fallbackCountry = FALLBACK.country;
 
 	const {
 		name, description, media,

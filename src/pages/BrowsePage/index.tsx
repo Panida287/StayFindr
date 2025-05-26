@@ -10,6 +10,7 @@ import VenueCard from '../../components/venues/VenueCard';
 import { CommonButton } from '../../components/commons/Buttons';
 import { SearchParams } from '../../App';
 import AdBanner from '../../components/commons/AdBanner.tsx';
+import LoadingSpinner from '../../components/commons/LoadingSpinner.tsx';
 
 export default function BrowsePage(): JSX.Element {
   const location    = useLocation();
@@ -33,7 +34,11 @@ export default function BrowsePage(): JSX.Element {
     fetchAllVenues, applyFilters, setPage, setSort,
   } = useFetchVenues();
 
-  // 1️⃣ Initial fetch + apply filters
+  const totalResults = meta?.totalCount ?? 0;
+
+  console.log('🧐 meta object:', meta);
+  console.log('🧐 totalResults:', totalResults);
+
   useEffect(() => {
     fetchAllVenues().then(() =>
       applyFilters({
@@ -44,7 +49,6 @@ export default function BrowsePage(): JSX.Element {
         page: 1,
       })
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -100,7 +104,7 @@ export default function BrowsePage(): JSX.Element {
       </div>
 
       {/* 3. Two‐column on md+ */}
-      <div className="md:grid md:grid-cols-4 md:gap-6">
+      <div className="md:grid md:grid-cols-4 md:gap-6 md:max-w-5xl md:mx-auto">
         <aside className="hidden md:block">
           <AmenitiesFilter
             amenities={pendingFilters.amenities}
@@ -122,62 +126,66 @@ export default function BrowsePage(): JSX.Element {
 
           {/* 4. Banner + Sort + Results */}
           <div
-            ref={resultRef}
-            className="!mt-0 space-y-6"
+              ref={resultRef}
+              className="!mt-0 space-y-6"
           >
-            <ResultsBanner filters={activeFilters} />
+            <ResultsBanner
+                resultsCount={totalResults}
+                filters={activeFilters} />
 
             <div className="flex justify-end">
               <SortDropdown
-                onChange={handleSortChange}
-                currentSort={
-                  currentSort === 'price' && currentSortOrder === 'asc'
-                    ? 'priceAsc'
-                    : currentSort === 'price' && currentSortOrder === 'desc'
-                    ? 'priceDesc'
-                    : currentSort === 'rating'
-                    ? 'rating'
-                    : currentSort === 'bookings'
-                    ? 'popularity'
-                    : 'newest'
-                }
+                  onChange={handleSortChange}
+                  currentSort={
+                    currentSort === 'price' && currentSortOrder === 'asc'
+                        ? 'priceAsc'
+                        : currentSort === 'price' && currentSortOrder === 'desc'
+                            ? 'priceDesc'
+                            : currentSort === 'rating'
+                                ? 'rating'
+                                : currentSort === 'bookings'
+                                    ? 'popularity'
+                                    : 'newest'
+                  }
               />
             </div>
 
             {isLoading ? (
-              <p>Loading venues…</p>
+                <div className="flex justify-center items-center h-[500px] w-full">
+                  <LoadingSpinner size={64} colorClass="text-primary" />
+                </div>
             ) : error ? (
-              <p className="text-red-600">{error}</p>
+                <p className="text-red-600">{error}</p>
             ) : (
-              <div className="grid grid-cols-1 gap-6">
-                {venues.map(v => {
-                  const qs = new URLSearchParams({
-                    dateFrom: activeFilters.dateFrom,
-                    dateTo:   activeFilters.dateTo,
-                    guests:   String(activeFilters.guests),
-                  }).toString();
+                <div className="grid grid-cols-1 gap-6">
+                  {venues.map(v => {
+                    const qs = new URLSearchParams({
+                      dateFrom: activeFilters.dateFrom,
+                      dateTo: activeFilters.dateTo,
+                      guests: String(activeFilters.guests),
+                    }).toString();
 
-                  return (
-                    <Link
-                      key={v.id}
-                      to={`/venue/${v.id}?${qs}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
-                      <VenueCard venue={v} />
-                    </Link>
-                  );
-                })}
-              </div>
+                    return (
+                        <Link
+                            key={v.id}
+                            to={`/venue/${v.id}?${qs}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block"
+                        >
+                          <VenueCard venue={v} />
+                        </Link>
+                    );
+                  })}
+                </div>
             )}
 
             {meta.pageCount > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                pageCount={meta.pageCount}
-                onPageChange={onPageChange}
-              />
+                <Pagination
+                    currentPage={currentPage}
+                    pageCount={meta.pageCount}
+                    onPageChange={onPageChange}
+                />
             )}
           </div>
         </main>
