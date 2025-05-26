@@ -3,6 +3,7 @@ import { useFetchVenuesByProfile } from '../../../../hooks/useFetchVenuesByProfi
 import ManageVenueCard from '../../../../components/venues/ManageVenueCard.tsx';
 import Pagination from '../../../../components/commons/Pagination.tsx';
 import { SplitButton } from '../../../../components/commons/Buttons.tsx';
+import LoadingSpinner from '../../../../components/commons/LoadingSpinner.tsx';
 
 export default function ManageVenuePage() {
 	// Always initialize hooks at the top
@@ -32,8 +33,8 @@ export default function ManageVenuePage() {
 	// Loading and error states
 	if (isLoading) {
 		return (
-			<div className="flex justify-center items-center mt-8">
-				<div className="h-12 w-12 border-4 border-t-transparent border-primary rounded-full animate-spin" />
+			<div className="flex justify-center items-center h-[500px] w-full">
+				<LoadingSpinner size={64} colorClass="text-primary" />
 			</div>
 		);
 	}

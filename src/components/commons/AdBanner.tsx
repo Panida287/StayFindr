@@ -3,7 +3,7 @@ import { SplitButton } from './Buttons.tsx';
 export default function AdBanner() {
 	return (
 		<section
-			className="relative w-[calc(100%-2rem)] max-w-6xl rounded-2xl mx-auto h-64 bg-cover bg-center overflow-hidden shadow-lg md:h-72"
+			className="relative w-[calc(100%-2rem)] max-w-5xl rounded-2xl mx-auto h-64 bg-cover bg-center overflow-hidden shadow-lg md:h-72"
 			style={{
 				backgroundImage: "url('/assets/images/banner-promo.jpg')",
 			}}
