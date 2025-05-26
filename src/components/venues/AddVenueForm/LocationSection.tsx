@@ -77,7 +77,7 @@ export function LocationSection({
 					<input
 						id="country"
 						{...register('location.country')}
-						placeholder="Country"
+						placeholder="country"
 						className="input mt-1"
 					/>
 				</div>
