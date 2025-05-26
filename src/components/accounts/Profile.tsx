@@ -2,6 +2,7 @@ import { useState } from 'react';
 import EditAvatarModal from './EditAvatarModal';
 import EditBannerModal from './EditBannerModal';  // ← import banner modal
 import { Profile } from '../../types/profile';
+import { FALLBACK } from '../../constants.ts';
 
 type ProfileHeaderProps = {
 	profile: Profile;
@@ -15,10 +16,12 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 
 	return (
 		<>
-			{/* Banner with edit button */}
 			<div className="relative">
 				<img
-					src={banner?.url || '/assets/banner-placeholder.png'}
+					src={banner?.url || FALLBACK.banner}
+					onError={(e) => {
+						e.currentTarget.src = FALLBACK.banner;
+					}}
 					alt={name}
 					className="w-full h-60 object-cover rounded-xl"
 				/>
@@ -30,11 +33,13 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 				</button>
 			</div>
 
-			{/* Avatar with edit button */}
 			<div className="relative flex items-center gap-4 -mt-10 pl-4">
 				<div>
 					<img
-						src={avatar?.url || '/assets/avatar-placeholder.png'}
+						src={avatar?.url || FALLBACK.avatar}
+						onError={(e) => {
+							e.currentTarget.src = FALLBACK.avatar;
+						}}
 						alt={name}
 						className="w-20 h-20 rounded-full object-cover border-2 border-white"
 					/>
@@ -47,8 +52,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 				</div>
 			</div>
 
-			{/* Name & role */}
-			<div className="relative -z-10 flex flex-col gap-2 justify-start w-full -mt-12 pl-24 pt-7 pb-4 bg-white rounded-b-xl">
+			<div className="relative -z-10 flex flex-col gap-2 justify-start w-full -mt-12 pl-24 pt-7 pb-4 bg-white rounded-b-xl shadow-md">
 				<h2 className="text-2xl font-bold text-primary">
 					{name}
 				</h2>
@@ -57,7 +61,6 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 				</p>
 			</div>
 
-			{/* Modals */}
 			{isAvatarModalOpen && (
 				<EditAvatarModal onClose={() => setIsAvatarModalOpen(false)} />
 			)}
