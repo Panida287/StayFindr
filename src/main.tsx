@@ -28,6 +28,8 @@ import BrowsePage from './pages/BrowsePage';
 import LayoutUser from './pages/Accounts/UserAccountPage/LayoutUser';
 import UserProfilePage from './pages/Accounts/UserAccountPage/UserProfilePage';
 import UserBookingHistoryPage from './pages/Accounts/UserAccountPage/UserBookingHistoryPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 
 const router = createBrowserRouter([
 	{
@@ -125,6 +127,14 @@ const router = createBrowserRouter([
 			{
 				path: 'unauthorized',
 				element: <UnauthorizedPage />,
+			},
+			{
+				path: 'about',
+				element: <AboutPage />,
+			},
+			{
+				path: 'contact',
+				element: <ContactPage />,
 			},
 		],
 	},

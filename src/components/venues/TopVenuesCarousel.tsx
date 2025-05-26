@@ -65,13 +65,14 @@ export default function TopVenuesCarousel() {
 									<SplitButton
 										text="Book now"
 										to={`/venue/${venue.id}`}
+										target="_black"
 										textColor="text-yellow-500"
 										hoverTextColor="group-hover:text-yellow-500"
 										arrowColor="text-white"
 										arrowHoverColor="group-hover:text-yellow-500"
 										bgColor="bg-yellow-500"
 										borderColor="border-yellow-500"
-										className="font-heading mt-2"
+										className="font-heading mt-2 absolute"
 									/>
 								</div>
 							</div>

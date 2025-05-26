@@ -1,9 +1,11 @@
 import React from 'react';
-import { Link, LinkProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 
+/**
+ * Props for the CommonButton component.
+ */
 export interface CommonButtonProps {
-	/** Optional URL; if provided and not disabled, renders as <Link> */
 	to?: string;
 	onClick?: () => void;
 	className?: string;
@@ -18,7 +20,10 @@ export interface CommonButtonProps {
 	borderClass?: string;
 }
 
-/** Button that optionally renders as a React-Router Link when `to` is set */
+/**
+ * A reusable button component that renders either a <button> or <Link>,
+ * depending on whether the `to` prop is provided.
+ */
 export function CommonButton({
 	                             to,
 	                             onClick,
@@ -34,15 +39,7 @@ export function CommonButton({
 	                             borderClass = '',
                              }: CommonButtonProps) {
 	const isLink = !disabled && Boolean(to);
-
-	// If it's a link, use LinkProps; otherwise button props
-	type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'onClick'> & {
-		type: CommonButtonProps['type'];
-		onClick?: () => void;
-	};
-	type AnchorProps = LinkProps;
-
-	const componentProps: ButtonProps | AnchorProps = isLink
+	const componentProps = isLink
 		? { to: to! }
 		: { onClick, type, disabled };
 
@@ -51,22 +48,27 @@ export function CommonButton({
 	return (
 		<Component
 			{...componentProps}
-			className={`
-        ${bgColor} ${textColor} ${hoverColor} ${hoverTextColor}
-        px-6 py-2 rounded-full text-sm transition
-        ${fullWidth ? 'w-full' : ''}
-        ${borderClass}
-        ${className}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-      `}
+			className={clsx(
+				bgColor,
+				textColor,
+				hoverColor,
+				hoverTextColor,
+				'px-6 py-2 rounded-full text-sm transition',
+				fullWidth && 'w-full',
+				borderClass,
+				className,
+				disabled && 'opacity-50 cursor-not-allowed'
+			)}
 		>
 			{children}
 		</Component>
 	);
 }
 
+/**
+ * Props for the SplitButton component.
+ */
 export interface SplitButtonProps {
-	/** Optional URL; if provided, renders as <Link> */
 	to?: string;
 	onClick?: () => void;
 	text: string;
@@ -81,7 +83,10 @@ export interface SplitButtonProps {
 	rel?: string;
 }
 
-/** A “split” button that either links or fires onClick */
+/**
+ * A call-to-action split button with a highlight animation and arrow,
+ * renders as a <Link> or <button> depending on the `to` prop.
+ */
 export function SplitButton({
 	                            to,
 	                            onClick,
@@ -97,16 +102,7 @@ export function SplitButton({
 	                            rel,
                             }: SplitButtonProps) {
 	const isLink = Boolean(to);
-
-	type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-		onClick?: () => void;
-	};
-	type AnchorProps = LinkProps & {
-		target?: React.HTMLAttributeAnchorTarget;
-		rel?: string;
-	};
-
-	const componentProps: ButtonProps | AnchorProps = isLink
+	const componentProps = isLink
 		? { to: to!, target, rel }
 		: { onClick };
 
@@ -122,34 +118,19 @@ export function SplitButton({
 				className
 			)}
 		>
-			{/* Animated highlight */}
 			<span
 				className="absolute top-[1px] bottom-[1px] left-[1px] z-0
-                   bg-white w-[85%] group-hover:w-[calc(100%-3px)]
-                   transition-all duration-500 ease-in-out rounded-full"
+				bg-white w-[85%] group-hover:w-[calc(100%-3px)]
+				transition-all duration-500 ease-in-out rounded-full"
 			/>
-
-			{/* Text + arrow */}
 			<span className="relative z-10 flex items-center whitespace-nowrap">
-        <span
-	        className={clsx(
-		        'px-6 py-1 transition-colors duration-500',
-		        textColor,
-		        hoverTextColor
-	        )}
-        >
-          {text}
-        </span>
-        <span
-	        className={clsx(
-		        'pr-[10px] transition-colors duration-500',
-		        arrowColor,
-		        arrowHoverColor
-	        )}
-        >
-          ›
-        </span>
-      </span>
+				<span className={clsx('px-6 py-1 transition-colors duration-500', textColor, hoverTextColor)}>
+					{text}
+				</span>
+				<span className={clsx('pr-[10px] transition-colors duration-500', arrowColor, arrowHoverColor)}>
+					›
+				</span>
+			</span>
 		</Component>
 	);
 }

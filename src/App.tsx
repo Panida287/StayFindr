@@ -4,6 +4,8 @@ import { useFetchProfile } from './hooks/useFetchProfile';
 import { useNavigate } from 'react-router-dom';
 import VenueAvailabilitySearch from './components/venues/SearchAndFilters/VenueAvailabilitySearch.tsx';
 import TopVenuesCarousel from './components/venues/TopVenuesCarousel.tsx';
+import AdsAbout from './components/commons/Ads/AdsAbout.tsx';
+import { RoomGallery } from './components/commons/Ads/RoomGallery.tsx';
 
 export type SearchParams = {
 	city: string;
@@ -18,6 +20,38 @@ export type SearchParams = {
 		pets: boolean;
 	};
 };
+const sampleRooms = [
+	{
+		id: 1,
+		imageUrl: '/assets/images/ads-images/room1.jpeg',
+		title: 'Family Suite Room',
+		details: '120m² / 2 Bedroom / pet friendly',
+	},
+	{
+		id: 2,
+		imageUrl: '/assets/images/ads-images/room2.jpeg',
+		title: 'Executive Suite',
+		details: '80m² / King Bed / Ocean View',
+	},
+	{
+		id: 3,
+		imageUrl: '/assets/images/ads-images/room3.jpeg',
+		title: 'Deluxe Suite',
+		details: '100m² / Queen Bed / City View',
+	},
+	{
+		id: 4,
+		imageUrl: '/assets/images/ads-images/room4.jpeg',
+		title: 'Premium Suite',
+		details: '110m² / King Bed / Mountain View',
+	},
+	{
+		id: 5,
+		imageUrl: '/assets/images/ads-images/room5.jpeg',
+		title: 'Junior Suite',
+		details: '70m² / Queen Bed / Garden View',
+	},
+];
 
 function App() {
 	useFetchProfile();
@@ -76,6 +110,10 @@ function App() {
 					}}
 				/>
 			</div>
+
+			<AdsAbout />
+
+			<RoomGallery rooms={sampleRooms} />
 		</>
 	);
 }
