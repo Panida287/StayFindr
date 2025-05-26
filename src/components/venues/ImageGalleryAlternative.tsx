@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { FALLBACK } from '../../constants';
 
-export type GalleryImage = { url: string; alt?: string };
+export type GalleryImage = {
+	url: string;
+	alt?: string;
+};
 
 interface Props {
 	images: GalleryImage[];
@@ -10,15 +14,19 @@ interface Props {
 }
 
 export default function ImageGalleryAlternative({
-	                                     images,
-	                                     altFallback = 'Gallery image',
-	                                     heightClass = 'h-80',
-                                     }: Props) {
+	                                                images,
+	                                                altFallback = 'Gallery image',
+	                                                heightClass = 'h-80',
+                                                }: Props) {
 	const [current, setCurrent] = useState(0);
 	const total = images.length;
 
-	const prev = () => setCurrent((current - 1 + total) % total);
-	const next = () => setCurrent((current + 1) % total);
+	const prev = () => setCurrent((c) => (c - 1 + total) % total);
+	const next = () => setCurrent((c) => (c + 1) % total);
+
+	const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+		e.currentTarget.src = FALLBACK.venue;
+	};
 
 	return (
 		<div className="w-full">
@@ -27,6 +35,7 @@ export default function ImageGalleryAlternative({
 				<img
 					src={images[current].url}
 					alt={images[current].alt || altFallback}
+					onError={handleError}
 					className={`w-full object-cover ${heightClass}`}
 				/>
 
@@ -63,6 +72,7 @@ export default function ImageGalleryAlternative({
 						<img
 							src={img.url}
 							alt={img.alt || altFallback}
+							onError={handleError}
 							className="w-20 h-12 object-cover"
 						/>
 					</button>
