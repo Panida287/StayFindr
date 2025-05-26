@@ -35,7 +35,7 @@ export default function DesktopNavLinks({
 				Home
 			</NavLink>
 			<NavLink
-				to="/about"
+				to=""
 				className={({isActive}) =>
 					`text-primary font-heading font-medium rounded-full py-1 px-4 transition-colors duration-300 hover:bg-primary hover:text-secondary ${
 						isActive ? 'font-bold' : ''
@@ -45,7 +45,7 @@ export default function DesktopNavLinks({
 				About us
 			</NavLink>
 			<NavLink
-				to="/about"
+				to=""
 				className={({isActive}) =>
 					`text-primary font-heading font-medium rounded-full py-1 px-4 transition-colors duration-300 hover:bg-primary hover:text-secondary ${
 						isActive ? 'font-bold' : ''

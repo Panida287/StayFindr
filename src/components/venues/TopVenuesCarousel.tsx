@@ -26,10 +26,10 @@ export default function TopVenuesCarousel() {
 			<div className="absolute hidden w-2/3 h-full left-0 z-20 bg-gradient-to-r from-white/90 via-white/60 to-transparent md:flex" />
 			<div className="absolute hidden top-48 z-30 text-secondary w-full space-y-3 md:flex md:justify-center">
 				<div className="absolute w-[calc(100%-2rem)] max-w-5xl mx-auto">
-					<h2 className="text-5xl font-extrabold text-black leading-tight font-heading">
+					<h2 className="text-5xl font-extrabold text-primary leading-tight font-heading">
 						Find Your Perfect Stay
 					</h2>
-					<p className="hidden text-md font-medium text-black w-60 mt-4 sm:flex">
+					<p className="hidden text-md font-medium text-primary w-60 mt-4 sm:flex">
 						Discover curated venues from across the globe. Experience exceptional stays in beautiful locations with ease.
 					</p>
 				</div>
