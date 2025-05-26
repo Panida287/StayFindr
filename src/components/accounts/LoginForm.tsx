@@ -66,7 +66,7 @@ export default function LoginForm() {
 
 	return (
 		<div
-			className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-700-100 via-white to-green-50">
+			className="flex my-10 items-center justify-center bg-gradient-to-br from-green-700-100 via-white to-green-50">
 			<Toaster /> {/* 🔥 Toast container */}
 
 			<div
