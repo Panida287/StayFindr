@@ -65,7 +65,7 @@ export default function LoginForm() {
 
 	return (
 		<div
-			className="flex my-10 items-center justify-center bg-gradient-to-br from-green-700-100 via-white to-green-50"
+			className="flex my-10 items-center mx-auto w-[calc(100%-2rem)] max-w-4xl justify-center bg-gradient-to-br from-green-700-100 via-white to-green-50"
 			aria-labelledby="login-title"
 		>
 			<Toaster />

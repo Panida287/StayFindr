@@ -13,11 +13,13 @@ export default function RegisterTypeSelector({
 	setAccountType: (value: 'traveler' | 'manager') => void;
 }) {
 	return (
-		<div className="relative flex w-full max-w-5xl bg-white rounded-3xl shadow-xl overflow-hidden mx-auto my-16">
+		<div className="relative flex flex-col mx-auto w-[calc(100%-2rem)] max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden my-16 gap-6 md:w-full md:flex-row md:gap-0">
 			{/* Sliding highlight border */}
 			<div
-				className={`absolute top-0 left-0 w-1/2 h-full border border-primary rounded-3xl z-0 transition-transform duration-300 ease-in-out ${
-					accountType === 'traveler' ? 'translate-x-0' : 'translate-x-full'
+				className={`absolute top-0 left-0 w-full h-1/2 sm:h-full border border-primary rounded-3xl z-0 transition-all duration-300 ease-in-out md:w-1/2 ${
+					accountType === 'traveler'
+						? 'translate-x-0 sm:translate-x-0 sm:translate-y-0'
+						: 'sm:translate-x-full translate-y-full sm:translate-y-0'
 				}`}
 				style={{ pointerEvents: 'none' }}
 			/>
@@ -47,7 +49,6 @@ export default function RegisterTypeSelector({
 					Register as Traveler
 				</button>
 			</div>
-
 
 			{/* Venue Manager Card */}
 			<div
