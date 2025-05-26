@@ -1,12 +1,23 @@
 import React from 'react';
 
+/**
+ * Props for the AmenityIcon component.
+ */
 export interface AmenityIconProps {
+	/** The icon component (usually from lucide-react or similar) */
 	Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+	/** Whether the amenity is available */
 	available: boolean;
+	/** Title/label for tooltip and screen readers */
 	title: string;
+	/** Optional size in pixels (default: 20) */
 	size?: number;
 }
 
+/**
+ * A visual icon representing an amenity.
+ * Shows a strike-through line if the amenity is not available.
+ */
 export default function AmenityIcon({
 	                                    Icon,
 	                                    available,
@@ -18,10 +29,11 @@ export default function AmenityIcon({
 	return (
 		<div
 			className="relative inline-block"
+			aria-label={title}
 			title={title}
 			style={{ width: size, height: size }}
 		>
-			<Icon className={`${colorClass} w-[${size}px] h-[${size}px]`} />
+			<Icon className={`w-[${size}px] h-[${size}px] ${colorClass}`} />
 			{!available && (
 				<svg
 					className="absolute inset-0"
@@ -33,6 +45,7 @@ export default function AmenityIcon({
 					strokeWidth="2"
 					strokeLinecap="round"
 					strokeLinejoin="round"
+					aria-hidden="true"
 				>
 					<line x1="18" y1="6" x2="6" y2="18" />
 				</svg>

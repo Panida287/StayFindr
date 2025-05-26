@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom';
 
+/**
+ * Vertical promotional banner encouraging users to become a host.
+ * Used in sidebars or ads, featuring a CTA and background image.
+ */
 export default function BecomeHostAd() {
 	return (
-		<div className="relative w-full h-96 rounded-xl overflow-hidden shadow border border-primary/20 mt-6">
+		<div
+			className="relative w-full h-[30rem] rounded-xl overflow-hidden shadow border border-primary/20 mt-6"
+			aria-label="Call to action: Become a StayFindr host"
+		>
 			<img
 				src="/assets/images/ads-images/host-ad.jpg"
-				alt="Become a Host"
+				alt="Scenic view representing the benefits of hosting"
 				className="absolute inset-0 w-full h-full object-cover"
 			/>
 

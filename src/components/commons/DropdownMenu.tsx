@@ -1,7 +1,9 @@
-// components/commons/DropdownMenu.tsx
 import { ReactNode, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * A single dropdown item.
+ */
 type DropdownItem = {
 	label: ReactNode;
 	icon?: ReactNode;
@@ -11,50 +13,72 @@ type DropdownItem = {
 	hoverClassName?: string;
 };
 
+/**
+ * Props for DropdownMenu component.
+ */
 type DropdownMenuProps = {
-	/** Any element you want to use as the trigger (a button, icon, etc.) */
+	/** The clickable element that triggers the menu */
 	children: ReactNode;
-	/** List of items; if `to` is set it becomes a <Link>, otherwise a <button>. */
+	/** List of menu items; can be links or buttons */
 	items: DropdownItem[];
 };
 
+/**
+ * A dropdown menu component that supports both link and button actions.
+ * Closes automatically on outside click.
+ */
 export default function DropdownMenu({ children, items }: DropdownMenuProps) {
 	const [open, setOpen] = useState(false);
 	const wrapperRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
-		function handler(e: MouseEvent) {
-			if (wrapperRef.current?.contains(e.target as Node)) return;
-			setOpen(false);
+		function handleClickOutside(e: MouseEvent) {
+			if (!wrapperRef.current?.contains(e.target as Node)) {
+				setOpen(false);
+			}
 		}
-		document.addEventListener('mousedown', handler);
-		return () => document.removeEventListener('mousedown', handler);
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, []);
 
 	return (
 		<div ref={wrapperRef} className="relative inline-block">
 			<div
+				role="button"
+				tabIndex={0}
+				aria-haspopup="menu"
+				aria-expanded={open}
 				onClick={(e) => {
 					e.stopPropagation();
-					setOpen((o) => !o);
+					setOpen((prev) => !prev);
+				}}
+				onKeyDown={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						setOpen((prev) => !prev);
+					}
 				}}
 			>
 				{children}
 			</div>
 
 			{open && (
-				<div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow z-20">
+				<div
+					role="menu"
+					className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow z-20"
+				>
 					{items.map((item, idx) =>
 						item.to ? (
 							<Link
 								key={idx}
 								to={item.to}
 								onClick={() => setOpen(false)}
+								role="menuitem"
 								className={`
-						                  block px-4 py-2 text-sm
-						                  ${item.className ?? 'text-gray-700'} 
-						                  ${item.hoverClassName ?? 'hover:bg-gray-100'}
-						                `}
+									block px-4 py-2 text-sm
+									${item.className ?? 'text-gray-700'}
+									${item.hoverClassName ?? 'hover:bg-gray-100'}
+								`}
 							>
 								{item.icon}
 								{item.label}
@@ -66,11 +90,12 @@ export default function DropdownMenu({ children, items }: DropdownMenuProps) {
 									item.onClick?.();
 									setOpen(false);
 								}}
+								role="menuitem"
 								className={`
-						                  w-full text-left px-4 py-2 text-sm
-						                  ${item.className ?? 'text-gray-700'}
-						                  ${item.hoverClassName ?? 'hover:bg-gray-100'}
-						                `}
+									w-full text-left px-4 py-2 text-sm
+									${item.className ?? 'text-gray-700'}
+									${item.hoverClassName ?? 'hover:bg-gray-100'}
+								`}
 							>
 								{item.icon}
 								{item.label}
