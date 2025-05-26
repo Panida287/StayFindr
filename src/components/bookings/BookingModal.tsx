@@ -5,17 +5,26 @@ import { CommonButton, SplitButton } from '../commons/Buttons';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-type BookingModalProps = {
-	startDate: Date;
-	endDate: Date;
-	guests: number;
-	pricePerNight: number;
-	onClose: () => void;
-	onConfirmBooking: (paymentMethod: string) => void;
-};
-
 type PaymentMethod = 'credit' | 'apple' | 'klarna';
 
+type BookingModalProps = {
+	/** Check-in date */
+	startDate: Date;
+	/** Check-out date */
+	endDate: Date;
+	/** Number of guests */
+	guests: number;
+	/** Price per night in NOK */
+	pricePerNight: number;
+	/** Called when modal is dismissed */
+	onClose: () => void;
+	/** Called on final confirmation with payment method */
+	onConfirmBooking: (paymentMethod: PaymentMethod) => void;
+};
+
+/**
+ * Booking confirmation modal with review and simulated payment step.
+ */
 export function BookingModal({
 	                             startDate,
 	                             endDate,
@@ -25,31 +34,27 @@ export function BookingModal({
 	                             onConfirmBooking,
                              }: BookingModalProps) {
 	const [step, setStep] = useState<1 | 2>(1);
-	const [paymentMethod, setPaymentMethod] = useState<'credit' | 'apple' | 'klarna'>('credit');
+	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('credit');
 	const [bookingRef, setBookingRef] = useState('');
 	const [userEmail, setUserEmail] = useState('');
 	const navigate = useNavigate();
+
 	const user = localStorage.getItem('SFUsername');
 
-	const nights = Math.ceil(
-		(endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
-	);
+	const nights = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
 	const total = nights * pricePerNight;
-
-	const handleCancel = () => {
-		onClose();
-	};
-
-	const handleFinalClose = () => {
-		onClose();
-		navigate(`/user/${user}`);
-	};
 
 	useEffect(() => {
 		const email = localStorage.getItem('SFUserEmail') || '';
 		setUserEmail(email);
 		setBookingRef('REF-' + Math.random().toString(36).slice(2, 10).toUpperCase());
 	}, []);
+
+	const handleCancel = () => onClose();
+	const handleFinalClose = () => {
+		onClose();
+		navigate(`/user/${user}`);
+	};
 
 	const handleConfirm = () => {
 		toast.success('Booking confirmed!', {
@@ -66,21 +71,27 @@ export function BookingModal({
 		icon: JSX.Element;
 	}[] = [
 		{ value: 'credit', label: 'Credit Card', icon: <FaCreditCard /> },
-		{ value: 'apple',  label: 'Apple Pay',    icon: <SiApple />     },
-		{ value: 'klarna', label: 'Klarna',       icon: <SiKlarna />    },
+		{ value: 'apple', label: 'Apple Pay', icon: <SiApple /> },
+		{ value: 'klarna', label: 'Klarna', icon: <SiKlarna /> },
 	];
 
 	return (
-		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-			<div className="modal bg-white rounded-lg w-[90%] max-w-md p-6 relative">
+		<div
+			className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="bookingModalTitle"
+		>
+			<div className="modal bg-white rounded-lg w-[90%] max-w-md p-6 relative shadow-lg">
 				<button
 					onClick={step === 1 ? handleCancel : handleFinalClose}
 					className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+					aria-label="Close booking modal"
 				>
 					✕
 				</button>
 
-				{/* Progress bar */}
+				{/* Progress header */}
 				<div className="flex items-center mb-6">
 					<div className={`flex-1 text-center ${step === 1 ? 'font-bold' : 'text-gray-400'}`}>
 						1. Review
@@ -93,7 +104,7 @@ export function BookingModal({
 
 				{step === 1 ? (
 					<>
-						{/* Booking summary */}
+						{/* Booking Summary */}
 						<div className="space-y-2 mb-4 text-sm text-gray-700">
 							<div className="flex justify-between">
 								<span>Check-in:</span>
@@ -117,25 +128,27 @@ export function BookingModal({
 							</div>
 						</div>
 
-						{/* Payment options */}
-						<div className="mb-6">
-							{paymentOptions.map((opt) => (
-								<label key={opt.value} className="flex items-center mb-3 cursor-pointer">
+						{/* Payment Method */}
+						<fieldset className="mb-6">
+							<legend className="sr-only">Choose payment method</legend>
+							{paymentOptions.map(({ value, label, icon }) => (
+								<label key={value} className="flex items-center mb-3 cursor-pointer">
 									<input
 										type="radio"
 										name="payment"
-										value={opt.value}
-										checked={paymentMethod === opt.value}
-										onChange={() => setPaymentMethod(opt.value)}
+										value={value}
+										checked={paymentMethod === value}
+										onChange={() => setPaymentMethod(value)}
 										className="form-radio h-4 w-4 text-primary"
+										aria-label={`Pay with ${label}`}
 									/>
-									<span className="ml-3 mr-2 text-xl">{opt.icon}</span>
-									<span className="text-gray-700">{opt.label}</span>
+									<span className="ml-3 mr-2 text-xl" aria-hidden>{icon}</span>
+									<span className="text-gray-700">{label}</span>
 								</label>
 							))}
-						</div>
+						</fieldset>
 
-						{/* Cancel & Confirm buttons */}
+						{/* Action Buttons */}
 						<div className="flex gap-3 justify-between">
 							<CommonButton
 								onClick={handleCancel}
@@ -146,6 +159,7 @@ export function BookingModal({
 							>
 								Cancel
 							</CommonButton>
+
 							<SplitButton
 								text="Confirm Booking"
 								onClick={handleConfirm}
@@ -159,30 +173,28 @@ export function BookingModal({
 						</div>
 					</>
 				) : (
-					<>
-						{/* Confirmation */}
-						<div className="text-center space-y-4">
-							<p className="text-lg font-semibold text-primary">
-								Booking Confirmed!
+					// Step 2: Confirmation
+					<div className="text-center space-y-4">
+						<h3 id="bookingModalTitle" className="text-lg font-semibold text-primary">
+							Booking Confirmed!
+						</h3>
+						<p>Your reference:</p>
+						<p className="font-mono text-sm">{bookingRef}</p>
+						{userEmail && (
+							<p className="text-sm text-gray-600">
+								Details sent to: <strong>{userEmail}</strong>
 							</p>
-							<p>Your reference:</p>
-							<p className="font-mono">{bookingRef}</p>
-							{userEmail && (
-								<p className="text-sm text-gray-600">
-									Details sent to: <b>{userEmail}</b>
-								</p>
-							)}
-							<CommonButton
-								onClick={handleFinalClose}
-								bgColor="bg-secondary"
-								textColor="text-primary"
-								hoverColor="hover:bg-background"
-								className="mt-4"
-							>
-								Close
-							</CommonButton>
-						</div>
-					</>
+						)}
+						<CommonButton
+							onClick={handleFinalClose}
+							bgColor="bg-secondary"
+							textColor="text-primary"
+							hoverColor="hover:bg-background"
+							className="mt-4"
+						>
+							Close
+						</CommonButton>
+					</div>
 				)}
 			</div>
 		</div>

@@ -1,15 +1,31 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L, { LatLngExpression, Icon } from 'leaflet';
 
+/**
+ * Props for the VenueMap component.
+ */
 type VenueMapProps = {
+	/** Latitude of the venue */
 	lat: number;
+
+	/** Longitude of the venue */
 	lng: number;
+
+	/** Venue name to display in the map popup */
 	name: string;
 };
 
+/**
+ * A Leaflet map component centered on the venue's location with a marker.
+ *
+ * @param lat - Latitude coordinate of the venue.
+ * @param lng - Longitude coordinate of the venue.
+ * @param name - Name to display in the marker popup.
+ */
 export default function VenueMap({ lat, lng, name }: VenueMapProps) {
 	const position: LatLngExpression = [lat, lng];
 
+	// Custom Leaflet marker icon
 	const customIcon: Icon = new L.Icon({
 		iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
 		iconSize: [25, 41],

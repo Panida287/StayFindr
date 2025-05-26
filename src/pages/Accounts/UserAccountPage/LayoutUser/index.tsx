@@ -24,7 +24,9 @@ export default function LayoutUser() {
 
 				<div>
 					<UserProfileTabs />
+					<div className="hidden sm:block">
 					<BecomeHostAd />
+					</div>
 				</div>
 				<Outlet />
 			</div>

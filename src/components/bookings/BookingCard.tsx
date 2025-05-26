@@ -1,13 +1,18 @@
 import { Booking } from '../../types/venues';
 import { format } from 'date-fns';
 import clsx from 'clsx';
-import { FALLBACK } from '../../constants.ts';
+import SafeImage from '../../utilities/SafeImage.tsx';
 
 type Props = {
+	/** A booking object containing customer, venue, and date info */
 	booking: Booking;
 };
 
-export default function BookingCard({booking}: Props) {
+/**
+ * Displays a single booking card with guest info, date range, and pricing.
+ * Used by venue managers to track bookings on their venues.
+ */
+export default function BookingCard({ booking }: Props) {
 	const now = new Date();
 	const from = new Date(booking.dateFrom);
 	const to = new Date(booking.dateTo);
@@ -23,20 +28,22 @@ export default function BookingCard({booking}: Props) {
 	const totalPrice = nights * booking.venue.price;
 
 	return (
-		<div className="bg-white rounded-xl shadow-sm p-4 grid grid-cols-2">
+		<div
+			className="bg-white rounded-xl shadow-sm p-4 grid grid-cols-2"
+			aria-label={`Booking for ${booking.customer.name} at ${booking.venue.name}`}
+		>
+			{/* Customer Info & Status */}
 			<div className="flex items-start gap-3 h-full">
-				<img
-					src={booking.customer.avatar?.url || FALLBACK.avatar}
-					alt={booking.customer.avatar?.alt || 'User'}
-					onError={(e) => {
-						e.currentTarget.src = FALLBACK.avatar;
-					}}
+				<SafeImage
+					src={booking.customer.avatar?.url}
+					alt={booking.customer.avatar?.alt || booking.customer.name}
 					className="w-10 h-10 rounded-full object-cover"
 				/>
+
 				<div className="flex flex-col items-start justify-between gap-3 h-full">
 					<p className="font-medium">{booking.customer.name}</p>
 					<p className="text-sm text-gray-500">
-						{formattedFrom} - {formattedTo}
+						{formattedFrom} – {formattedTo}
 					</p>
 					<span
 						className={clsx(
@@ -48,12 +55,12 @@ export default function BookingCard({booking}: Props) {
 									: 'bg-blue-100 text-blue-700'
 						)}
 					>
-					{isOngoing ? 'Ongoing' : isCompleted ? 'Completed' : 'Upcoming'}
+						{isOngoing ? 'Ongoing' : isCompleted ? 'Completed' : 'Upcoming'}
 					</span>
-
 				</div>
 			</div>
 
+			{/* Venue Info & Pricing */}
 			<div className="text-right text-sm flex flex-col items-end gap-2">
 				<p className="font-semibold text-base">{booking.venue.name}</p>
 				<p className="text-gray-600">Guests: {booking.guests}</p>
@@ -64,7 +71,6 @@ export default function BookingCard({booking}: Props) {
 					Total: ${totalPrice.toLocaleString()}
 				</p>
 			</div>
-
 		</div>
 	);
 }

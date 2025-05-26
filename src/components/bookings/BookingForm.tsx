@@ -2,22 +2,36 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BookingCalendar from './BookingCalendar';
 import { calculateNights } from '../../utilities/calculateNights';
-import { SplitButton } from '../commons/Buttons.tsx';
-import { BookingModal } from './BookingModal.tsx';
+import { SplitButton } from '../commons/Buttons';
+import { BookingModal } from './BookingModal';
 
 export interface BookingFormProps {
+	/** Price per night */
 	price: number;
+	/** Maximum guests allowed */
 	maxGuests: number;
+	/** Date ranges already booked */
 	bookedDateRanges: { start: Date; end: Date }[];
+	/** Callback to trigger booking */
 	handleBooking: (start: Date | null, end: Date | null, guests: number) => void;
+	/** Whether booking request is in progress */
 	isBookingLoading: boolean;
+	/** Error message from booking request */
 	bookingError: string | null;
+	/** Whether booking was successful */
 	success: boolean;
+	/** Pre-filled check-in date */
 	initialStartDate?: Date | null;
+	/** Pre-filled check-out date */
 	initialEndDate?: Date | null;
+	/** Pre-filled guest count */
 	initialGuests?: number;
 }
 
+/**
+ * Booking form for selecting date range, guest count, and submitting a reservation.
+ * Displays booking summary, total price, and modal confirmation.
+ */
 export default function BookingForm({
 	                                    price,
 	                                    maxGuests,
@@ -33,19 +47,20 @@ export default function BookingForm({
 	const [guests, setGuests] = useState<number>(initialGuests);
 	const [showModal, setShowModal] = useState(false);
 
+	const navigate = useNavigate();
+	const isLoggedIn = Boolean(localStorage.getItem('SFToken'));
+
 	useEffect(() => {
 		setStartDate(initialStartDate);
 	}, [initialStartDate]);
+
 	useEffect(() => {
 		setEndDate(initialEndDate);
 	}, [initialEndDate]);
+
 	useEffect(() => {
 		setGuests(initialGuests);
 	}, [initialGuests]);
-
-	const navigate = useNavigate();
-	const token = localStorage.getItem('SFToken');
-	const isLoggedIn = Boolean(token);
 
 	const totalPrice =
 		startDate && endDate
@@ -58,23 +73,24 @@ export default function BookingForm({
 		setEndDate(null);
 	};
 
-	// --- SAFE RANGE CHECK ---
-	function isRangeAvailable(
+	const isRangeAvailable = (
 		start: Date | null,
 		end: Date | null,
 		booked: { start: Date; end: Date }[]
-	) {
+	) => {
 		if (!start || !end) return false;
 		return !booked.some(
 			({ start: bookStart, end: bookEnd }) =>
 				start <= bookEnd && end >= bookStart
 		);
-	}
+	};
 
 	const isAvailable = isRangeAvailable(startDate, endDate, bookedDateRanges);
+	const nights = startDate && endDate ? calculateNights(startDate, endDate) : 0;
 
 	return (
 		<div className="flex flex-col items-center sm:block">
+			{/* Guest selector */}
 			<div className="mt-4 flex items-center gap-2">
 				<label
 					htmlFor="guests"
@@ -87,10 +103,7 @@ export default function BookingForm({
 						id="guests"
 						value={guests}
 						onChange={e => setGuests(Number(e.target.value))}
-						className="appearance-none rounded-full border border-gray-300
-                        bg-white pl-4 pr-10 py-2 text-sm text-gray-700
-                        shadow-sm focus:outline-none focus:ring-2 focus:ring-primary
-                        focus:border-transparent transition"
+						className="appearance-none rounded-full border border-gray-300 bg-white pl-4 pr-10 py-2 text-sm text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
 					>
 						{Array.from({ length: maxGuests }, (_, i) => i + 1).map(num => (
 							<option key={num} value={num}>
@@ -119,6 +132,7 @@ export default function BookingForm({
 				</p>
 			</div>
 
+			{/* Calendar selection */}
 			<BookingCalendar
 				onDateChange={(s, e) => {
 					setStartDate(s);
@@ -128,8 +142,9 @@ export default function BookingForm({
 				initialRange={[initialStartDate, initialEndDate]}
 			/>
 
+			{/* Summary */}
 			{startDate && endDate && isAvailable && (
-				<div>
+				<>
 					<h4 className="mt-6 text-primary font-medium">Booking Summary</h4>
 					<div className="text-sm rounded-xl text-gray-700 bg-gray-50 mt-4 p-3 space-y-1">
 						<div className="flex items-center justify-between gap-2">
@@ -142,69 +157,59 @@ export default function BookingForm({
 						</div>
 						<div className="flex items-center justify-between gap-2">
 							<div><b>Total nights:</b></div>
-							<div>
-								{calculateNights(startDate, endDate)}{' '}
-								{calculateNights(startDate, endDate) === 1 ? 'night' : 'nights'}
-							</div>
+							<div>{nights} {nights === 1 ? 'night' : 'nights'}</div>
 						</div>
 						<div className="flex items-center justify-between gap-2">
 							<div><b>Guests</b></div>
-							<div>
-								{guests} {guests === 1 ? 'guest' : 'guests'}
-							</div>
+							<div>{guests} {guests === 1 ? 'guest' : 'guests'}</div>
 						</div>
 					</div>
-				</div>
-			)}
 
-			{startDate && endDate && isAvailable && (
-				<div className="text-primary text-heading font-semibold text-lg mt-2">
-					<span>
+					<div className="text-primary text-heading font-semibold text-lg mt-2">
 						Total price: {totalPrice} NOK
 						<p className="text-sm font-light text-gray-500">
-							for {calculateNights(startDate, endDate)}{' '}
-							{calculateNights(startDate, endDate) === 1 ? 'night' : 'nights'}
+							for {nights} {nights === 1 ? 'night' : 'nights'}
 						</p>
-					</span>
-					<p className="text-sm font-light text-gray-500 pt-2">
-						{price} NOK per night
-					</p>
-				</div>
-			)}
+						<p className="text-sm font-light text-gray-500 pt-2">
+							{price} NOK per night
+						</p>
+					</div>
 
-			{startDate && endDate && isAvailable && (
-				isLoggedIn ? (
-					<SplitButton
-						text="Book now"
-						onClick={() => setShowModal(true)}
-						bgColor="bg-primary"
-						borderColor="border-primary"
-						textColor="text-primary"
-						hoverTextColor="group-hover:text-primary"
-						arrowColor="text-white"
-						arrowHoverColor="group-hover:text-primary"
-						className="mt-4 disabled:opacity-50 font-heading"
-					/>
-				) : (
-					<div className="mt-4 text-center">
-						<p className="text-sm text-gray-600 mb-2">
-							Login or register to book this property
-						</p>
+					{/* CTA Button */}
+					{isLoggedIn ? (
 						<SplitButton
-							text="Login or Register"
-							onClick={() => navigate('/login')}
+							text="Book now"
+							onClick={() => setShowModal(true)}
 							bgColor="bg-primary"
 							borderColor="border-primary"
 							textColor="text-primary"
 							hoverTextColor="group-hover:text-primary"
 							arrowColor="text-white"
 							arrowHoverColor="group-hover:text-primary"
-							className="mt-4 font-heading"
+							className="mt-4 disabled:opacity-50 font-heading"
 						/>
-					</div>
-				)
+					) : (
+						<div className="mt-4 text-center">
+							<p className="text-sm text-gray-600 mb-2">
+								Login or register to book this property
+							</p>
+							<SplitButton
+								text="Login or Register"
+								onClick={() => navigate('/login')}
+								bgColor="bg-primary"
+								borderColor="border-primary"
+								textColor="text-primary"
+								hoverTextColor="group-hover:text-primary"
+								arrowColor="text-white"
+								arrowHoverColor="group-hover:text-primary"
+								className="mt-4 font-heading"
+							/>
+						</div>
+					)}
+				</>
 			)}
 
+			{/* Booking Modal */}
 			{showModal && startDate && endDate && isAvailable && (
 				<BookingModal
 					startDate={startDate}
@@ -218,7 +223,12 @@ export default function BookingForm({
 				/>
 			)}
 
-			{bookingError && <p className="text-sm text-red-600 mt-2">{bookingError}</p>}
+			{/* Error Message */}
+			{bookingError && (
+				<p className="text-sm text-red-600 mt-2" role="alert">
+					{bookingError}
+				</p>
+			)}
 		</div>
 	);
 }

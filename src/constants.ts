@@ -15,9 +15,9 @@ export const FALLBACK = {
 	name: 'John Smith',
 	email: 'johnsmith@gmail.com',
 	bio: 'I love warm hugs',
-	avatar: 'assets/images/fallbackImages/fallbackAvatar.jpg',
-	banner: 'assets/images/fallbackImages/fallbackBanner.jpg',
-	venue: 'assets/images/fallbackImages/fallbackVenue.jpg',
+	avatar: '/assets/images/fallbackImages/fallbackAvatar.jpg',
+	banner: '/assets/images/fallbackImages/fallbackBanner.jpg',
+	venue: '/assets/images/fallbackImages/fallbackVenue.jpg',
 	city: 'Unknown City',
 	country: 'Unknown Country',
 }

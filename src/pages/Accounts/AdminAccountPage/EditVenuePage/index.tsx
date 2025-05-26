@@ -5,6 +5,7 @@ import { useFetchSingleVenue } from '../../../../hooks/useFetchSingleVenue.ts';
 import { useUpdateVenue } from '../../../../hooks/useUpdateVenue.ts';
 import { VenueFormValues } from '../../../../types/forms.ts';
 import LoadingSpinner from '../../../../components/commons/LoadingSpinner.tsx';
+import { FALLBACK } from '../../../../constants.ts';
 
 export default function EditVenuePage() {
 	const { venueId: id } = useParams();
@@ -34,7 +35,12 @@ export default function EditVenuePage() {
 		rating: venue.rating,
 		media: venue.media,
 		meta: venue.meta,
-		location: venue.location,
+		location: {
+			lat: venue.location?.lat ?? FALLBACK.lat,
+			lng: venue.location?.lng ?? FALLBACK.lng,
+			city: venue.location?.city ?? FALLBACK.city,
+			country: venue.location?.country ?? FALLBACK.country,
+		},
 	};
 
 	const handleEditSubmit = async (formData: VenueFormValues) => {

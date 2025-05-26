@@ -52,7 +52,7 @@ export default function UserProfilePage() {
 
 	return (
 		<div>
-			<h2 className="text-4xl mb-4">My Profile</h2>
+			<h2 className="text-4xl mb-4 font-bold text-primary">My Profile</h2>
 			<div className="max-w-3xl mx-auto space-y-4">
 				<div className="flex items-center gap-4 relative bg-white/60 rounded-lg p-4 shadow">
 					<div>

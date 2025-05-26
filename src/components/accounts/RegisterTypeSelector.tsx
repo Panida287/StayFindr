@@ -1,6 +1,10 @@
 const travelerImg = '/assets/images/ads-images/traveler.jpg';
 const hostImg = '/assets/images/ads-images/host.jpg';
 
+/**
+ * A UI selector to choose between Traveler and Venue Manager account types.
+ * Highlights the selected card with border and background, supports click & keyboard.
+ */
 export default function RegisterTypeSelector({
 	                                             accountType,
 	                                             setAccountType,

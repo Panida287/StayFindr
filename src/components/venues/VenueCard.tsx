@@ -1,31 +1,26 @@
-import { Venue } from '../../types/venues';
 import { Users } from 'lucide-react';
 import { truncateText } from '../../utilities/truncateText';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import ImageGallery from './ImageGallery';
 import RatingBadge from '../commons/RatingBadge';
 import AmenitiesIcons from '../commons/AmenitiesIcons';
 import { FALLBACK } from '../../constants';
-import React from 'react';
+import { Venue } from '../../types/venues';
+import SafeImage from '../../utilities/SafeImage';
 
-type VenueWithAvailability = Venue & { isUnavailable?: boolean };
+type VenueWithAvailability = Venue & {
+	isUnavailable?: boolean;
+};
 
 type Props = {
+	/** Venue data with optional availability flag */
 	venue: VenueWithAvailability;
 };
 
+/**
+ * Card component displaying a venue's core information, image, rating, and amenities.
+ */
 export default function VenueCard({ venue }: Props) {
-	const { name, location, price, media, maxGuests, isUnavailable } = venue;
-	const images = (media?.length && media[0]?.url
-			? media
-			: [{ url: FALLBACK.venue, alt: 'Fallback Venue Image' }]
-	).map(img => ({
-		...img,
-		onError: (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-			e.currentTarget.src = FALLBACK.venue;
-		}
-	}));
+	const { name, location, price, media, maxGuests, isUnavailable, rating, meta } = venue;
+	const img = media?.[0];
 
 	return (
 		<div className="flex flex-col rounded-xl overflow-hidden shadow-md relative bg-white hover:shadow-lg transition md:flex-row md:h-60">
@@ -36,7 +31,11 @@ export default function VenueCard({ venue }: Props) {
 			)}
 
 			<div className="w-full h-60 md:max-w-56 lg:max-w-72">
-				<ImageGallery images={images} altFallback={name} heightClass="h-full" />
+				<SafeImage
+					src={img?.url}
+					alt={img?.alt || name}
+					className="w-full h-full object-cover rounded-none"
+				/>
 			</div>
 
 			<div className="flex flex-col justify-between p-4 space-y-2 w-full">
@@ -49,7 +48,7 @@ export default function VenueCard({ venue }: Props) {
 				</div>
 
 				<div className="flex items-center justify-between">
-					<RatingBadge rating={venue.rating} />
+					<RatingBadge rating={rating} />
 					<p className="text-right text-primary font-semibold text-sm">
 						{price} NOK <span className="text-gray-500 text-xs">/night</span>
 					</p>
@@ -61,7 +60,7 @@ export default function VenueCard({ venue }: Props) {
 				</div>
 
 				<div className="flex items-center justify-between gap-4 mt-2 text-gray-600 text-sm">
-					<AmenitiesIcons meta={venue.meta} size={24} />
+					<AmenitiesIcons meta={meta} size={24} />
 				</div>
 			</div>
 		</div>

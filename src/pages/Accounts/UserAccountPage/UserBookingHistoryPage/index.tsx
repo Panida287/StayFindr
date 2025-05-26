@@ -34,7 +34,7 @@ export default function UserBookingHistoryPage() {
 	return (
 		<>
 			<div>
-				<h2 className="text-4xl mb-4">Booking History</h2>
+				<h2 className="text-4xl mb-4 font-bold text-primary">Booking History</h2>
 
 				<UserHistoryBookings
 					bookings={paginatedBookings}

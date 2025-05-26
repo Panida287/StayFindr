@@ -8,6 +8,7 @@ import useDeleteBooking from '../../hooks/useDeleteBooking';
 import toast from 'react-hot-toast';
 import DropdownMenu from '../commons/DropdownMenu';
 import { CommonButton } from '../commons/Buttons.tsx';
+import { Link } from 'react-router-dom';
 
 type MyBookingCardProps = {
 	booking: Profile['bookings'][0];
@@ -18,15 +19,11 @@ export default function MyBookingCard({
 	                                      booking,
 	                                      refreshBookings,
                                       }: MyBookingCardProps) {
-	const {dateFrom, dateTo, guests, venue, id} = booking;
+	const { dateFrom, dateTo, guests, venue, id } = booking;
 	const now = new Date();
 	const isUpcoming = new Date(dateFrom) > now;
-	const isOngoing =
-		new Date(dateFrom) <= now && new Date(dateTo) >= now;
-	const nights = differenceInDays(
-		new Date(dateTo),
-		new Date(dateFrom)
-	);
+	const isOngoing = new Date(dateFrom) <= now && new Date(dateTo) >= now;
+	const nights = differenceInDays(new Date(dateTo), new Date(dateFrom));
 	const formattedFrom = format(new Date(dateFrom), 'MMM d, yyyy');
 	const formattedTo = format(new Date(dateTo), 'MMM d, yyyy');
 
@@ -36,8 +33,8 @@ export default function MyBookingCard({
 	const [isDeleting, setIsDeleting] = useState(false);
 
 	const maxGuests = venue.maxGuests;
-	const {updateGuests, loading: updating} = useUpdateGuests();
-	const {deleteBooking, loading: deleting} = useDeleteBooking();
+	const { updateGuests, loading: updating } = useUpdateGuests();
+	const { deleteBooking, loading: deleting } = useDeleteBooking();
 
 	const handleGuestUpdate = async () => {
 		const promise = updateGuests(id, newGuests);
@@ -47,9 +44,8 @@ export default function MyBookingCard({
 			error: 'Update failed.',
 		}, {
 			duration: 6000,
-			style: {marginTop: '64px'},
+			style: { marginTop: '64px' },
 		});
-
 		const ok = await promise;
 		if (ok) {
 			setIsConfirming(false);
@@ -66,7 +62,7 @@ export default function MyBookingCard({
 			error: 'Cancellation failed.',
 		}, {
 			duration: 6000,
-			style: {marginTop: '64px'},
+			style: { marginTop: '64px' },
 		});
 		const ok = await promise;
 		if (ok) {
@@ -93,20 +89,18 @@ export default function MyBookingCard({
 	];
 
 	return (
-		<div
-			className="relative flex flex-col md:flex-row rounded-lg overflow-hidden shadow-md bg-white transition hover:shadow-lg">
+		<div className="relative flex flex-col md:flex-row rounded-lg overflow-hidden shadow-md bg-white transition hover:shadow-lg">
 
 			{isOngoing && (
-				<span
-					className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-          Ongoing
-        </span>
+				<span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+					Ongoing
+				</span>
 			)}
 
 			<ImageGallery
 				images={venue.media}
 				altFallback={venue.name}
-				heightClass="h-56 md:h-full md:max-w-[250px]"
+				heightClass="h-56 md:h-52 md:max-w-[250px]"
 			/>
 
 			<div className="relative p-4 space-y-2 w-full md:flex-1">
@@ -115,10 +109,21 @@ export default function MyBookingCard({
 					{venue.location.city}, {venue.location.country}
 				</p>
 				<p className="text-sm text-gray-600">
-					{formattedFrom} → {formattedTo} ({nights} night
-					{nights > 1 ? 's' : ''})
+					{formattedFrom} → {formattedTo} ({nights} night{nights > 1 ? 's' : ''})
 				</p>
 				<p className="text-sm text-gray-600">Guests: {guests}</p>
+
+				<Link
+					key={venue.id}
+					to={`/venue/${venue.id}`}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="absolute bottom-0 px-2 py-1 rounded-full right-0 hover:bg-gray-100 transition"
+					aria-label={`Open ${venue.name} in new tab`}
+				>
+					<i className="fa-light fa-arrow-up-right-from-square pr-1" />
+				</Link>
+
 				{isUpcoming && (
 					<div className="absolute top-0 right-2 z-20">
 						<DropdownMenu items={menuItems}>
@@ -130,24 +135,21 @@ export default function MyBookingCard({
 				)}
 			</div>
 
+			{/* Edit Modal */}
 			<Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
 				{!isConfirming ? (
 					<div className="space-y-4 w-full">
 						<h2 className="text-xl flex justify-center font-semibold">Edit Guests</h2>
 						<div className="flex justify-center items-center gap-4">
 							<button
-								onClick={() =>
-									setNewGuests((g) => Math.max(1, g - 1))
-								}
+								onClick={() => setNewGuests((g) => Math.max(1, g - 1))}
 								className="h-10 w-10 flex justify-center items-center rounded-full bg-gray-200 hover:bg-gray-300 text-xl font-bold"
 							>
 								−
 							</button>
 							<span className="text-lg font-medium">{newGuests}</span>
 							<button
-								onClick={() =>
-									setNewGuests((g) => Math.min(maxGuests, g + 1))
-								}
+								onClick={() => setNewGuests((g) => Math.min(maxGuests, g + 1))}
 								className="h-10 w-10 flex justify-center items-center rounded-full bg-gray-200 hover:bg-gray-300 text-xl font-bold"
 							>
 								+
@@ -166,7 +168,6 @@ export default function MyBookingCard({
 							>
 								Cancel
 							</CommonButton>
-
 							<CommonButton
 								onClick={() => setIsConfirming(true)}
 								bgColor="bg-primary"
@@ -179,12 +180,8 @@ export default function MyBookingCard({
 					</div>
 				) : (
 					<div className="space-y-4 w-full">
-						<h2 className="text-xl flex justify-center font-semibold">
-							Confirm Update
-						</h2>
-						<p className="text-center">
-							Change guests to <strong>{newGuests}</strong>?
-						</p>
+						<h2 className="text-xl flex justify-center font-semibold">Confirm Update</h2>
+						<p className="text-center">Change guests to <strong>{newGuests}</strong>?</p>
 						<div className="flex justify-between w-full">
 							<CommonButton
 								onClick={() => setIsConfirming(false)}
@@ -195,7 +192,6 @@ export default function MyBookingCard({
 							>
 								Back
 							</CommonButton>
-
 							<CommonButton
 								onClick={handleGuestUpdate}
 								disabled={updating}
@@ -207,18 +203,16 @@ export default function MyBookingCard({
 							</CommonButton>
 						</div>
 					</div>
-
 				)}
 			</Modal>
 
+			{/* Delete Modal */}
 			<Modal isOpen={isDeleting} onClose={() => setIsDeleting(false)}>
 				<div className="space-y-4 w-full">
 					<h2 className="text-xl flex justify-center font-semibold text-red-600">
 						Cancel Booking
 					</h2>
-					<p className="text-center">
-						Are you sure you want to cancel this booking?
-					</p>
+					<p className="text-center">Are you sure you want to cancel this booking?</p>
 					<p className="text-sm text-gray-500 text-center">
 						This action cannot be undone.
 					</p>

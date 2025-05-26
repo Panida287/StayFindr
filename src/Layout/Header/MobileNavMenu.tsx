@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react';
 import { logout } from '../../utilities/logout.ts';
 import { createPortal } from 'react-dom';
 import { SplitButton } from '../../components/commons/Buttons.tsx';
+import React from 'react';
 
 type Props = {
 	menuRef: React.RefObject<HTMLDivElement | null>;
@@ -77,13 +78,6 @@ export default function MobileNavMenu({ menuRef, open, setOpen, isLoggedIn }: Pr
 											</NavLink>
 										</li>
 									)}
-									<li className="pt-2 pb-2 mx-4 border-t border-gray-200">
-										<a href="#" className="hover:text-primary transition duration-200">Inbox</a>
-									</li>
-									<li className="pt-2 pb-2 mx-4 border-t border-gray-200">
-										<a href="#"
-										   className="hover:text-primary transition duration-200">Notification</a>
-									</li>
 								</>
 							)}
 

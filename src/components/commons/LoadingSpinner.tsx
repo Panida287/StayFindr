@@ -1,14 +1,15 @@
 type Props = {
-	/** Diameter in pixels */
+	/** Diameter of the spinner in pixels (default: 24) */
 	size?: number;
-	/** Tailwind text color class, e.g. 'text-primary' or 'text-gray-500' */
+	/** Tailwind text color class (e.g., 'text-primary') */
 	colorClass?: string;
-	/** Additional Tailwind classes */
+	/** Additional Tailwind CSS classes for the SVG spinner */
 	className?: string;
 };
 
 /**
- * A simple, customizable loading spinner using SVG with TailwindCSS classes.
+ * Branded loading spinner with optional logo and customizable styling.
+ * Used to indicate loading states throughout the application.
  */
 export default function LoadingSpinner({
 	                                       size = 24,
@@ -16,8 +17,16 @@ export default function LoadingSpinner({
 	                                       className = '',
                                        }: Props) {
 	return (
-		<div className="flex flex-col justify-center items-center">
-			<img src="/assets/images/logos/logo-dark.png" alt="Logo" className="h-20 my-4" />
+		<div
+			role="status"
+			aria-live="polite"
+			className="flex flex-col justify-center items-center"
+		>
+			<img
+				src="/assets/images/logos/logo-dark.png"
+				alt="StayFindr logo"
+				className="h-20 my-4"
+			/>
 			<svg
 				className={`animate-spin ${colorClass} ${className}`}
 				width={size}

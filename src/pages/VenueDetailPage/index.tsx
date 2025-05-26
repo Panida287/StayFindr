@@ -63,15 +63,15 @@ export default function VenueDetailPage() {
 			<ImageGalleryAlternative images={images} altFallback={name} />
 
 			<div className="space-y-4 mt-6">
-				<h1 className="text-5xl text-primary font-bold">{name}</h1>
-				<p className="flex items-center text-gray-600 gap-2">
+				<h1 className="text-5xl text-primary font-bold break-all">{name}</h1>
+				<p className="flex items-center text-gray-600 gap-2 break-all">
 					<MapPin className="w-5 h-5" />
 					{cityName}, {countryName}
 				</p>
 
 				<RatingBadge rating={rating} />
 
-				<p className="text-gray-700">
+				<p className="text-gray-700 break-all">
 					{stripHTML(description || '')}
 				</p>
 				<p className="text-primary font-semibold text-xl">
@@ -90,7 +90,7 @@ export default function VenueDetailPage() {
 
 				<div className="flex flex-col gap-6">
 					<div>
-						<p className="flex items-center text-gray-600 gap-2 mb-2">
+						<p className="flex items-center text-gray-600 gap-2 mb-2 break-all">
 							<MapPin className="w-5 h-5" />
 							{location.address}, {cityName}, {countryName}
 						</p>

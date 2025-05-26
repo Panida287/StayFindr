@@ -6,9 +6,13 @@ import { CommonButton } from '../commons/Buttons';
 import Modal from '../commons/Modal';
 
 type Props = {
+	/** Function to close the modal */
 	onClose: () => void;
 };
 
+/**
+ * Modal component that allows a user to update their avatar by providing a URL and alt text.
+ */
 export default function EditAvatarModal({ onClose }: Props) {
 	const { profile, fetchProfile } = useFetchProfile();
 	const [url, setUrl] = useState('');
@@ -16,11 +20,15 @@ export default function EditAvatarModal({ onClose }: Props) {
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 
+	/**
+	 * Sends avatar update request and refreshes profile.
+	 */
 	const handleSave = async () => {
 		if (!profile?.name) return;
 
 		setLoading(true);
 		setErrorMessage('');
+
 		try {
 			await updateAvatar(profile.name, { url, alt });
 			await fetchProfile();
@@ -30,27 +38,28 @@ export default function EditAvatarModal({ onClose }: Props) {
 			setErrorMessage(
 				error.response?.data?.errors?.[0]?.message || 'Something went wrong.'
 			);
-			console.error('Avatar update error:', error.response?.data || error);
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	return (
-		<Modal isOpen={true} onClose={onClose}>
+		<Modal isOpen onClose={onClose} title="Edit Avatar">
 			<div className="space-y-4 w-full max-w-sm mx-auto">
-				<h2 className="text-xl flex justify-center font-semibold">
-					Edit Avatar
-				</h2>
-
 				{errorMessage && (
-					<div className="p-2 text-sm text-red-700 bg-red-100 rounded">
+					<div
+						className="p-2 text-sm text-red-700 bg-red-100 rounded"
+						role="alert"
+					>
 						{errorMessage}
 					</div>
 				)}
 
-				<label className="block text-sm font-medium">Image URL</label>
+				<label htmlFor="avatar-url" className="block text-sm font-medium">
+					Image URL
+				</label>
 				<input
+					id="avatar-url"
 					type="text"
 					value={url}
 					onChange={(e) => setUrl(e.target.value)}
@@ -59,8 +68,11 @@ export default function EditAvatarModal({ onClose }: Props) {
 					disabled={loading}
 				/>
 
-				<label className="block text-sm font-medium">Alt Text</label>
+				<label htmlFor="avatar-alt" className="block text-sm font-medium">
+					Alt Text
+				</label>
 				<input
+					id="avatar-alt"
 					type="text"
 					value={alt}
 					onChange={(e) => setAlt(e.target.value)}
@@ -75,6 +87,7 @@ export default function EditAvatarModal({ onClose }: Props) {
 							src={url}
 							alt={alt || 'Avatar preview'}
 							className="w-20 h-20 rounded-full object-cover border"
+							loading="lazy"
 						/>
 					</div>
 				)}
@@ -87,15 +100,18 @@ export default function EditAvatarModal({ onClose }: Props) {
 						textColor="text-primary"
 						borderClass="border border-primary"
 						disabled={loading}
+						aria-label="Cancel avatar update"
 					>
 						Cancel
 					</CommonButton>
+
 					<CommonButton
 						onClick={handleSave}
 						bgColor="bg-primary"
 						hoverColor="hover:bg-primary-dark"
 						textColor="text-white"
 						disabled={loading || !url}
+						aria-label="Save avatar"
 					>
 						{loading ? 'Saving...' : 'Save'}
 					</CommonButton>

@@ -36,9 +36,6 @@ export default function BrowsePage(): JSX.Element {
 
   const totalResults = meta?.totalCount ?? 0;
 
-  console.log('🧐 meta object:', meta);
-  console.log('🧐 totalResults:', totalResults);
-
   useEffect(() => {
     fetchAllVenues().then(() =>
         applyFilters({

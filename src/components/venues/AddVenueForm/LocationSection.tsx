@@ -18,19 +18,23 @@ const markerIcon = new L.Icon({
 });
 
 type Props = {
+	/** react-hook-form register function */
 	register: UseFormRegister<VenueFormValues>;
+	/** Current marker coordinates */
 	marker: { lat: number; lng: number };
+	/** Callback triggered on map click to update coordinates */
 	handleMapClick: (coords: { lat: number; lng: number }) => void;
 };
 
-export function LocationSection({
-	                                register,
-	                                marker,
-	                                handleMapClick,
-                                }: Props) {
+/**
+ * Location section of the venue form. Includes address inputs and interactive map.
+ */
+export function LocationSection({ register, marker, handleMapClick }: Props) {
 	return (
-		<>
-			<h3 className="font-semibold text-xl text-black">Location</h3>
+		<section aria-labelledby="location-heading" className="space-y-4">
+			<h3 id="location-heading" className="font-semibold text-xl text-black">
+				Location
+			</h3>
 
 			<div>
 				<label htmlFor="address" className="block text-sm font-medium text-gray-700">
@@ -39,8 +43,9 @@ export function LocationSection({
 				<input
 					id="address"
 					{...register('location.address')}
-					placeholder="Street Address"
+					placeholder="e.g. 123 Main St"
 					className="input mt-1"
+					autoComplete="street-address"
 				/>
 			</div>
 
@@ -52,8 +57,9 @@ export function LocationSection({
 					<input
 						id="city"
 						{...register('location.city')}
-						placeholder="City"
+						placeholder="e.g. Oslo"
 						className="input mt-1"
+						autoComplete="address-level2"
 					/>
 				</div>
 				<div className="flex-1">
@@ -63,8 +69,9 @@ export function LocationSection({
 					<input
 						id="zip"
 						{...register('location.zip')}
-						placeholder="ZIP"
+						placeholder="e.g. 0577"
 						className="input mt-1"
+						autoComplete="postal-code"
 					/>
 				</div>
 			</div>
@@ -77,8 +84,9 @@ export function LocationSection({
 					<input
 						id="country"
 						{...register('location.country')}
-						placeholder="country"
+						placeholder="e.g. Norway"
 						className="input mt-1"
+						autoComplete="country"
 					/>
 				</div>
 				<div className="flex-1">
@@ -88,30 +96,35 @@ export function LocationSection({
 					<input
 						id="continent"
 						{...register('location.continent')}
-						placeholder="Continent"
+						placeholder="e.g. Europe"
 						className="input mt-1"
 					/>
 				</div>
 			</div>
 
-			<div className="h-64 rounded-md overflow-hidden mt-4">
+			{/* Map Picker */}
+			<div className="h-64 rounded-md overflow-hidden mt-4" aria-label="Venue location map">
 				<MapContainer
 					center={[marker.lat, marker.lng]}
 					zoom={2}
 					className="h-full w-full"
 				>
-					{/* this will invalidateSize() on mount */}
 					<ResizeMapOnLoad />
-					<TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+					<TileLayer
+						attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+					/>
 					<LocationPicker onSelect={handleMapClick} />
 					<Marker position={marker} icon={markerIcon} />
 				</MapContainer>
 			</div>
-		</>
+		</section>
 	);
 }
 
-// helper to invalidateSize after the map first renders
+/**
+ * Ensures Leaflet properly sizes map container after mounting.
+ */
 function ResizeMapOnLoad() {
 	const map = useMap();
 	useEffect(() => {
@@ -120,8 +133,14 @@ function ResizeMapOnLoad() {
 	return null;
 }
 
-// helper to let the user click the map to set coords
-function LocationPicker({ onSelect }: { onSelect: (coords: { lat: number; lng: number }) => void }) {
+/**
+ * Registers map click handler to update marker position.
+ */
+function LocationPicker({
+	                        onSelect,
+                        }: {
+	onSelect: (coords: { lat: number; lng: number }) => void;
+}) {
 	useMapEvents({
 		click(e: LeafletMouseEvent) {
 			onSelect(e.latlng);

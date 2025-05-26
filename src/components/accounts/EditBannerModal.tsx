@@ -6,9 +6,14 @@ import { CommonButton } from '../commons/Buttons';
 import Modal from '../commons/Modal';
 
 type Props = {
+	/** Callback to close the modal */
 	onClose: () => void;
 };
 
+/**
+ * A modal form that allows users to update their profile banner image
+ * by submitting a new image URL and alt description.
+ */
 export default function EditBannerModal({ onClose }: Props) {
 	const { profile, fetchProfile } = useFetchProfile();
 	const [url, setUrl] = useState('');
@@ -16,11 +21,15 @@ export default function EditBannerModal({ onClose }: Props) {
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 
+	/**
+	 * Handles banner submission and triggers profile refresh.
+	 */
 	const handleSave = async () => {
 		if (!profile?.name) return;
 
 		setLoading(true);
 		setErrorMessage('');
+
 		try {
 			await updateBanner(profile.name, { url, alt });
 			await fetchProfile();
@@ -30,27 +39,29 @@ export default function EditBannerModal({ onClose }: Props) {
 			setErrorMessage(
 				error.response?.data?.errors?.[0]?.message || 'Something went wrong.'
 			);
-			console.error('Banner update error:', error.response?.data || error);
 		} finally {
 			setLoading(false);
 		}
 	};
 
 	return (
-		<Modal isOpen={true} onClose={onClose}>
+		<Modal isOpen onClose={onClose} title="Edit Banner">
 			<div className="space-y-4 w-full max-w-lg mx-auto">
-				<h2 className="text-xl flex justify-center font-semibold">
-					Edit Banner
-				</h2>
-
 				{errorMessage && (
-					<div className="p-2 text-sm text-red-700 bg-red-100 rounded">
+					<div
+						className="p-2 text-sm text-red-700 bg-red-100 rounded"
+						role="alert"
+						aria-live="polite"
+					>
 						{errorMessage}
 					</div>
 				)}
 
-				<label className="block text-sm font-medium">Banner URL</label>
+				<label htmlFor="banner-url" className="block text-sm font-medium">
+					Banner URL
+				</label>
 				<input
+					id="banner-url"
 					type="text"
 					value={url}
 					onChange={(e) => setUrl(e.target.value)}
@@ -59,8 +70,11 @@ export default function EditBannerModal({ onClose }: Props) {
 					disabled={loading}
 				/>
 
-				<label className="block text-sm font-medium">Alt Text</label>
+				<label htmlFor="banner-alt" className="block text-sm font-medium">
+					Alt Text
+				</label>
 				<input
+					id="banner-alt"
 					type="text"
 					value={alt}
 					onChange={(e) => setAlt(e.target.value)}
@@ -75,6 +89,7 @@ export default function EditBannerModal({ onClose }: Props) {
 							src={url}
 							alt={alt || 'Banner preview'}
 							className="w-full h-40 rounded object-cover border"
+							loading="lazy"
 						/>
 					</div>
 				)}
@@ -87,6 +102,7 @@ export default function EditBannerModal({ onClose }: Props) {
 						textColor="text-primary"
 						borderClass="border border-primary"
 						disabled={loading}
+						aria-label="Cancel banner update"
 					>
 						Cancel
 					</CommonButton>
@@ -97,6 +113,7 @@ export default function EditBannerModal({ onClose }: Props) {
 						hoverColor="hover:bg-primary-dark"
 						textColor="text-white"
 						disabled={loading || !url}
+						aria-label="Save banner"
 					>
 						{loading ? 'Saving...' : 'Save'}
 					</CommonButton>

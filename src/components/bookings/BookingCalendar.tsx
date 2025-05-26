@@ -36,7 +36,6 @@ export default function BookingCalendar({
 	const pickerRef = useRef<ReactDatePicker>(null);
 	const didCheckInitial = useRef(false);
 
-	// 1️⃣ Only once: if initialRange overlaps booked, clear & show unavailable
 	useEffect(() => {
 		if (didCheckInitial.current) return;
 		didCheckInitial.current = true;
@@ -52,7 +51,6 @@ export default function BookingCalendar({
 		}
 	}, [initialRange, bookedRanges, onDateChange]);
 
-	// 2️⃣ Close on outside click
 	useEffect(() => {
 		const handleClickOutside = (ev: MouseEvent) => {
 			if (calendarRef.current && !calendarRef.current.contains(ev.target as Node)) {
@@ -63,12 +61,10 @@ export default function BookingCalendar({
 		return () => document.removeEventListener('mousedown', handleClickOutside);
 	}, [showCalendar]);
 
-	// 3️⃣ User interacts: clear the "unavailable" banner
 	const handleChange = (dates: [Date | null, Date | null]) => {
 		setUnavailable(false);
 		const [startDate, endDate] = dates;
 
-		// reset on same-start click
 		if (start && startDate && !endDate && start.getTime() === startDate.getTime()) {
 			setDateRange([null, null]);
 			setError(null);
@@ -88,13 +84,11 @@ export default function BookingCalendar({
 				onDateChange(startDate, null);
 				return;
 			}
-			// valid range
 			onDateChange(startDate, endDate);
 			setShowCalendar(false);
 		}
 	};
 
-	// 4️⃣ Disable booked + block past next booked date
 	const filterDate = (date: Date) => {
 		if (isDateBooked(date, bookedRanges)) return false;
 		if (start) {
@@ -201,11 +195,9 @@ export default function BookingCalendar({
 						</CommonButton>
 					</div>
 
-					{/* 4. Error message */}
 					{error && <p className="text-red-600 text-sm mt-2">{error}</p>}
 				</div>
 			)}
-
 		</div>
 	);
 }

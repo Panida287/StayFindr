@@ -1,8 +1,12 @@
 interface RatingBadgeProps {
-	/** Rating between 0 and 5 (may be fractional) */
+	/** Rating between 0 and 5 (can be fractional) */
 	rating: number;
 }
 
+/**
+ * Displays a star-based rating badge with label and number.
+ * Automatically shows full, half, and empty stars.
+ */
 export default function RatingBadge({ rating }: RatingBadgeProps) {
 	const fullStars = Math.floor(rating);
 	const hasHalfStar = rating - fullStars >= 0.5;
@@ -20,8 +24,9 @@ export default function RatingBadge({ rating }: RatingBadgeProps) {
 						: 'Very Poor';
 
 	return (
-		<div className="flex flex-col items-start">
-			<div className="flex items-center gap-1">
+		<div className="flex flex-col items-start" aria-label={`Rating: ${rating} stars (${label})`}>
+			{/* Star Icons */}
+			<div className="flex items-center gap-1" role="img" aria-hidden="true">
 				{Array.from({ length: fullStars }).map((_, i) => (
 					<i key={`full-${i}`} className="fa-solid fa-star text-yellow-500" />
 				))}
@@ -35,10 +40,14 @@ export default function RatingBadge({ rating }: RatingBadgeProps) {
 				))}
 			</div>
 
-			<div className="text-xs text-gray-700 mt-1 text-center">
+			{/* Numeric & Label */}
+			<span className="text-xs text-gray-700 mt-1 text-left sr-only">
+				{rating} stars - {label}
+			</span>
+			<span className="text-xs text-gray-700 mt-1 text-left not-sr-only">
 				<span className="font-medium">{rating} stars</span>
 				{rating >= 1 && <span className="ml-1 text-green-700">/ {label}</span>}
-			</div>
+			</span>
 		</div>
 	);
 }
