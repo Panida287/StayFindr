@@ -43,7 +43,7 @@ export default function DropdownMenu({ children, items }: DropdownMenuProps) {
 			</div>
 
 			{open && (
-				<div className="absolute right-0 mt-2 w-36 bg-white border rounded-lg shadow z-20">
+				<div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow z-20">
 					{items.map((item, idx) =>
 						item.to ? (
 							<Link
@@ -51,10 +51,10 @@ export default function DropdownMenu({ children, items }: DropdownMenuProps) {
 								to={item.to}
 								onClick={() => setOpen(false)}
 								className={`
-                  block px-4 py-2 text-sm 
-                  ${item.className ?? 'text-gray-700'} 
-                  ${item.hoverClassName ?? 'hover:bg-gray-100'}
-                `}
+						                  block px-4 py-2 text-sm
+						                  ${item.className ?? 'text-gray-700'} 
+						                  ${item.hoverClassName ?? 'hover:bg-gray-100'}
+						                `}
 							>
 								{item.icon}
 								{item.label}
@@ -67,10 +67,10 @@ export default function DropdownMenu({ children, items }: DropdownMenuProps) {
 									setOpen(false);
 								}}
 								className={`
-                  w-full text-left px-4 py-2 text-sm
-                  ${item.className ?? 'text-gray-700'}
-                  ${item.hoverClassName ?? 'hover:bg-gray-100'}
-                `}
+						                  w-full text-left px-4 py-2 text-sm
+						                  ${item.className ?? 'text-gray-700'}
+						                  ${item.hoverClassName ?? 'hover:bg-gray-100'}
+						                `}
 							>
 								{item.icon}
 								{item.label}
