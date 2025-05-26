@@ -14,7 +14,7 @@ export default function LayoutUser() {
 	if (!profile) return <p>No profile found</p>;
 
 	return (
-		<div className="max-w-5xl mx-auto mt-20">
+		<div className="max-w-5xl mx-auto mt-20 mb-12">
 			<div className="w-full rounded-xl py-4">
 				<ProfileHeader profile={profile} />
 			</div>
@@ -25,7 +25,6 @@ export default function LayoutUser() {
 			</div>
 
 			{isModalOpen && <EditAvatarModal onClose={() => setIsModalOpen(false)} />}
-
 		</div>
 	);
 }

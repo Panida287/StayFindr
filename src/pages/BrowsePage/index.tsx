@@ -9,7 +9,7 @@ import { SortDropdown, SortValue } from '../../components/venues/SearchAndFilter
 import VenueCard from '../../components/venues/VenueCard';
 import { CommonButton, SplitButton } from '../../components/commons/Buttons';
 import { SearchParams } from '../../App';
-import AdBanner from '../../components/commons/AdBanner.tsx';
+import AdBanner from '../../components/commons/Ads/AdBanner.tsx';
 import LoadingSpinner from '../../components/commons/LoadingSpinner.tsx';
 
 export default function BrowsePage(): JSX.Element {

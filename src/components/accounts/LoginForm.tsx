@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react";
-import axios, { AxiosError } from "axios";
-import { ENDPOINTS } from '../../constants.ts';
+import { useState } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { Eye, EyeOff } from 'lucide-react';
+import axios, { AxiosError } from 'axios';
+import { ENDPOINTS } from '../../constants';
 import { Link, useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 type LoginFormValues = {
 	email: string;
@@ -20,79 +21,91 @@ type LoginResponse = {
 
 export default function LoginForm() {
 	const [showPassword, setShowPassword] = useState(false);
-	const [apiError, setApiError] = useState("");
+	const [apiError, setApiError] = useState('');
 	const navigate = useNavigate();
 
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: {errors},
 	} = useForm<LoginFormValues>();
 
 	const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
-		setApiError("");
+		setApiError('');
 
 		try {
 			const response = await axios.post<LoginResponse>(ENDPOINTS.login, data);
-			const { name, accessToken, venueManager } = response.data.data;
+			const {name, accessToken, venueManager} = response.data.data;
 
-			localStorage.setItem("SFUsername", name);
-			localStorage.setItem("SFToken", accessToken);
-			localStorage.setItem("SFRole", venueManager ? "true" : "false");
+			localStorage.setItem('SFUsername', name);
+			localStorage.setItem('SFToken', accessToken);
+			localStorage.setItem('SFRole', venueManager ? 'true' : 'false');
 
-			if (venueManager) {
-				navigate(`/admin/${name}`);
-			} else {
-				navigate('/');
-			}
+			// ✅ Show success toast
+			toast.success('Login successful!', {
+				duration: 6000,
+				position: 'top-center',
+				style: {
+					marginTop: '64px',
+				},
+			});
+
+			// Redirect after a short delay to let the toast show
+			setTimeout(() => {
+				navigate(venueManager ? `/admin/${name}` : '/');
+			}, 1000);
 		} catch (error) {
 			const err = error as AxiosError<{ errors?: { message?: string } }>;
 			const message = Array.isArray(err.response?.data?.errors)
 				? err.response?.data?.errors[0]?.message
 				: err.response?.data?.errors?.message;
 
-			setApiError(message || "Login failed");
+			setApiError(message || 'Login failed');
 		}
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-100">
-			<div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md overflow-hidden">
-				<h2 className="text-2xl font-semibold mb-2 text-pink-600">Welcome back!</h2>
-				<p className="mb-6 text-gray-600">Please login to your account.</p>
+		<div
+			className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-700-100 via-white to-green-50">
+			<Toaster /> {/* 🔥 Toast container */}
 
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-					<div>
-						<label className="block mb-1 text-gray-700">Email Address</label>
+			<div
+				className="bg-white px-10 py-12 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-primary/50">
+				<h2 className="text-3xl font-bold text-primary mb-2">Welcome back!</h2>
+				<p className="text-gray-600 mb-6">Please login to your account.</p>
+
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+					<div className="text-left">
+						<label className="block mb-1 text-sm text-gray-700 font-medium">Email Address</label>
 						<input
 							type="email"
 							placeholder="example@stud.noroff.no"
-							{...register("email", {
-								required: "Email is required",
+							{...register('email', {
+								required: 'Email is required',
 								pattern: {
 									value: /^[^\s@]+@stud\.noroff\.no$/,
-									message: "Only @stud.noroff.no emails allowed",
+									message: 'Only @stud.noroff.no emails allowed',
 								},
 							})}
-							className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300"
+							className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-primary"
 						/>
 						{errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
 					</div>
 
-					<div>
-						<label className="block mb-1 text-gray-700">Password</label>
+					<div className="text-left">
+						<label className="block mb-1 text-sm text-gray-700 font-medium">Password</label>
 						<div className="relative">
 							<input
-								type={showPassword ? "text" : "password"}
+								type={showPassword ? 'text' : 'password'}
 								placeholder="Enter your password"
-								{...register("password", {
-									required: "Password is required",
+								{...register('password', {
+									required: 'Password is required',
 									minLength: {
 										value: 8,
-										message: "Password must be at least 8 characters",
+										message: 'Password must be at least 8 characters',
 									},
 								})}
-								className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300"
+								className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
 							/>
 							<button
 								type="button"
@@ -105,33 +118,37 @@ export default function LoginForm() {
 						{errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
 					</div>
 
-					<div className="flex justify-between items-center text-sm">
-						<label className="flex items-center">
-							<input type="checkbox" className="mr-2" /> Remember me
-						</label>
-						<a href="#" className="text-sm text-red-500 hover:underline">
-							Forgot password?
-						</a>
+					<div className="flex justify-between w-full items-center text-sm text-gray-600">
+						<div className="flex items-center w-full">
+							<input type="checkbox" className="h-3 w-[20%]" />
+							<label className="flex items-center w-full">
+								Remember me
+							</label>
+
+						</div>
+						<a href="#" className="text-red-500 w-full text-end hover:underline">Forgot password?</a>
 					</div>
 
 					{apiError && (
-						<div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+						<div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">
 							{apiError}
 						</div>
 					)}
 
 					<button
 						type="submit"
-						className="w-full py-2 px-4 rounded-md text-white font-semibold bg-pink-600"
+						className="w-full py-2 px-4 rounded-xl bg-primary text-white font-semibold hover:bg-background transition"
 					>
 						Sign In
 					</button>
 				</form>
 
 				<div className="text-center mt-6">
-					<p className="text-sm">
-						Don’t have an account?{" "}
-						<Link to="/register" className="text-pink-600 hover:underline">Sign up</Link>
+					<p className="text-sm text-gray-600 font-thin">
+						Don’t have an account?{' '}
+						<Link to="/register" className="text-primary font-medium hover:underline">
+							Sign up
+						</Link>
 					</p>
 				</div>
 			</div>

@@ -59,7 +59,7 @@ export default function VenueDetailPage() {
 	}));
 
 	return (
-		<div className="bg-white p-6 max-w-5xl mx-auto mt-24 rounded-xl">
+		<div className="bg-white p-6 max-w-5xl mx-auto mt-24 rounded-xl mb-20">
 			<ImageGalleryAlternative images={images} altFallback={name} />
 
 			<div className="space-y-4 mt-6">
