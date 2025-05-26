@@ -1,21 +1,24 @@
-import { useEffect } from 'react';
-import { useVenueStore } from '../store/VenueStore.ts';
+import { useVenueStore } from '../store/VenueStore';
 
-export const useFetchVenues = () => {
+export function useFetchVenues() {
 	const {
 		venues,
 		isLoading,
 		error,
 		meta,
 		currentPage,
-		fetchVenues,
+		currentSort,
+		currentSortOrder,
+		currentQuery,
+		currentGuests,
+		currentDateFrom,
+		currentDateTo,
+		currentAmenities,
 		setPage,
 		setSort,
+		fetchAllVenues,
+		applyFilters,
 	} = useVenueStore();
-
-	useEffect(() => {
-		fetchVenues();
-	}, [fetchVenues]);
 
 	return {
 		venues,
@@ -23,7 +26,16 @@ export const useFetchVenues = () => {
 		error,
 		meta,
 		currentPage,
+		currentSort,
+		currentSortOrder,
+		currentQuery,
+		currentGuests,
+		currentDateFrom,
+		currentDateTo,
+		currentAmenities,
 		setPage,
 		setSort,
+		fetchAllVenues,
+		applyFilters,
 	};
-};
+}

@@ -1,5 +1,3 @@
-// venues.ts
-
 export type Venue = {
 	id: string;
 	name: string;
@@ -28,22 +26,45 @@ export type Venue = {
 		lat: number;
 		lng: number;
 	};
+	bookings: Booking[];
+	owner: Owner;
+};
+
+export type Booking = {
+	id: string;
+	dateFrom: string;
+	dateTo: string;
+	guests: number;
+	customer: {
+		name: string;
+		email: string;
+		bio: string;
+		avatar: {
+			url: string;
+			alt: string;
+		};
+	};
+	venue: Venue;
+};
+
+export type VenueMeta = Venue['meta'];
+
+export type Owner = {
+	name: string;
+	email: string;
+	bio: string;
+	avatar: {
+		url: string;
+		alt: string;
+	};
 };
 
 export type VenueListResponse = {
 	data: Venue[];
 	meta: {
-		isFirstPage: boolean;
-		isLastPage: boolean;
-		currentPage: number;
-		previousPage: number | null;
-		nextPage: number | null;
+		page: number;
+		limit: number;
 		pageCount: number;
 		totalCount: number;
 	};
-};
-
-export type SingleVenueResponse = {
-	data: Venue;
-	meta: Record<string, unknown>;
 };

@@ -1,4 +1,4 @@
-# 🏖️ Holidaze – Modern Accommodation Booking App
+# 🏖️ StayFindr – Modern Accommodation Booking App
 
 Welcome to **Holidaze**, a modern and responsive front-end accommodation booking application built as part of the **FED2 Exam Project** at Noroff. Holidaze allows travelers to search and book unique stays, while venue managers can register and manage properties and bookings.
 

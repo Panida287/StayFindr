@@ -1,7 +1,9 @@
+import LoginForm from '../../../components/accounts/LoginForm.tsx';
+
 export default function LoginPage() {
     return (
-        <>
-            Hello this is manage Login page
-        </>
+        <div className="mt-24">
+            <LoginForm />
+        </div>
     )
 }
