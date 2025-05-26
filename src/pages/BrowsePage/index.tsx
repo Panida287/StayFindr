@@ -10,6 +10,7 @@ import VenueCard from '../../components/venues/VenueCard';
 import { CommonButton } from '../../components/commons/Buttons';
 import { SearchParams } from '../../App';
 import AdBanner from '../../components/commons/AdBanner.tsx';
+import LoadingSpinner from '../../components/commons/LoadingSpinner.tsx';
 
 export default function BrowsePage(): JSX.Element {
   const location    = useLocation();
@@ -103,7 +104,7 @@ export default function BrowsePage(): JSX.Element {
       </div>
 
       {/* 3. Two‐column on md+ */}
-      <div className="md:grid md:grid-cols-4 md:gap-6">
+      <div className="md:grid md:grid-cols-4 md:gap-6 md:max-w-5xl md:mx-auto">
         <aside className="hidden md:block">
           <AmenitiesFilter
             amenities={pendingFilters.amenities}
@@ -150,7 +151,9 @@ export default function BrowsePage(): JSX.Element {
             </div>
 
             {isLoading ? (
-                <p>Loading venues…</p>
+                <div className="flex justify-center items-center h-[500px] w-full">
+                  <LoadingSpinner size={64} colorClass="text-primary" />
+                </div>
             ) : error ? (
                 <p className="text-red-600">{error}</p>
             ) : (

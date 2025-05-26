@@ -31,9 +31,11 @@ export default forwardRef<VenueAvailabilitySearchRef, SearchSectionProps>(
 
 					<CommonButton
 						onClick={onClear}
-						bgColor="bg-red-500"
-						hoverColor="hover:bg-red-400"
-						textColor="text-white"
+						bgColor="none"
+						hoverColor="hover:bg-background"
+						textColor="text-primary"
+						borderClass="border border-primary"
+						className="text-xs"
 					>
 						Clear Search
 					</CommonButton>

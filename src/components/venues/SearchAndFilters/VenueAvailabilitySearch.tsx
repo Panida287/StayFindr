@@ -117,21 +117,6 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 						wrapperClassName="w-full flex-2 flex md:w-[215px] border-xl"
 					/>
 
-					{/* Clear Dates button, only when either date is set */}
-					{(startDate || endDate) && (
-						<CommonButton
-							onClick={() => setDateRange([null, null])}
-							borderClass="border border-gray-300"
-							bgColor="bg-none"
-							textColor="text-gray-800"
-							hoverColor="hover:bg-gray-100"
-							className=" px-4 py-2 text-sm ms:ml-2"
-							type="button"
-						>
-							Clear Dates
-						</CommonButton>
-					)}
-
 					<span className="hidden h-10 w-[1px] bg-secondary md:block" />
 
 					{/* Guests */}

@@ -4,6 +4,7 @@ import VenueForm from '../../../../components/venues/AddVenueForm/VenueForm.tsx'
 import { useFetchSingleVenue } from '../../../../hooks/useFetchSingleVenue.ts';
 import { useUpdateVenue } from '../../../../hooks/useUpdateVenue.ts';
 import { VenueFormValues } from '../../../../types/forms.ts';
+import LoadingSpinner from '../../../../components/commons/LoadingSpinner.tsx';
 
 export default function EditVenuePage() {
 	const { venueId: id } = useParams();
@@ -14,7 +15,14 @@ export default function EditVenuePage() {
 	});
 	const { venue, isLoading, error } = useFetchSingleVenue(id!);
 
-	if (isLoading) return <p>Loading...</p>;
+	if (isLoading) {
+		return (
+			<div className="flex justify-center items-center h-[500px] w-full">
+				<LoadingSpinner size={64} colorClass="text-primary" />
+			</div>
+		);
+	}
+
 	if (error) return <p>Error loading venue</p>;
 	if (!venue) return <p>Venue not found</p>;
 

@@ -10,10 +10,8 @@ export default function TopVenuesCarousel() {
 	const getTopVenues = useVenueStore((s) => s.getTopVenues);
 	const topVenues    = getTopVenues();
 
-	// grab the loading flag from your store
 	const isLoading    = useVenueStore((s) => s.isLoading);
 
-	// while loading, show spinner in the same box size as your carousel
 	if (isLoading) {
 		return (
 			<div className="flex justify-center items-center h-[500px] w-full">
