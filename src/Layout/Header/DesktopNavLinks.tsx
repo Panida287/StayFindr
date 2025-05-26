@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { logout } from '../../utilities/logout.ts';
 import {SplitButton} from '../../components/commons/Buttons.tsx';
+import { FALLBACK } from '../../constants.ts';
 
 type Props = {
 	dropdownRef: React.RefObject<HTMLDivElement | null>;
@@ -61,8 +62,11 @@ export default function DesktopNavLinks({
 						className="flex items-center space-x-2"
 					>
 						<img
-							src={avatarUrl}
+							src={avatarUrl || FALLBACK.avatar}
 							alt="User Avatar"
+							onError={(e) => {
+								e.currentTarget.src = FALLBACK.avatar;
+							}}
 							className="w-8 h-8 rounded-full object-cover"
 						/>
 						<ChevronDown className="text-primary" />

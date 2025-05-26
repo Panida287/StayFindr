@@ -5,6 +5,7 @@ import { Pagination } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import { FALLBACK } from '../../constants';
 
 type Image = {
 	url: string;
@@ -17,9 +18,17 @@ type Props = {
 	heightClass?: string;
 };
 
-export default function ImageGallery({ images, altFallback = '', heightClass = 'h-48' }: Props) {
+export default function ImageGallery({
+	                                     images,
+	                                     altFallback = '',
+	                                     heightClass = 'h-48',
+                                     }: Props) {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const swiperRef = useRef<SwiperType | null>(null);
+
+	const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+		e.currentTarget.src = FALLBACK.venue;
+	};
 
 	return (
 		<div className={`relative group w-full ${heightClass}`}>
@@ -35,6 +44,7 @@ export default function ImageGallery({ images, altFallback = '', heightClass = '
 						<img
 							src={image.url}
 							alt={image.alt || altFallback}
+							onError={handleError}
 							className={`w-full ${heightClass} object-cover`}
 						/>
 					</SwiperSlide>
@@ -66,7 +76,6 @@ export default function ImageGallery({ images, altFallback = '', heightClass = '
 					<ChevronRight className="w-4 h-4 text-gray-700" />
 				</button>
 			)}
-
 		</div>
 	);
 }
