@@ -1,18 +1,25 @@
 import AmenityIcon from './AmenityIcon';
 import { Wifi, Car, Coffee, PawPrint } from 'lucide-react';
 
+/**
+ * Props for AmenitiesIcons component.
+ */
 export interface AmenitiesIconsProps {
-	/** Pass in the `venue.meta` object directly */
+	/** Meta object from venue indicating which amenities are available */
 	meta: {
 		wifi: boolean;
 		parking: boolean;
 		breakfast: boolean;
 		pets: boolean;
 	};
-	/** pixel size for each icon */
+	/** Optional icon size in pixels (default: 20) */
 	size?: number;
 }
 
+/**
+ * Displays a row of amenity icons with availability status.
+ * Commonly used in cards and detail pages to visually indicate included features.
+ */
 export default function AmenitiesIcons({
 	                                       meta,
 	                                       size = 20,

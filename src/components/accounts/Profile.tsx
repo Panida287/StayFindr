@@ -23,7 +23,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
 						e.currentTarget.src = FALLBACK.banner;
 					}}
 					alt={name}
-					className="w-full h-60 object-cover rounded-xl"
+					className="w-full h-64 object-cover rounded-xl"
 				/>
 				<button
 					onClick={() => setIsBannerModalOpen(true)}

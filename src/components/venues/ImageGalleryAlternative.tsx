@@ -16,7 +16,7 @@ interface Props {
 export default function ImageGalleryAlternative({
 	                                                images,
 	                                                altFallback = 'Gallery image',
-	                                                heightClass = 'h-80',
+	                                                heightClass = 'max-h-[400px]',
                                                 }: Props) {
 	const [current, setCurrent] = useState(0);
 	const total = images.length;
@@ -31,7 +31,6 @@ export default function ImageGalleryAlternative({
 	return (
 		<div className="w-full">
 			<div className="relative rounded-lg overflow-hidden">
-				{/* Main image */}
 				<img
 					src={images[current].url}
 					alt={images[current].alt || altFallback}
@@ -39,7 +38,6 @@ export default function ImageGalleryAlternative({
 					className={`w-full object-cover ${heightClass}`}
 				/>
 
-				{/* Prev/Next buttons */}
 				<button
 					onClick={prev}
 					className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 p-2 rounded-full hover:bg-opacity-80"
@@ -53,13 +51,11 @@ export default function ImageGalleryAlternative({
 					<ChevronRight className="w-5 h-5 text-gray-800" />
 				</button>
 
-				{/* Slide counter */}
 				<div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
 					{current + 1} / {total}
 				</div>
 			</div>
 
-			{/* Thumbnails */}
 			<div className="mt-2 flex gap-2 overflow-x-auto">
 				{images.map((img, idx) => (
 					<button

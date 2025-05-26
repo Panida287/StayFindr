@@ -1,70 +1,72 @@
+const travelerImg = '/assets/images/ads-images/traveler.jpg';
+const hostImg = '/assets/images/ads-images/host.jpg';
+
 export default function RegisterTypeSelector({
 	                                             accountType,
 	                                             setAccountType,
                                              }: {
-	accountType: "traveler" | "manager" | null;
-	setAccountType: (value: "traveler" | "manager") => void;
+	accountType: 'traveler' | 'manager' | null;
+	setAccountType: (value: 'traveler' | 'manager') => void;
 }) {
-
 	return (
-		<div className="relative flex w-full max-w-4xl bg-white rounded-xl shadow-lg overflow-hidden mx-auto mt-10">
+		<div className="relative flex w-full max-w-5xl bg-white rounded-3xl shadow-xl overflow-hidden mx-auto my-16">
+			{/* Sliding highlight border */}
 			<div
-				className={`absolute top-0 left-0 w-1/2 h-full border-2 border-pink-600 rounded-xl z-0 transition-transform duration-300 ease-in-out ${
-					accountType === "traveler" ? "translate-x-0" : "translate-x-full"
+				className={`absolute top-0 left-0 w-1/2 h-full border border-primary rounded-3xl z-0 transition-transform duration-300 ease-in-out ${
+					accountType === 'traveler' ? 'translate-x-0' : 'translate-x-full'
 				}`}
-				style={{ pointerEvents: "none" }}
+				style={{ pointerEvents: 'none' }}
 			/>
 
 			{/* Traveler Card */}
 			<div
-				onClick={() => setAccountType("traveler")}
-				className={`relative z-10 flex-1 p-8 text-center cursor-pointer transition-colors ${
-					accountType === "traveler" ? "bg-pink-50" : "bg-white"
+				onClick={() => setAccountType('traveler')}
+				className={`relative z-10 flex-1 p-10 rounded-3xl text-center cursor-pointer transition-colors ${
+					accountType === 'traveler' ? 'bg-primary/5' : ''
 				}`}
 			>
-				<div className="text-pink-600 text-4xl mb-4">🧳</div>
-				<h2 className="text-xl font-semibold mb-2">Traveler Account</h2>
-				<p className="text-gray-500 mb-4">
-					Perfect for those looking to book and experience amazing stays
-				</p>
-				<ul className="text-sm text-left mx-auto max-w-xs space-y-1 text-gray-700">
-					<li>✔ Book unique accommodations</li>
-					<li>✔ Save favorite properties</li>
-					<li>✔ Review your stays</li>
+				<img src={travelerImg} alt="Traveler" className="w-full h-60 object-cover rounded-lg mb-4 shadow-sm" />
+				<h2 className="text-2xl font-semibold text-primary mb-2">Traveler Account</h2>
+				<p className="text-gray-600 text-sm mb-3">For those looking to book memorable stays.</p>
+				<ul className="text-sm text-gray-700 text-left mx-auto max-w-xs space-y-1">
+					<li>• Browse & book venues</li>
+					<li>• Save favorites</li>
+					<li>• Leave reviews</li>
 				</ul>
 				<button
-					className={`mt-6 py-2 px-6 rounded-md font-semibold ${
-						accountType === "traveler"
-							? "bg-pink-600 text-white"
-							: "border border-pink-600 text-pink-600"
+					className={`mt-4 py-2 px-6 rounded-full font-medium transition ${
+						accountType === 'traveler'
+							? 'bg-primary text-white'
+							: 'border border-primary text-primary hover:bg-primary/10'
 					}`}
 				>
 					Register as Traveler
 				</button>
 			</div>
 
-			{/* Host Card */}
+
+			{/* Venue Manager Card */}
 			<div
-				onClick={() => setAccountType("manager")}
-				className={`relative z-10 flex-1 p-8 text-center cursor-pointer transition-colors ${
-					accountType === "manager" ? "bg-pink-50" : "bg-white"
+				onClick={() => setAccountType('manager')}
+				className={`relative z-10 flex-1 p-10 text-center rounded-3xl cursor-pointer transition-colors ${
+					accountType === 'manager' ? 'bg-primary/5' : 'bg-white'
 				}`}
 			>
-				<div className="text-pink-600 text-4xl mb-4">🏨</div>
-				<h2 className="text-xl font-semibold mb-2">Venue Manager Account</h2>
-				<p className="text-gray-500 mb-4">
-					Ideal for property owners looking to host guests
+				<img src={hostImg} alt="Host" className="w-full h-60 object-cover rounded-lg mb-4 shadow-sm" />
+				<h2 className="text-2xl font-semibold text-primary mb-2">Venue Manager Account</h2>
+				<p className="text-gray-600 mb-5 text-sm">
+					Ideal for property owners looking to host guests and earn income.
 				</p>
 				<ul className="text-sm text-left mx-auto max-w-xs space-y-1 text-gray-700">
-					<li>✔ List your properties</li>
-					<li>✔ Manage bookings</li>
-					<li>✔ Earn from your space</li>
+					<li>• List your properties</li>
+					<li>• Manage bookings</li>
+					<li>• Earn from your space</li>
 				</ul>
 				<button
-					className={`mt-6 py-2 px-6 rounded-md font-semibold ${
-						accountType === "manager"
-							? "bg-pink-600 text-white"
-							: "border border-pink-600 text-pink-600"
+					className={`mt-6 py-2 px-6 rounded-full font-medium transition ${
+						accountType === 'manager'
+							? 'bg-primary text-white'
+							: 'border border-primary text-primary hover:bg-primary/10'
 					}`}
 				>
 					Register as Host

@@ -21,18 +21,18 @@ export default function RegisterPage() {
     }, [accountType, key]);
 
     return (
-        <>
+        <div className="mt-32">
             <RegisterTypeSelector accountType={accountType} setAccountType={handleSelect} />
 
             {accountType && (
                 <div
                     ref={formRef}
                     key={key}
-                    className="animate-slideDown transition-all duration-500 mt-8"
+                    className="animate-slideDown transition-all duration-500 mt-8 mb-12"
                 >
                     <RegisterForm accountType={accountType} />
                 </div>
             )}
-        </>
+        </div>
     );
 }

@@ -11,20 +11,21 @@ import LoadingSpinner from '../../components/commons/LoadingSpinner';
 import { MapPin, Users } from 'lucide-react';
 import { FALLBACK } from '../../constants';
 import { Booking } from '../../types/venues';
+import { stripHTML } from '../../utilities/stripHTML.ts';
 
 export default function VenueDetailPage() {
-	const { venueId } = useParams<{ venueId: string }>();
+	const {venueId} = useParams<{ venueId: string }>();
 	const [search] = useSearchParams();
 	const rawStart = search.get('dateFrom') || '';
 	const rawEnd = search.get('dateTo') || '';
 	const rawGuests = parseInt(search.get('guests') || '1', 10);
 
 	const initialStartDate = rawStart ? new Date(rawStart) : null;
-	const initialEndDate   = rawEnd   ? new Date(rawEnd)   : null;
-	const initialGuests    = rawGuests;
+	const initialEndDate = rawEnd ? new Date(rawEnd) : null;
+	const initialGuests = rawGuests;
 
-	const { venue, isLoading, error } = useFetchSingleVenue(venueId!);
-	const { handleBooking, isBookingLoading, bookingError, success } =
+	const {venue, isLoading, error} = useFetchSingleVenue(venueId!);
+	const {handleBooking, isBookingLoading, bookingError, success} =
 		useHandleBooking(venue?.id);
 
 	if (isLoading) {
@@ -45,20 +46,20 @@ export default function VenueDetailPage() {
 
 	const images = media.length
 		? media
-		: [{ url: FALLBACK.venue, alt: name }];
+		: [{url: FALLBACK.venue, alt: name}];
 
-	const cityName    = location.city    || FALLBACK.city;
+	const cityName = location.city || FALLBACK.city;
 	const countryName = location.country || FALLBACK.country;
-	const safeLat     = location.lat     ?? FALLBACK.lat;
-	const safeLng     = location.lng     ?? FALLBACK.lng;
+	const safeLat = location.lat ?? FALLBACK.lat;
+	const safeLng = location.lng ?? FALLBACK.lng;
 
 	const bookedDateRanges = bookings.map((b: Booking) => ({
 		start: new Date(b.dateFrom),
-		end:   new Date(b.dateTo),
+		end: new Date(b.dateTo),
 	}));
 
 	return (
-		<div className="bg-white p-6 max-w-5xl mx-auto mt-24 rounded-xl">
+		<div className="bg-white p-6 max-w-5xl mx-auto mt-24 rounded-xl mb-20">
 			<ImageGalleryAlternative images={images} altFallback={name} />
 
 			<div className="space-y-4 mt-6">
@@ -70,7 +71,9 @@ export default function VenueDetailPage() {
 
 				<RatingBadge rating={rating} />
 
-				<p className="text-gray-700">{description}</p>
+				<p className="text-gray-700">
+					{stripHTML(description || '')}
+				</p>
 				<p className="text-primary font-semibold text-xl">
 					{price} NOK / night
 				</p>

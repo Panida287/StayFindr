@@ -9,7 +9,7 @@ import { SortDropdown, SortValue } from '../../components/venues/SearchAndFilter
 import VenueCard from '../../components/venues/VenueCard';
 import { CommonButton, SplitButton } from '../../components/commons/Buttons';
 import { SearchParams } from '../../App';
-import AdBanner from '../../components/commons/AdBanner.tsx';
+import AdBanner from '../../components/commons/Ads/AdBanner.tsx';
 import LoadingSpinner from '../../components/commons/LoadingSpinner.tsx';
 
 export default function BrowsePage(): JSX.Element {
@@ -79,7 +79,7 @@ export default function BrowsePage(): JSX.Element {
   const handleClear          = () => { setPendingFilters(defaultParams); setActiveFilters(defaultParams); setCurrentPage(1); setShowMobileFilters(false); };
 
   return (
-      <div className="mt-24 px-4 max-w-7xl mx-auto space-y-6">
+      <div className="mt-24 px-4 max-w-7xl mx-auto space-y-6 mb-12">
 
         <AdBanner />
 
@@ -154,6 +154,7 @@ export default function BrowsePage(): JSX.Element {
                   <div className="flex justify-center items-center h-[500px] w-full">
                     <LoadingSpinner size={64} colorClass="text-primary" />
                   </div>
+
               ) : error ? (
                   <p className="text-red-600">{error}</p>
               ) : (
