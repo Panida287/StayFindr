@@ -24,13 +24,12 @@ export function useUpdateVenue({ onError }: Props = {}) {
 
 			return true;
 		} catch (error: unknown) {
-			let message = 'An unknown error occurred.';
-			if (axios.isAxiosError(error)) {
-				message = error.response?.data?.errors?.[0]?.message || error.message;
-			}
-
-			console.error('Update venue error:', message); // helpful for debugging
-			if (onError) onError(message);
+			const msg =
+				e.response?.data?.errors?.[0]?.message ||
+				e.message ||
+				'An error occurred';
+			console.error(msg);
+			onError?.(msg);
 			return false;
 		} finally {
 			setIsUpdating(false);

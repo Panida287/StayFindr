@@ -36,7 +36,7 @@ export default function RecentBookings({ venues }: Props) {
 			{recent.length === 0 ? (
 				<p className="text-sm text-gray-500 text-center">No bookings at the moment</p>
 			) : (
-				<div className="space-y-4">
+				<div className="grid gap-4">
 					{recent.map((booking) => (
 						<BookingCard key={booking.id} booking={booking} />
 					))}

@@ -46,7 +46,6 @@ export default function BookingForm({
 	const navigate = useNavigate();
 	const token = localStorage.getItem('SFToken');
 	const isLoggedIn = Boolean(token);
-	const userId = localStorage.getItem('SFUserId');
 
 	const totalPrice =
 		startDate && endDate
@@ -57,7 +56,6 @@ export default function BookingForm({
 		setShowModal(false);
 		setStartDate(null);
 		setEndDate(null);
-		navigate(`/user/${userId}`);
 	};
 
 	// --- SAFE RANGE CHECK ---
@@ -161,13 +159,13 @@ export default function BookingForm({
 
 			{startDate && endDate && isAvailable && (
 				<div className="text-primary text-heading font-semibold text-lg mt-2">
-					<p>
+					<span>
 						Total price: {totalPrice} NOK
 						<p className="text-sm font-light text-gray-500">
 							for {calculateNights(startDate, endDate)}{' '}
 							{calculateNights(startDate, endDate) === 1 ? 'night' : 'nights'}
 						</p>
-					</p>
+					</span>
 					<p className="text-sm font-light text-gray-500 pt-2">
 						{price} NOK per night
 					</p>

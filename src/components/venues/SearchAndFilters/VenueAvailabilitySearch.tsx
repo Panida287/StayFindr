@@ -91,7 +91,7 @@ const VenueAvailabilitySearch = forwardRef<VenueAvailabilitySearchRef, Props>(
 			<div className="relative z-50 w-full md:mx-auto">
 				<div className="bg-white shadow-md mx-auto flex flex-col items-start gap-4 px-4 py-3 rounded-t-3xl w-full sm:mx-auto sm:w-[calc(100%-2rem)] md:rounded-lg md:max-w-5xl md:flex-row md:flex-wrap">
 					{/* Destination */}
-					<h1 className="flex text-primary my-4 font-bold flex-wrap w-1/2 md:hidden">
+					<h1 className="flex text-primary my-4 font-bold flex-wrap w-2/3 md:hidden">
 						Find Your Perfect Stay
 					</h1>
 

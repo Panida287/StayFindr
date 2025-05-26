@@ -1,31 +1,38 @@
 interface RatingBadgeProps {
+	/** Rating between 0 and 5 (may be fractional) */
 	rating: number;
 }
 
-const MOCK_REVIEWS = 99;
-
-export default function RatingBadge({rating}: RatingBadgeProps) {
-	const qualityLabel = rating >= 4.5 ? 'Superb' : '';
+export default function RatingBadge({ rating }: RatingBadgeProps) {
+	const fullStars = Math.floor(rating);
+	const hasHalfStar = rating - fullStars >= 0.5;
+	const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
 	return (
-		<div className="flex flex-col items-start justify-between">
-			<div className="flex items-center gap-2">
-				<i className="fa-solid fa-star-sharp text-2xl text-yellow-500"></i>
+		<div className="flex items-center gap-1">
+			{Array.from({ length: fullStars }).map((_, i) => (
+				<i
+					key={`full-${i}`}
+					className="fa-solid fa-star text-yellow-500"
+				/>
+			))}
 
-				<span className="text-black font-bold">
-                    {rating.toFixed(1)} / 5
-                </span>
+			{hasHalfStar && (
+				<i className="fa-solid fa-star-half-stroke text-yellow-500" />
+			)}
 
-				{qualityLabel && (
-					<span className="text-sm font-medium text-green-700">
-                        {qualityLabel}
-                    </span>
-				)}
+			{Array.from({ length: emptyStars }).map((_, i) => (
+				<i
+					key={`empty-${i}`}
+					className="fa-regular fa-star text-yellow-500"
+				/>
+			))}
 
-			</div>
-			<span className="text-sm text-gray-600">
-				( {MOCK_REVIEWS}+ reviews )
-			</span>
+			{rating >= 4.5 && (
+				<span className="ml-2 text-sm font-medium text-green-700">
+          Superb
+        </span>
+			)}
 		</div>
 	);
 }
