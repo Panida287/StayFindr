@@ -21,7 +21,7 @@ export default function LayoutAdmin() {
 	}
 
 	return (
-		<div className="max-w-5xl mx-auto mt-24">
+		<div className="w-[calc(100%-2rem)] max-w-5xl mx-auto mt-24">
 			<ProfileHeader profile={profile} />
 			<AdminStats venues={venues} />
 			<AdminTabs />
