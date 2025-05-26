@@ -77,7 +77,7 @@ export default function ManageVenuePage() {
 					</div>
 				</div>
 
-				<div className="space-y-4">
+				<div className="grid gap-4">
 					{paginatedVenues.map((venue) => (
 						<ManageVenueCard key={venue.id} venue={venue} />
 					))}

@@ -11,7 +11,6 @@ export default function ManageBookingsPage() {
 	const [currentFilter, setCurrentFilter] = useState<StatusValue>('all');
 	const ITEMS_PER_PAGE = 3;
 
-	// 1) Flatten all bookings into a single array
 	const allBookings = useMemo(
 		() =>
 			venues.flatMap((venue: Venue) =>
@@ -20,7 +19,6 @@ export default function ManageBookingsPage() {
 		[venues]
 	);
 
-	// 2) Sort by start date ascending
 	const sortedBookings = useMemo(
 		() =>
 			[...allBookings].sort(
@@ -30,7 +28,6 @@ export default function ManageBookingsPage() {
 		[allBookings]
 	);
 
-	// 3) Filter by status (or show all)
 	const now = useMemo(() => Date.now(), []);
 	const filteredBookings = useMemo(() => {
 		if (currentFilter === 'all') return sortedBookings;
@@ -49,19 +46,16 @@ export default function ManageBookingsPage() {
 		});
 	}, [sortedBookings, currentFilter, now]);
 
-	// 4) Reset to page 1 when filter changes
 	useEffect(() => {
 		setCurrentPage(1);
 	}, [currentFilter, filteredBookings]);
 
-	// 5) Paginate *after* filtering
 	const pageCount = Math.ceil(filteredBookings.length / ITEMS_PER_PAGE);
 	const paginatedBookings = useMemo(() => {
 		const start = (currentPage - 1) * ITEMS_PER_PAGE;
 		return filteredBookings.slice(start, start + ITEMS_PER_PAGE);
 	}, [filteredBookings, currentPage]);
 
-	// --- UI ---
 	if (isLoading) {
 		return <p className="p-8 text-center">Loading bookings…</p>;
 	}
@@ -70,7 +64,7 @@ export default function ManageBookingsPage() {
 	}
 
 	return (
-		<div className="mt-8 max-w-4xl mx-auto w-full">
+		<div className="mt-8 w-full mx-auto">
 			<div className="w-full flex flex-col justify-between items-between sm:flex-row">
 				<h1 className="text-3xl w-full flex items-center">All Bookings</h1>
 
