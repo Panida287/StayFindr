@@ -22,4 +22,4 @@ export const FALLBACK = {
 	country: 'Unknown Country',
 }
 
-export const API_KEY = "83d13e66-565f-4321-9216-c12e9fa8f030"
+export const API_KEY = import.meta.env.VITE_API_KEY;
