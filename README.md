@@ -1,6 +1,6 @@
 # 🏖️ StayFindr – Modern Accommodation Booking App
 
-Welcome to **Holidaze**, a modern and responsive front-end accommodation booking application built as part of the **FED2 Exam Project** at Noroff. Holidaze allows travelers to search and book unique stays, while venue managers can register and manage properties and bookings.
+Welcome to **StayFindr**, a modern and responsive front-end accommodation booking application built as part of the **FED2 Exam Project** at Noroff. StayFindr allows travelers to search and book unique stays, while venue managers can register and manage properties and bookings.
 
 **🔗 Live site:** [https://stayfindr.netlify.app](https://stayfindr.netlify.app)  
 **📦 GitHub repo:** [https://github.com/Panida287/StayFindr](https://github.com/yourusername/holidaze)
@@ -9,7 +9,7 @@ Welcome to **Holidaze**, a modern and responsive front-end accommodation booking
 
 ## 📚 Project Overview
 
-Holidaze is a full-featured single-page application (SPA) built with **React**, **TypeScript**, and **Tailwind CSS**, integrating with the official **Noroff Holidaze API v2**. 
+StayFindr is a full-featured single-page application (SPA) built with **React**, **TypeScript**, and **Tailwind CSS**, integrating with the official **Noroff Holidaze API v2**. 
 
 The application includes:
 
